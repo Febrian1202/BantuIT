@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\TicketCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<User>
+ * @extends Factory<TicketCategory>
  */
-class UserFactory extends Factory
+class TicketCategoryFactory extends Factory
 {
     /**
      * Define the model's default state.

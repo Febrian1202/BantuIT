@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\KnowledgeCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<User>
+ * @extends Factory<KnowledgeCategory>
  */
-class UserFactory extends Factory
+class KnowledgeCategoryFactory extends Factory
 {
     /**
      * Define the model's default state.
