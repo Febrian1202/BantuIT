@@ -10,23 +10,23 @@ class ApiResponse
     /**
      * Pembungkus respons sukses API.
      *
-     * @param array<mixed>|object|null $data
-     * @param array<string, mixed>|null $meta
+     * @param  array<mixed>|object|null  $data
+     * @param  array<string, mixed>|null  $meta
      */
     public static function success(
         mixed $data,
-        string $message = "Success",
+        string $message = 'Success',
         int $status = 200,
         ?array $meta = null,
     ): JsonResponse {
         $payload = [
-            "success" => true,
-            "message" => $message,
-            "data" => $data,
+            'success' => true,
+            'message' => $message,
+            'data' => $data,
         ];
 
         if ($meta !== null) {
-            $payload["meta"] = $meta;
+            $payload['meta'] = $meta;
         }
 
         return response()->json($payload, $status);
@@ -35,11 +35,11 @@ class ApiResponse
     /**
      * Pembungkus respons created API.
      *
-     * @param array<mixed>|object|null $data
+     * @param  array<mixed>|object|null  $data
      */
     public static function created(
         mixed $data,
-        string $message = "Created",
+        string $message = 'Created',
     ): JsonResponse {
         return self::success($data, $message, 201);
     }
@@ -47,7 +47,7 @@ class ApiResponse
     /**
      * Pembungkus respons error API.
      *
-     * @param array<string, array<int, string>>|string|null $errors
+     * @param  array<string, array<int, string>>|string|null  $errors
      */
     public static function error(
         string $message,
@@ -56,9 +56,9 @@ class ApiResponse
     ): JsonResponse {
         return response()->json(
             [
-                "success" => false,
-                "message" => $message,
-                "errors" => $errors,
+                'success' => false,
+                'message' => $message,
+                'errors' => $errors,
             ],
             $status,
         );
@@ -69,7 +69,7 @@ class ApiResponse
      */
     public static function paginated(
         LengthAwarePaginator $paginator,
-        string $message = "Success",
+        string $message = 'Success',
         ?string $resource = null,
     ): JsonResponse {
         $data = $resource
@@ -77,16 +77,16 @@ class ApiResponse
             : $paginator->items();
 
         return response()->json([
-            "success" => true,
-            "message" => $message,
-            "data" => $data,
-            "meta" => [
-                "current_page" => $paginator->currentPage(),
-                "per_page" => $paginator->perPage(),
-                "total" => $paginator->total(),
-                "last_page" => $paginator->lastPage(),
-                "from" => $paginator->firstItem(),
-                "to" => $paginator->lastItem(),
+            'success' => true,
+            'message' => $message,
+            'data' => $data,
+            'meta' => [
+                'current_page' => $paginator->currentPage(),
+                'per_page' => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
             ],
         ]);
     }
