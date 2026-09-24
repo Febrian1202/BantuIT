@@ -26,10 +26,10 @@ class AuthController extends Controller
 
         return ApiResponse::success(
             [
-                'token' => $result['token'],
-                'user' => new UserResource($result['user']),
+                "token" => $result["token"],
+                "user" => new UserResource($result["user"]),
             ],
-            'Login berhasil.',
+            "Login successful.",
         );
     }
 
@@ -40,6 +40,6 @@ class AuthController extends Controller
     {
         $this->authService->logout($request->user());
 
-        return ApiResponse::success(null, 'Logout berhasil.');
+        return ApiResponse::success(null, "Logout successful.");
     }
 }

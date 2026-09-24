@@ -12,19 +12,19 @@ class HealthController extends Controller
     {
         try {
             DB::connection()->getPdo();
-            $db = 'connected';
+            $db = "connected";
         } catch (\Throwable) {
-            return ApiResponse::error('Database tidak terhubung', status: 500);
+            return ApiResponse::error("Database unavailable.", status: 503);
         }
 
         return ApiResponse::success(
             [
-                'status' => 'ok',
-                'version' => config('app.version'),
-                'db' => $db,
-                'timestamp' => now()->utc()->format("Y-m-d\TH:i:s\Z"),
+                "status" => "ok",
+                "version" => config("app.version"),
+                "db" => $db,
+                "timestamp" => now()->utc()->format("Y-m-d\TH:i:s\Z"),
             ],
-            'Service OK',
+            "Service healthy.",
         );
     }
 }

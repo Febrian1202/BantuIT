@@ -18,30 +18,30 @@ class AuthServices
      */
     public function login(LoginData $data): array
     {
-        $user = User::where('email', $data->email)
-            ->with(['role', 'department'])
+        $user = User::where("email", $data->email)
+            ->with(["role", "department"])
             ->first();
 
-        if (! $user || ! Hash::check($data->password, $user->password)) {
+        if (!$user || !Hash::check($data->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Kredensial tidak cocok dengan data yang ada.'],
+                "email" => ["These credentials do not match our records."],
             ]);
         }
 
         if ($user->status !== UserStatus::Active->value) {
             throw ValidationException::withMessages([
-                'email' => ['Akun ini tidak aktif.'],
+                "email" => ["This account is inactive."],
             ]);
         }
 
         return DB::transaction(function () use ($user): array {
-            $user->forceFill(['last_login_at' => now()])->save();
+            $user->forceFill(["last_login_at" => now()])->save();
 
-            $token = $user->createToken('auth_token', ['*'])->plainTextToken;
+            $token = $user->createToken("auth_token", ["*"])->plainTextToken;
 
             return [
-                'token' => $token,
-                'user' => $user,
+                "token" => $token,
+                "user" => $user,
             ];
         });
     }

@@ -172,7 +172,7 @@ test(
             ])
             ->assertStatus(422)
             ->assertJsonPath("errors.current_password", [
-                "Password yang Anda masukkan salah",
+                "The current password is incorrect.",
             ]);
     },
 );
