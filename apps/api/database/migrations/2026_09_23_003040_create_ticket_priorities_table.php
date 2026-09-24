@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('ticket_priorities', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->unsignedInteger('level')->unique();
             $table->unsignedInteger('sla_minutes');
             $table->text('description')->nullable();
             $table->timestamps();
