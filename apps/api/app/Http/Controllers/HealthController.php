@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+
+class HealthController extends Controller
+{
+    public function __invoke(): JsonResponse
+    {
+        try {
+            DB::connection()->getPdo();
+            $db = 'connected';
+        } catch (\Throwable) {
+            return ApiResponse::error('Database tidak terhubung', status: 500);
+        }
+
+        return ApiResponse::success(
+            [
+                'status' => 'ok',
+                'version' => config('app.version'),
+                'db' => $db,
+                'timestamp' => now()->utc()->format("Y-m-d\TH:i:s\Z"),
+            ],
+            'Service OK',
+        );
+    }
+}

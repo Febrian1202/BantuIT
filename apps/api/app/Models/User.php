@@ -13,7 +13,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\PersonalAccessToken;
 
+/**
+ * @method PersonalAccessToken|null currentAccessToken()
+ */
 #[ObservedBy([UserObserver::class])]
 class User extends Authenticatable
 {
