@@ -5,20 +5,16 @@ namespace Database\Factories;
 use App\Models\TicketCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<TicketCategory>
- */
 class TicketCategoryFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = TicketCategory::class;
+
     public function definition(): array
     {
         return [
-            //
+            "name" => fake()->unique()->words(2, true),
+            "description" => fake()->sentence(),
+            "parent_id" => null,
         ];
     }
 }

@@ -5,20 +5,17 @@ namespace Database\Factories;
 use App\Models\TicketStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<TicketStatus>
- */
 class TicketStatusFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = TicketStatus::class;
+
     public function definition(): array
     {
         return [
-            //
+            "name" => fake()->unique()->word(),
+            "description" => fake()->sentence(),
+            "is_closed" => false,
+            "is_final" => false,
         ];
     }
 }
