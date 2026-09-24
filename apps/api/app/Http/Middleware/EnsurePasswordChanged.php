@@ -31,7 +31,7 @@ class EnsurePasswordChanged
             $user->must_change_password &&
             ! in_array($request->route()?->getName(), self::ALLOWED_ROUTES, true)
         ) {
-            return ApiResponse::error('Password harus diganti', status: 403);
+            return ApiResponse::error('Password change required.', status: 403);
         }
 
         return $next($request);
