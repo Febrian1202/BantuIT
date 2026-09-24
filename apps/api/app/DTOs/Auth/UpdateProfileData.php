@@ -12,8 +12,8 @@ class UpdateProfileData
     public static function fromArray(array $data): self
     {
         return new self(
-            fullName: $data["full_name"],
-            phone: isset($data["phone"]) ? (string) $data["phone"] : null,
+            fullName: $data['full_name'],
+            phone: isset($data['phone']) ? (string) $data['phone'] : null,
         );
     }
 }

@@ -25,6 +25,6 @@ class CheckRole
             return $next($request);
         }
 
-        return ApiResponse::error("Forbidden.", status: 403);
+        return ApiResponse::error('Forbidden.', status: 403);
     }
 }

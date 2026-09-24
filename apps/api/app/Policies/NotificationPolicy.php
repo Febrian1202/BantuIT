@@ -9,7 +9,6 @@ use Illuminate\Auth\Access\Response;
 /**
  * Akses notifikasi terlingkupi secara ketat hanya pada user pemiliknya saja.
  * Admin tidak punya pengecualian menyeluruh di sini.
- *
  */
 class NotificationPolicy
 {

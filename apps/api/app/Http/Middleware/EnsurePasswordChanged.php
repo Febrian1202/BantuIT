@@ -13,9 +13,9 @@ class EnsurePasswordChanged
      * Rute yang user bisa akses ketika must_change_password true.
      */
     private const ALLOWED_ROUTES = [
-        "me.password.update",
-        "me.show",
-        "auth.logout",
+        'me.password.update',
+        'me.show',
+        'auth.logout',
     ];
 
     /**
@@ -29,9 +29,9 @@ class EnsurePasswordChanged
         if (
             $user &&
             $user->must_change_password &&
-            !in_array($request->route()?->getName(), self::ALLOWED_ROUTES, true)
+            ! in_array($request->route()?->getName(), self::ALLOWED_ROUTES, true)
         ) {
-            return ApiResponse::error("Password harus diganti", status: 403);
+            return ApiResponse::error('Password harus diganti', status: 403);
         }
 
         return $next($request);

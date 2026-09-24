@@ -26,12 +26,12 @@ class ProfileController extends Controller
     {
         $profile = $this->profileService->show($request->user());
 
-        $payload = new UserResource($profile["user"])->resolve();
-        $payload["permissions"] = $profile["permissions"];
+        $payload = new UserResource($profile['user'])->resolve();
+        $payload['permissions'] = $profile['permissions'];
 
         return ApiResponse::success(
             $payload,
-            "Profile retrieved successfully.",
+            'Profile retrieved successfully.',
         );
     }
 
@@ -47,7 +47,7 @@ class ProfileController extends Controller
 
         return ApiResponse::success(
             new UserResource($user),
-            "Profile updated successfully.",
+            'Profile updated successfully.',
         );
     }
 
@@ -61,6 +61,6 @@ class ProfileController extends Controller
             ChangePasswordData::fromArray($request->validated()),
         );
 
-        return ApiResponse::success(null, "Password updated successfully.");
+        return ApiResponse::success(null, 'Password updated successfully.');
     }
 }
