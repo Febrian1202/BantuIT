@@ -20,15 +20,15 @@ class AuditLog extends Model
      * @var list<string>
      */
     protected $fillable = [
-        "user_id",
-        "action",
-        "module",
-        "module_id",
-        "description",
-        "old_data",
-        "new_data",
-        "ip_address",
-        "user_agent",
+        'user_id',
+        'action',
+        'module',
+        'module_id',
+        'description',
+        'old_data',
+        'new_data',
+        'ip_address',
+        'user_agent',
     ];
 
     /**
@@ -37,9 +37,9 @@ class AuditLog extends Model
     protected function casts(): array
     {
         return [
-            "old_data" => "array",
-            "new_data" => "array",
-            "module_id" => "integer",
+            'old_data' => 'array',
+            'new_data' => 'array',
+            'module_id' => 'integer',
         ];
     }
 

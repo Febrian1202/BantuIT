@@ -25,24 +25,23 @@ class TicketFactory extends Factory
         $duration = $durations[$priorityId];
 
         return [
-            "ticket_number" => "TCK-" . fake()->unique()->numerify("#####"),
-            "title" => fake()->sentence(),
-            "description" => fake()->paragraph(),
-            "category_id" =>
-                TicketCategory::query()->inRandomOrder()->value("id") ??
+            'ticket_number' => 'TCK-'.fake()->unique()->numerify('#####'),
+            'title' => fake()->sentence(),
+            'description' => fake()->paragraph(),
+            'category_id' => TicketCategory::query()->inRandomOrder()->value('id') ??
                 TicketCategory::factory(),
-            "priority_id" => $priorityId,
-            "status_id" => 1,
-            "reporter_id" => User::factory(),
-            "technician_id" => null,
-            "department_id" => Department::factory(),
-            "asset_id" => null,
-            "sla_duration_minutes" => $duration,
-            "sla_deadline" => now()->addMinutes($duration),
-            "resolved_at" => null,
-            "closed_at" => null,
-            "sla_breached" => false,
-            "sla_breached_at" => null,
+            'priority_id' => $priorityId,
+            'status_id' => 1,
+            'reporter_id' => User::factory(),
+            'technician_id' => null,
+            'department_id' => Department::factory(),
+            'asset_id' => null,
+            'sla_duration_minutes' => $duration,
+            'sla_deadline' => now()->addMinutes($duration),
+            'resolved_at' => null,
+            'closed_at' => null,
+            'sla_breached' => false,
+            'sla_breached_at' => null,
         ];
     }
 
@@ -51,12 +50,14 @@ class TicketFactory extends Factory
      */
     public function open(): static
     {
-        return $this->state([
-            "status_id" => 1,
-            "technician_id" => null,
-            "resolved_at" => null,
-            "closed_at" => null,
-        ]);
+        return $this->state(
+            fn (array $attributes) => [
+                'status_id' => 1,
+                'technician_id' => null,
+                'resolved_at' => null,
+                'closed_at' => null,
+            ],
+        );
     }
 
     /**
@@ -64,10 +65,12 @@ class TicketFactory extends Factory
      */
     public function assigned(): static
     {
-        return $this->state([
-            "status_id" => 2,
-            "technician_id" => User::factory()->technician(),
-        ]);
+        return $this->state(
+            fn (array $attributes) => [
+                'status_id' => 2,
+                'technician_id' => User::factory()->technician(),
+            ],
+        );
     }
 
     /**
@@ -75,10 +78,12 @@ class TicketFactory extends Factory
      */
     public function inProgress(): static
     {
-        return $this->state([
-            "status_id" => 3,
-            "technician_id" => User::factory()->technician(),
-        ]);
+        return $this->state(
+            fn (array $attributes) => [
+                'status_id' => 3,
+                'technician_id' => User::factory()->technician(),
+            ],
+        );
     }
 
     /**
@@ -86,10 +91,12 @@ class TicketFactory extends Factory
      */
     public function resolved(): static
     {
-        return $this->state([
-            "status_id" => 4,
-            "resolved_at" => now(),
-        ]);
+        return $this->state(
+            fn (array $attributes) => [
+                'status_id' => 4,
+                'resolved_at' => now(),
+            ],
+        );
     }
 
     /**
@@ -97,10 +104,12 @@ class TicketFactory extends Factory
      */
     public function closed(): static
     {
-        return $this->state([
-            "status_id" => 5,
-            "closed_at" => now(),
-        ]);
+        return $this->state(
+            fn (array $attributes) => [
+                'status_id' => 5,
+                'closed_at' => now(),
+            ],
+        );
     }
 
     /**
@@ -108,11 +117,13 @@ class TicketFactory extends Factory
      */
     public function breached(): static
     {
-        return $this->state([
-            "sla_breached" => true,
-            "sla_breached_at" => now(),
-            "sla_deadline" => now()->subHour(),
-        ]);
+        return $this->state(
+            fn (array $attributes) => [
+                'sla_breached' => true,
+                'sla_breached_at' => now(),
+                'sla_deadline' => now()->subHour(),
+            ],
+        );
     }
 
     /**
@@ -120,8 +131,10 @@ class TicketFactory extends Factory
      */
     public function withTechnician(): static
     {
-        return $this->state([
-            "technician_id" => User::factory()->technician(),
-        ]);
+        return $this->state(
+            fn (array $attributes) => [
+                'technician_id' => User::factory()->technician(),
+            ],
+        );
     }
 }

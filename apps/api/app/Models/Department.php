@@ -17,7 +17,7 @@ class Department extends Model
      *
      * @var list<string>
      */
-    protected $fillable = ["name", "description"];
+    protected $fillable = ['name', 'description'];
 
     /**
      * Relasi model Department ke model User

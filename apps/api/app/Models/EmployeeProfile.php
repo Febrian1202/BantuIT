@@ -16,11 +16,11 @@ class EmployeeProfile extends Model
      * Atribut yang dapat diisi secara massal (fillable)
      */
     protected $fillable = [
-        "user_id",
-        "employee_code",
-        "phone",
-        "position",
-        "hire_date",
+        'user_id',
+        'employee_code',
+        'phone',
+        'position',
+        'hire_date',
     ];
 
     /**
@@ -29,7 +29,7 @@ class EmployeeProfile extends Model
     protected function casts(): array
     {
         return [
-            "hire_date" => "date",
+            'hire_date' => 'date',
         ];
     }
 

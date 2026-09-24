@@ -13,25 +13,25 @@ class AuditLogFactory extends Factory
     public function definition(): array
     {
         return [
-            "user_id" => User::factory(),
-            "action" => fake()->randomElement([
-                "CREATE",
-                "UPDATE",
-                "DELETE",
-                "STATUS_CHANGE",
+            'user_id' => User::factory(),
+            'action' => fake()->randomElement([
+                'CREATE',
+                'UPDATE',
+                'DELETE',
+                'STATUS_CHANGE',
             ]),
-            "module" => fake()->randomElement([
-                "ticket",
-                "asset",
-                "user",
-                "article",
+            'module' => fake()->randomElement([
+                'ticket',
+                'asset',
+                'user',
+                'article',
             ]),
-            "module_id" => fake()->numberBetween(1, 100),
-            "description" => fake()->sentence(),
-            "old_data" => null,
-            "new_data" => ["key" => "value"],
-            "ip_address" => fake()->ipv4(),
-            "user_agent" => fake()->userAgent(),
+            'module_id' => fake()->numberBetween(1, 100),
+            'description' => fake()->sentence(),
+            'old_data' => null,
+            'new_data' => ['key' => 'value'],
+            'ip_address' => fake()->ipv4(),
+            'user_agent' => fake()->userAgent(),
         ];
     }
 }

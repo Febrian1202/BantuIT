@@ -19,11 +19,11 @@ class AssetAssignment extends Model
      * @var list<string>
      */
     protected $fillable = [
-        "asset_id",
-        "user_id",
-        "assigned_at",
-        "released_at",
-        "notes",
+        'asset_id',
+        'user_id',
+        'assigned_at',
+        'released_at',
+        'notes',
     ];
 
     /**
@@ -34,8 +34,8 @@ class AssetAssignment extends Model
     protected function casts(): array
     {
         return [
-            "assigned_at" => "datetime",
-            "released_at" => "datetime",
+            'assigned_at' => 'datetime',
+            'released_at' => 'datetime',
         ];
     }
 
@@ -44,7 +44,7 @@ class AssetAssignment extends Model
      */
     public function scopeActive(Builder $query): Builder
     {
-        return $query->whereNull("released_at");
+        return $query->whereNull('released_at');
     }
 
     /**

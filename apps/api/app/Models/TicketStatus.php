@@ -15,7 +15,7 @@ class TicketStatus extends Model
     /**
      * Atribut yang dapat diisi (fillable)
      */
-    protected $fillable = ["name", "description", "is_closed", "is_final"];
+    protected $fillable = ['name', 'description', 'is_closed', 'is_final'];
 
     /**
      * Konversi tipe data atribut (casting)
@@ -23,8 +23,8 @@ class TicketStatus extends Model
     protected function casts(): array
     {
         return [
-            "is_closed" => "boolean",
-            "is_final" => "boolean",
+            'is_closed' => 'boolean',
+            'is_final' => 'boolean',
         ];
     }
 
@@ -33,6 +33,6 @@ class TicketStatus extends Model
      */
     public function tickets(): HasMany
     {
-        return $this->hasMany(Ticket::class, "status_id");
+        return $this->hasMany(Ticket::class, 'status_id');
     }
 }

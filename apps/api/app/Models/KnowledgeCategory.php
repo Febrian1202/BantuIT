@@ -15,13 +15,13 @@ class KnowledgeCategory extends Model
     /**
      * Atribut yang dapat diisi (fillable)
      */
-    protected $fillable = ["name", "description"];
+    protected $fillable = ['name', 'description'];
 
     /**
      * Relasi ke model KnowledgeArticle
      */
     public function articles(): HasMany
     {
-        return $this->hasMany(KnowledgeArticle::class, "category_id");
+        return $this->hasMany(KnowledgeArticle::class, 'category_id');
     }
 }

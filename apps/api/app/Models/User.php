@@ -14,26 +14,26 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, HasApiTokens, SerializesDatesAsIso8601, SoftDeletes;
+    use HasApiTokens, HasFactory, SerializesDatesAsIso8601, SoftDeletes;
 
     /**
      * Atribut yang dapat diisi secara massal
      */
     protected $fillable = [
-        "role_id",
-        "department_id",
-        "email",
-        "password",
-        "full_name",
-        "status",
-        "must_change_password",
-        "last_login_at",
+        'role_id',
+        'department_id',
+        'email',
+        'password',
+        'full_name',
+        'status',
+        'must_change_password',
+        'last_login_at',
     ];
 
     /**
      * Atribut yang tersembunyi (tidak akan dikembalikan dalam respons API)
      */
-    protected $hidden = ["password", "role_id", "department_id"];
+    protected $hidden = ['password', 'role_id', 'department_id'];
 
     /**
      * Atribut yang harus dikonversi ke tipe data tertentu
@@ -41,9 +41,9 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            "password" => "hashed",
-            "must_change_password" => "boolean",
-            "last_login_at" => "datetime",
+            'password' => 'hashed',
+            'must_change_password' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
     }
 
@@ -84,7 +84,7 @@ class User extends Authenticatable
      */
     public function activeAssignments(): HasMany
     {
-        return $this->hasMany(AssetAssignment::class)->whereNull("released_at");
+        return $this->hasMany(AssetAssignment::class)->whereNull('released_at');
     }
 
     /**

@@ -15,7 +15,7 @@ class Role extends Model
     /**
      * Atribut yang dapat diisi (fillable)
      */
-    protected $fillable = ["name", "description"];
+    protected $fillable = ['name', 'description'];
 
     /**
      * Relasi ke model User

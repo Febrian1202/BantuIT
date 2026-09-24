@@ -14,14 +14,14 @@ class NotificationFactory extends Factory
     public function definition(): array
     {
         return [
-            "user_id" => User::factory(),
-            "type" => NotificationType::TicketAssigned->value,
-            "data" => [
-                "ticket_id" => fake()->numberBetween(1, 100),
-                "ticket_number" => "TCK-" . fake()->numerify("20260901-#####"),
+            'user_id' => User::factory(),
+            'type' => NotificationType::TicketAssigned->value,
+            'data' => [
+                'ticket_id' => fake()->numberBetween(1, 100),
+                'ticket_number' => 'TCK-'.fake()->numerify('20260901-#####'),
             ],
-            "is_read" => false,
-            "read_at" => null,
+            'is_read' => false,
+            'read_at' => null,
         ];
     }
 }

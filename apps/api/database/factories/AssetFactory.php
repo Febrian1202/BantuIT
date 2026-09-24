@@ -19,21 +19,21 @@ class AssetFactory extends Factory
     public function definition(): array
     {
         return [
-            "asset_tag" => "AST-" . fake()->unique()->numerify("#####"),
-            "name" => fake()->word() . " Device",
-            "category" => fake()->randomElement([
-                "Laptop",
-                "Monitor",
-                "Printer",
-                "Server",
-                "Network",
+            'asset_tag' => 'AST-'.fake()->unique()->numerify('#####'),
+            'name' => fake()->word().' Device',
+            'category' => fake()->randomElement([
+                'Laptop',
+                'Monitor',
+                'Printer',
+                'Server',
+                'Network',
             ]),
-            "brand" => fake()->company(),
-            "model" => fake()->word() . " Pro",
-            "serial_number" => fake()->unique()->bothify("SN-####-????"),
-            "purchase_date" => fake()->date(),
-            "status" => AssetStatus::Available,
-            "notes" => fake()->optional()->sentence(),
+            'brand' => fake()->company(),
+            'model' => fake()->word().' Pro',
+            'serial_number' => fake()->unique()->bothify('SN-####-????'),
+            'purchase_date' => fake()->date(),
+            'status' => AssetStatus::Available,
+            'notes' => fake()->optional()->sentence(),
         ];
     }
 
@@ -42,7 +42,7 @@ class AssetFactory extends Factory
      */
     public function available(): static
     {
-        return $this->state(["status" => AssetStatus::Available]);
+        return $this->state(['status' => AssetStatus::Available]);
     }
 
     /**
@@ -50,7 +50,7 @@ class AssetFactory extends Factory
      */
     public function assigned(): static
     {
-        return $this->state(["status" => AssetStatus::Assigned]);
+        return $this->state(['status' => AssetStatus::Assigned]);
     }
 
     /**
@@ -58,7 +58,7 @@ class AssetFactory extends Factory
      */
     public function maintenance(): static
     {
-        return $this->state(["status" => AssetStatus::Maintenance]);
+        return $this->state(['status' => AssetStatus::Maintenance]);
     }
 
     /**
@@ -66,7 +66,7 @@ class AssetFactory extends Factory
      */
     public function retired(): static
     {
-        return $this->state(["status" => AssetStatus::Retired]);
+        return $this->state(['status' => AssetStatus::Retired]);
     }
 
     /**
@@ -74,6 +74,6 @@ class AssetFactory extends Factory
      */
     public function lost(): static
     {
-        return $this->state(["status" => AssetStatus::Lost]);
+        return $this->state(['status' => AssetStatus::Lost]);
     }
 }

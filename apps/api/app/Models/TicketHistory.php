@@ -18,11 +18,11 @@ class TicketHistory extends Model
      * Atribut yang bisa diisi untuk model ini
      */
     protected $fillable = [
-        "ticket_id",
-        "user_id",
-        "field_changed",
-        "old_value",
-        "new_value",
+        'ticket_id',
+        'user_id',
+        'field_changed',
+        'old_value',
+        'new_value',
     ];
 
     /**

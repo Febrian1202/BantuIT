@@ -14,7 +14,7 @@ class Notification extends Model
     /**
      * Atribut yang dapat diisi (fillable)
      */
-    protected $fillable = ["user_id", "type", "data", "is_read", "read_at"];
+    protected $fillable = ['user_id', 'type', 'data', 'is_read', 'read_at'];
 
     /**
      * Casting atribut ke tipe data yang sesuai
@@ -22,9 +22,9 @@ class Notification extends Model
     protected function casts(): array
     {
         return [
-            "data" => "array",
-            "is_read" => "boolean",
-            "read_at" => "datetime",
+            'data' => 'array',
+            'is_read' => 'boolean',
+            'read_at' => 'datetime',
         ];
     }
 

@@ -14,11 +14,11 @@ class TicketHistoryFactory extends Factory
     public function definition(): array
     {
         return [
-            "ticket_id" => Ticket::factory(),
-            "user_id" => User::factory(),
-            "field_changed" => "status",
-            "old_value" => "OPEN",
-            "new_value" => "IN_PROGRESS",
+            'ticket_id' => Ticket::factory(),
+            'user_id' => User::factory(),
+            'field_changed' => 'status',
+            'old_value' => 'OPEN',
+            'new_value' => 'IN_PROGRESS',
         ];
     }
 }

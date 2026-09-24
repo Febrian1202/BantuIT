@@ -18,13 +18,13 @@ class TicketAttachment extends Model
      * Atribut yang dapat diisi,
      */
     protected $fillable = [
-        "ticket_id",
-        "uploaded_by",
-        "original_filename",
-        "stored_filename",
-        "mime_type",
-        "file_size",
-        "storage_path",
+        'ticket_id',
+        'uploaded_by',
+        'original_filename',
+        'stored_filename',
+        'mime_type',
+        'file_size',
+        'storage_path',
     ];
 
     /**
@@ -33,7 +33,7 @@ class TicketAttachment extends Model
     protected function casts(): array
     {
         return [
-            "file_size" => "integer",
+            'file_size' => 'integer',
         ];
     }
 
@@ -50,6 +50,6 @@ class TicketAttachment extends Model
      */
     public function uploader(): BelongsTo
     {
-        return $this->belongsTo(User::class, "uploaded_by");
+        return $this->belongsTo(User::class, 'uploaded_by');
     }
 }

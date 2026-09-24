@@ -13,16 +13,16 @@ class TicketAttachmentFactory extends Factory
 
     public function definition(): array
     {
-        $filename = fake()->word() . ".pdf";
+        $filename = fake()->word().'.pdf';
 
         return [
-            "ticket_id" => Ticket::factory(),
-            "uploaded_by" => User::factory(),
-            "original_filename" => $filename,
-            "stored_filename" => fake()->uuid() . ".pdf",
-            "mime_type" => "application/pdf",
-            "file_size" => fake()->numberBetween(1024, 5242880),
-            "storage_path" => "attachments/" . fake()->uuid() . ".pdf",
+            'ticket_id' => Ticket::factory(),
+            'uploaded_by' => User::factory(),
+            'original_filename' => $filename,
+            'stored_filename' => fake()->uuid().'.pdf',
+            'mime_type' => 'application/pdf',
+            'file_size' => fake()->numberBetween(1024, 5242880),
+            'storage_path' => 'attachments/'.fake()->uuid().'.pdf',
         ];
     }
 }

@@ -13,16 +13,16 @@ class AssetHistoryFactory extends Factory
     public function definition(): array
     {
         return [
-            "asset_id" => Asset::factory(),
-            "action" => fake()->randomElement([
-                "CREATED",
-                "ASSIGNED",
-                "RELEASED",
-                "MAINTENANCE",
-                "RETIRED",
+            'asset_id' => Asset::factory(),
+            'action' => fake()->randomElement([
+                'CREATED',
+                'ASSIGNED',
+                'RELEASED',
+                'MAINTENANCE',
+                'RETIRED',
             ]),
-            "description" => fake()->sentence(),
-            "action_at" => now(),
+            'description' => fake()->sentence(),
+            'action_at' => now(),
         ];
     }
 }

@@ -16,14 +16,14 @@ class TicketCategory extends Model
     /**
      * Atribut yang dapat diisi (fillable) untuk model ini.
      */
-    protected $fillable = ["name", "description", "parent_id"];
+    protected $fillable = ['name', 'description', 'parent_id'];
 
     /**
      * Relasi ke kategori induk (parent).
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(self::class, "parent_id");
+        return $this->belongsTo(self::class, 'parent_id');
     }
 
     /**
@@ -31,7 +31,7 @@ class TicketCategory extends Model
      */
     public function children(): HasMany
     {
-        return $this->hasMany(self::class, "parent_id");
+        return $this->hasMany(self::class, 'parent_id');
     }
 
     /**
@@ -39,6 +39,6 @@ class TicketCategory extends Model
      */
     public function tickets(): HasMany
     {
-        return $this->hasMany(Ticket::class, "category_id");
+        return $this->hasMany(Ticket::class, 'category_id');
     }
 }

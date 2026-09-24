@@ -15,7 +15,7 @@ class TicketPriority extends Model
     /**
      * Atribut yang dapat diisi (fillable)
      */
-    protected $fillable = ["name", "level", "sla_minutes", "description"];
+    protected $fillable = ['name', 'level', 'sla_minutes', 'description'];
 
     /**
      * Casting atribut ke tipe data yang sesuai
@@ -23,8 +23,8 @@ class TicketPriority extends Model
     protected function casts(): array
     {
         return [
-            "level" => "integer",
-            "sla_minutes" => "integer",
+            'level' => 'integer',
+            'sla_minutes' => 'integer',
         ];
     }
 
@@ -33,6 +33,6 @@ class TicketPriority extends Model
      */
     public function tickets(): HasMany
     {
-        return $this->hasMany(Ticket::class, "priority_id");
+        return $this->hasMany(Ticket::class, 'priority_id');
     }
 }

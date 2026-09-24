@@ -12,9 +12,9 @@ class TicketCategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            "name" => fake()->unique()->words(2, true),
-            "description" => fake()->sentence(),
-            "parent_id" => null,
+            'name' => fake()->unique()->words(2, true),
+            'description' => fake()->sentence(),
+            'parent_id' => null,
         ];
     }
 }

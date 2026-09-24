@@ -17,15 +17,14 @@ class KnowledgeArticleFactory extends Factory
         $title = fake()->sentence();
 
         return [
-            "category_id" => KnowledgeCategory::factory(),
-            "author_id" => User::factory(),
-            "title" => $title,
-            "slug" =>
-                Str::slug($title) . "-" . fake()->unique()->numerify("####"),
-            "content" => fake()->paragraphs(3, true),
-            "status" => "published",
-            "view_count" => fake()->numberBetween(0, 100),
-            "published_at" => now(),
+            'category_id' => KnowledgeCategory::factory(),
+            'author_id' => User::factory(),
+            'title' => $title,
+            'slug' => Str::slug($title).'-'.fake()->unique()->numerify('####'),
+            'content' => fake()->paragraphs(3, true),
+            'status' => 'published',
+            'view_count' => fake()->numberBetween(0, 100),
+            'published_at' => now(),
         ];
     }
 
@@ -35,8 +34,8 @@ class KnowledgeArticleFactory extends Factory
     public function draft(): static
     {
         return $this->state([
-            "status" => "draft",
-            "published_at" => null,
+            'status' => 'draft',
+            'published_at' => null,
         ]);
     }
 }
