@@ -91,7 +91,7 @@ class TicketPolicy
     /**
      * Menentukan apakah pengguna dapat mengubah status tiket tertentu.
      */
-    public function changeStatus(User $user, Ticket $ticket): bool
+    public function changeStatus(User $user, Ticket $ticket): Response|bool
     {
         if ($user->isAdmin() || $user->hasRole(RoleName::Manager)) {
             return true;

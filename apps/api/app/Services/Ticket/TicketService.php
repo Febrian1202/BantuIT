@@ -64,7 +64,7 @@ class TicketService
                 $validated["search"],
             );
             $query->where(function ($q) use ($search) {
-                $q->whereRaw("ticket number LIKE ? ESCAPE ?", [
+                $q->whereRaw("ticket_number LIKE ? ESCAPE ?", [
                     "%{$search}%",
                     "\\",
                 ])->orWhereRaw("title LIKE ? ESCAPE ?", ["%{$search}%", "\\"]);
@@ -172,7 +172,7 @@ class TicketService
 
             $this->auditLogger->log(
                 $actor,
-                AuditAction::Cancel,
+                AuditAction::Create,
                 AuditModule::Ticket,
                 $ticket->id,
                 "Ticket #{$ticket->ticket_numner} dibuat.",

@@ -72,7 +72,7 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket): JsonResponse
     {
-        $this->authorize("update", $ticket);
+        $this->authorize("view", $ticket);
         $ticket = $this->ticketService->find($ticket->id);
 
         return ApiResponse::success(
@@ -155,7 +155,7 @@ class TicketController extends Controller
         $this->authorize("assign", $ticket);
         $ticket = $this->statusService->assign(
             $ticket,
-            AssignTicketData::fromArray($request->validated),
+            AssignTicketData::fromArray($request->validated()),
             $request->user(),
         );
 
