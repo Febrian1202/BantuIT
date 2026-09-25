@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Ticket\TicketCommentController;
 use App\Http\Controllers\Ticket\TicketController;
-use App\Models\TicketHistory;
+use App\Http\Controllers\Ticket\TicketHistoryController;
 use Illuminate\Support\Facades\Route;
 
 // Ticket endpoint
@@ -46,7 +46,7 @@ Route::prefix("{ticket}")->group(function () {
     ])->name("comments.destroy");
 
     // Ticket History
-    Route::get("/histories", [TicketHistory::class, "index"])->name(
+    Route::get("/histories", [TicketHistoryController::class, "index"])->name(
         "histories",
     );
 });
