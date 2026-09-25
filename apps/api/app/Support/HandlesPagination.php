@@ -13,7 +13,8 @@ trait HandlesPagination
      */
     public function getPerPage(Request $request): int
     {
-        $perPage = (int) $request->query("per_page", 10);
+        $perPage = (int) $request->query('per_page', 10);
+
         return max(1, min($perPage, 100));
     }
 
@@ -21,25 +22,25 @@ trait HandlesPagination
      * Menerapkan pengurutan (sorting) yang diizinkan (whitelist) pada kueri. Kolom `sort_by`
      * yang tidak dikenal akan ditolak dengan status 422 untuk mencegah kebocoran informasi.
      *
-     * @param array<int, string> $allowedColumns
+     * @param  array<int, string>  $allowedColumns
      */
     public function applySorting(
         Builder $query,
         Request $request,
         array $allowedColumns,
     ): Builder {
-        $sortBy = $request->query("sort_by", "created_at");
-        $sortDir = strtolower((string) $request->query("sort_dir", "desc"));
+        $sortBy = $request->query('sort_by', 'created_at');
+        $sortDir = strtolower((string) $request->query('sort_dir', 'desc'));
 
-        if (!in_array($sortBy, $allowedColumns, true)) {
+        if (! in_array($sortBy, $allowedColumns, true)) {
             throw ValidationException::withMessages([
-                "sort_by" => ["Kolom sort_by tidak valid."],
+                'sort_by' => ['Kolom sort_by tidak valid.'],
             ]);
         }
 
-        if (!in_array($sortDir, ["asc", "desc"], true)) {
+        if (! in_array($sortDir, ['asc', 'desc'], true)) {
             throw ValidationException::withMessages([
-                "sort_dir" => ["Arah pengurutan tidak valid."],
+                'sort_dir' => ['Arah pengurutan tidak valid.'],
             ]);
         }
 

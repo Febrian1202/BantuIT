@@ -15,7 +15,7 @@ class NotificationService
         array $data,
     ): Notification {
         // TODO: Implementasi nanti
-        return new Notification();
+        return new Notification;
     }
 
     public function notifyMany(
@@ -25,6 +25,6 @@ class NotificationService
         ?User $actor = null,
     ): Collection {
         // TODO: Implementasi nanti
-        return new Collection();
+        return new Collection;
     }
 }

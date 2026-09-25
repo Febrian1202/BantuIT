@@ -20,22 +20,22 @@ class Ticket extends Model
      * Atribut yang dapat diisi secara massal (fillable)
      */
     protected $fillable = [
-        "ticket_number",
-        "title",
-        "description",
-        "category_id",
-        "priority_id",
-        "status_id",
-        "reporter_id",
-        "technician_id",
-        "department_id",
-        "asset_id",
-        "sla_duration_minutes",
-        "sla_deadline",
-        "resolved_at",
-        "closed_at",
-        "sla_breached",
-        "sla_breached_at",
+        'ticket_number',
+        'title',
+        'description',
+        'category_id',
+        'priority_id',
+        'status_id',
+        'reporter_id',
+        'technician_id',
+        'department_id',
+        'asset_id',
+        'sla_duration_minutes',
+        'sla_deadline',
+        'resolved_at',
+        'closed_at',
+        'sla_breached',
+        'sla_breached_at',
     ];
 
     /**
@@ -44,12 +44,12 @@ class Ticket extends Model
     protected function casts(): array
     {
         return [
-            "sla_duration_minutes" => "integer",
-            "sla_deadline" => "datetime",
-            "resolved_at" => "datetime",
-            "closed_at" => "datetime",
-            "sla_breached" => "boolean",
-            "sla_breached_at" => "datetime",
+            'sla_duration_minutes' => 'integer',
+            'sla_deadline' => 'datetime',
+            'resolved_at' => 'datetime',
+            'closed_at' => 'datetime',
+            'sla_breached' => 'boolean',
+            'sla_breached_at' => 'datetime',
         ];
     }
 
@@ -58,7 +58,7 @@ class Ticket extends Model
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(TicketCategory::class, "category_id");
+        return $this->belongsTo(TicketCategory::class, 'category_id');
     }
 
     /**
@@ -66,7 +66,7 @@ class Ticket extends Model
      */
     public function priority(): BelongsTo
     {
-        return $this->belongsTo(TicketPriority::class, "priority_id");
+        return $this->belongsTo(TicketPriority::class, 'priority_id');
     }
 
     /**
@@ -74,7 +74,7 @@ class Ticket extends Model
      */
     public function status(): BelongsTo
     {
-        return $this->belongsTo(TicketStatus::class, "status_id");
+        return $this->belongsTo(TicketStatus::class, 'status_id');
     }
 
     /**
@@ -82,7 +82,7 @@ class Ticket extends Model
      */
     public function reporter(): BelongsTo
     {
-        return $this->belongsTo(User::class, "reporter_id");
+        return $this->belongsTo(User::class, 'reporter_id');
     }
 
     /**
@@ -90,7 +90,7 @@ class Ticket extends Model
      */
     public function technician(): BelongsTo
     {
-        return $this->belongsTo(User::class, "technician_id");
+        return $this->belongsTo(User::class, 'technician_id');
     }
 
     /**
@@ -98,7 +98,7 @@ class Ticket extends Model
      */
     public function department(): BelongsTo
     {
-        return $this->belongsTo(Department::class, "department_id");
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     /**
@@ -106,7 +106,7 @@ class Ticket extends Model
      */
     public function asset(): BelongsTo
     {
-        return $this->belongsTo(Asset::class, "asset_id");
+        return $this->belongsTo(Asset::class, 'asset_id');
     }
 
     /**

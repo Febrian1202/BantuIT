@@ -47,7 +47,7 @@ class TicketActionResolver
         );
         $isTechnicianBukanPemegang =
             in_array(TicketActor::AnyTechnician, $actors, true) &&
-            !$isTechnicianPemegang;
+            ! $isTechnicianPemegang;
         $isReporter = in_array(TicketActor::Reporter, $actors, true);
 
         /** @var list<TicketAction> $actions */
@@ -143,7 +143,7 @@ class TicketActionResolver
         };
 
         return array_values(
-            array_map(fn(TicketAction $action) => $action->value, $actions),
+            array_map(fn (TicketAction $action) => $action->value, $actions),
         );
     }
 
@@ -165,11 +165,11 @@ class TicketActionResolver
             $user->isAdmin() ||
             $user->hasRole(RoleName::Manager, RoleName::Technician)
         ) {
-            return ["title", "description", "category_id"];
+            return ['title', 'description', 'category_id'];
         }
 
         if ($ticket->reporter_id === $user->id) {
-            return ["title", "description"];
+            return ['title', 'description'];
         }
 
         return [];

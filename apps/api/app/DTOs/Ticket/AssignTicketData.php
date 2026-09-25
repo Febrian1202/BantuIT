@@ -13,10 +13,10 @@ class AssignTicketData
     public static function fromArray(array $data): self
     {
         return new self(
-            technicianId: (int) $data["technician_id"],
-            note: $data["note"] ?? null,
-            expectedStatusId: isset($data["expected_status_id"])
-                ? (int) $data["expected_status_id"]
+            technicianId: (int) $data['technician_id'],
+            note: $data['note'] ?? null,
+            expectedStatusId: isset($data['expected_status_id'])
+                ? (int) $data['expected_status_id']
                 : null,
         );
     }

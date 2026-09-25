@@ -32,13 +32,13 @@ class TicketStatusService
      * Relasi yang akan dimuat saat melakukan transisi status
      */
     private const RELOAD_RELATIONS = [
-        "status",
-        "priority",
-        "category",
-        "reporter",
-        "technician",
-        "department",
-        "asset",
+        'status',
+        'priority',
+        'category',
+        'reporter',
+        'technician',
+        'department',
+        'asset',
     ];
 
     public function __construct(
@@ -76,7 +76,7 @@ class TicketStatusService
                 $ticket->status_id !== $data->expectedStatusId
             ) {
                 throw new StateConflictException(
-                    "Ticket status has changed since it was loaded. Please refresh and try again.",
+                    'Ticket status has changed since it was loaded. Please refresh and try again.',
                 );
             }
 
@@ -84,8 +84,7 @@ class TicketStatusService
             $isSelfAssign = false;
 
             foreach (
-                app(TicketActorResolver::class)->resolve($ticket, $actor)
-                as $role
+                app(TicketActorResolver::class)->resolve($ticket, $actor) as $role
             ) {
                 if (TicketTransitionMatrix::allows($from, $to, $role)) {
                     $legal = true;
@@ -94,7 +93,7 @@ class TicketStatusService
                 }
             }
 
-            if (!$legal) {
+            if (! $legal) {
                 throw new IllegalStatusTransitionException(
                     "Status tidak dapat diubah dari {$from->label()} ke {$to->label()}.",
                 );
@@ -136,7 +135,7 @@ class TicketStatusService
 
             $from = TicketStatusName::fromId($ticket->status_id);
             if (
-                !in_array(
+                ! in_array(
                     $from,
                     [
                         TicketStatusName::Open,
@@ -156,7 +155,7 @@ class TicketStatusService
                 $ticket->status_id !== $data->expectedStatusId
             ) {
                 throw new StateConflictException(
-                    "Ticket status has changed since it was loaded. Please refresh and try again.",
+                    'Ticket status has changed since it was loaded. Please refresh and try again.',
                 );
             }
 
@@ -168,7 +167,7 @@ class TicketStatusService
                 $this->writeHistory(
                     $ticket,
                     $actor,
-                    "status_id",
+                    'status_id',
                     $from->label(),
                     TicketStatusName::Assigned->label(),
                 );
@@ -178,7 +177,7 @@ class TicketStatusService
             $this->writeHistory(
                 $ticket,
                 $actor,
-                "technician_id",
+                'technician_id',
                 $oldTechnician?->full_name,
                 $technician->full_name,
             );
@@ -195,12 +194,12 @@ class TicketStatusService
                     $ticket->id,
                     "Ticket #{$ticket->ticket_number} ditugaskan ulang dari {$oldTechnician->full_name} ke {$technician->full_name}.",
                     [
-                        "status_id" => $from->value,
-                        "technician_id" => $oldTechnician->id,
+                        'status_id' => $from->value,
+                        'technician_id' => $oldTechnician->id,
                     ],
                     [
-                        "status_id" => TicketStatusName::Assigned->value,
-                        "technician_id" => $technician->id,
+                        'status_id' => TicketStatusName::Assigned->value,
+                        'technician_id' => $technician->id,
                     ],
                 );
 
@@ -218,10 +217,10 @@ class TicketStatusService
                     AuditModule::Ticket,
                     $ticket->id,
                     "Ticket #{$ticket->ticket_number} ditugaskan kepada {$technician->full_name}.",
-                    ["technician_id" => null],
+                    ['technician_id' => null],
                     [
-                        "status_id" => TicketStatusName::Assigned->value,
-                        "technician_id" => $technician->id,
+                        'status_id' => TicketStatusName::Assigned->value,
+                        'technician_id' => $technician->id,
                     ],
                 );
 
@@ -258,14 +257,14 @@ class TicketStatusService
             $this->writeHistory(
                 $ticket,
                 $actor,
-                "status_id",
+                'status_id',
                 TicketStatusName::Assigned->label(),
                 TicketStatusName::Open->label(),
             );
             $this->writeHistory(
                 $ticket,
                 $actor,
-                "technician_id",
+                'technician_id',
                 $technician?->full_name,
                 null,
             );
@@ -281,12 +280,12 @@ class TicketStatusService
                 $ticket->id,
                 "Ticket #{$ticket->ticket_number} dilepas dari teknisi {$technician?->full_name}.",
                 [
-                    "status_id" => TicketStatusName::Assigned->value,
-                    "technician_id" => $technician?->id,
+                    'status_id' => TicketStatusName::Assigned->value,
+                    'technician_id' => $technician?->id,
                 ],
                 [
-                    "status_id" => TicketStatusName::Open->value,
-                    "technician_id" => null,
+                    'status_id' => TicketStatusName::Open->value,
+                    'technician_id' => null,
                 ],
             );
 
@@ -319,7 +318,7 @@ class TicketStatusService
 
             if ($ticket->status?->is_closed) {
                 throw new IllegalStatusTransitionException(
-                    "Prioritas tidak dapat diubah pada ticket yang sudah ditutup/diresolusi.",
+                    'Prioritas tidak dapat diubah pada ticket yang sudah ditutup/diresolusi.',
                 );
             }
 
@@ -329,7 +328,7 @@ class TicketStatusService
             $this->writeHistory(
                 $ticket,
                 $actor,
-                "priority_id",
+                'priority_id',
                 $oldPriority?->name,
                 $priority->name,
             );
@@ -344,10 +343,10 @@ class TicketStatusService
                 AuditModule::Ticket,
                 $ticket->id,
                 "Prioritas ticket #{$ticket->ticket_number} diubah dari {$oldPriority?->name} ke {$priority->name}.",
-                ["priority_id" => $oldPriority?->id],
+                ['priority_id' => $oldPriority?->id],
                 [
-                    "priority_id" => $priority->id,
-                    "sla_deadline" => $ticket->sla_deadline?->toIso8601String(),
+                    'priority_id' => $priority->id,
+                    'sla_deadline' => $ticket->sla_deadline?->toIso8601String(),
                 ],
             );
 
@@ -371,7 +370,7 @@ class TicketStatusService
             $to === TicketStatusName::Closed &&
             $from !== TicketStatusName::Resolved
         ) {
-            if ($data->note === null || trim($data->note) === "") {
+            if ($data->note === null || trim($data->note) === '') {
                 throw new IllegalStatusTransitionException(
                     "Status tidak dapat diubah dari {$from->label()} ke CLOSED tanpa alasan. Sertakan note untuk membatalkan ticket.",
                 );
@@ -381,13 +380,13 @@ class TicketStatusService
         // target IN_PROGRESS: handle self-assign, reopen, and start.
         if ($to === TicketStatusName::InProgress) {
             if ($from === TicketStatusName::Open) {
-                if (!$isSelfAssign) {
+                if (! $isSelfAssign) {
                     $this->failTechnicianRequired($from->label(), $to->label());
                 }
                 $this->writeHistory(
                     $ticket,
                     $actor,
-                    "technician_id",
+                    'technician_id',
                     null,
                     $actor->full_name,
                 );
@@ -396,7 +395,7 @@ class TicketStatusService
                 $this->writeHistory(
                     $ticket,
                     $actor,
-                    "resolved_at",
+                    'resolved_at',
                     $ticket->resolved_at?->toIso8601String(),
                     null,
                 );
@@ -414,7 +413,7 @@ class TicketStatusService
             $this->writeHistory(
                 $ticket,
                 $actor,
-                "resolved_at",
+                'resolved_at',
                 null,
                 now()->toIso8601String(),
             );
@@ -426,7 +425,7 @@ class TicketStatusService
             $this->writeHistory(
                 $ticket,
                 $actor,
-                "closed_at",
+                'closed_at',
                 null,
                 now()->toIso8601String(),
             );
@@ -435,11 +434,11 @@ class TicketStatusService
 
         // target OPEN: ASSIGNED → OPEN (unassign) menghapus technician yang terassign.
         if ($to === TicketStatusName::Open) {
-            $ticket->load("technician");
+            $ticket->load('technician');
             $this->writeHistory(
                 $ticket,
                 $actor,
-                "technician_id",
+                'technician_id',
                 $ticket->technician?->full_name,
                 null,
             );
@@ -450,7 +449,7 @@ class TicketStatusService
         $this->writeHistory(
             $ticket,
             $actor,
-            "status_id",
+            'status_id',
             $from->label(),
             $to->label(),
         );
@@ -465,8 +464,8 @@ class TicketStatusService
             AuditModule::Ticket,
             $ticket->id,
             $this->auditDescription($from, $to, $ticket->ticket_number),
-            ["status_id" => $from->label()],
-            ["status_id" => $to->label()],
+            ['status_id' => $from->label()],
+            ['status_id' => $to->label()],
         );
 
         $this->notifyTransition($ticket, $from, $to, $actor);
@@ -493,14 +492,11 @@ class TicketStatusService
     ): AuditAction {
         return match (true) {
             $from === TicketStatusName::Assigned &&
-                $to === TicketStatusName::Open
-                => AuditAction::Unassign,
+                $to === TicketStatusName::Open => AuditAction::Unassign,
             $from === TicketStatusName::Open &&
-                $to === TicketStatusName::InProgress
-                => AuditAction::SelfAssign,
+                $to === TicketStatusName::InProgress => AuditAction::SelfAssign,
             $from === TicketStatusName::Resolved &&
-                $to === TicketStatusName::InProgress
-                => AuditAction::Reopen,
+                $to === TicketStatusName::InProgress => AuditAction::Reopen,
             $to === TicketStatusName::InProgress => AuditAction::StatusChange,
             $to === TicketStatusName::Resolved => AuditAction::Resolve,
             $from === TicketStatusName::Resolved => AuditAction::Close,
@@ -518,22 +514,15 @@ class TicketStatusService
     ): string {
         return match (true) {
             $from === TicketStatusName::Assigned &&
-                $to === TicketStatusName::Open
-                => "Ticket #{$ticketNumber} dilepas dari teknisi (ASSIGNED → OPEN).",
+                $to === TicketStatusName::Open => "Ticket #{$ticketNumber} dilepas dari teknisi (ASSIGNED → OPEN).",
             $from === TicketStatusName::Open &&
-                $to === TicketStatusName::InProgress
-                => "Technician mengambil alih ticket #{$ticketNumber} dari OPEN ke IN_PROGRESS.",
+                $to === TicketStatusName::InProgress => "Technician mengambil alih ticket #{$ticketNumber} dari OPEN ke IN_PROGRESS.",
             $from === TicketStatusName::Resolved &&
-                $to === TicketStatusName::InProgress
-                => "Ticket #{$ticketNumber} dibuka kembali (RESOLVED → IN_PROGRESS).",
-            $to === TicketStatusName::InProgress
-                => "Status ticket #{$ticketNumber} diubah dari {$from->label()} ke IN_PROGRESS.",
-            $to === TicketStatusName::Resolved
-                => "Ticket #{$ticketNumber} diselesaikan (IN_PROGRESS → RESOLVED).",
-            $from === TicketStatusName::Resolved
-                => "Ticket #{$ticketNumber} ditutup (RESOLVED → CLOSED).",
-            default
-                => "Ticket #{$ticketNumber} dibatalkan ({$from->label()} → CLOSED).",
+                $to === TicketStatusName::InProgress => "Ticket #{$ticketNumber} dibuka kembali (RESOLVED → IN_PROGRESS).",
+            $to === TicketStatusName::InProgress => "Status ticket #{$ticketNumber} diubah dari {$from->label()} ke IN_PROGRESS.",
+            $to === TicketStatusName::Resolved => "Ticket #{$ticketNumber} diselesaikan (IN_PROGRESS → RESOLVED).",
+            $from === TicketStatusName::Resolved => "Ticket #{$ticketNumber} ditutup (RESOLVED → CLOSED).",
+            default => "Ticket #{$ticketNumber} dibatalkan ({$from->label()} → CLOSED).",
         };
     }
 
@@ -548,26 +537,23 @@ class TicketStatusService
     ): void {
         match (true) {
             $from === TicketStatusName::Assigned &&
-                $to === TicketStatusName::Open
-                => $this->notifyRecipients(
-                collect([$ticket->technician]),
-                NotificationType::TicketUnassigned,
-                $ticket,
-                $actor,
-                "Anda dilepas dari ticket #{$ticket->ticket_number}.",
-            ),
+                $to === TicketStatusName::Open => $this->notifyRecipients(
+                    collect([$ticket->technician]),
+                    NotificationType::TicketUnassigned,
+                    $ticket,
+                    $actor,
+                    "Anda dilepas dari ticket #{$ticket->ticket_number}.",
+                ),
             $from === TicketStatusName::Resolved &&
-                $to === TicketStatusName::InProgress
-                => $this->notifyReopen($ticket, $actor),
+                $to === TicketStatusName::InProgress => $this->notifyReopen($ticket, $actor),
             $from === TicketStatusName::Open &&
-                $to === TicketStatusName::InProgress
-                => $this->notifyRecipients(
-                collect([$ticket->reporter]),
-                NotificationType::TicketSelfAssigned,
-                $ticket,
-                $actor,
-                "Ticket #{$ticket->ticket_number} telah diambil oleh {$actor->full_name}.",
-            ),
+                $to === TicketStatusName::InProgress => $this->notifyRecipients(
+                    collect([$ticket->reporter]),
+                    NotificationType::TicketSelfAssigned,
+                    $ticket,
+                    $actor,
+                    "Ticket #{$ticket->ticket_number} telah diambil oleh {$actor->full_name}.",
+                ),
             $to === TicketStatusName::Resolved => $this->notifyRecipients(
                 collect([$ticket->reporter]),
                 NotificationType::TicketResolved,
@@ -605,10 +591,10 @@ class TicketStatusService
     private function notifyReopen(Ticket $ticket, User $actor): void
     {
         $managers = User::query()
-            ->where("status", "active")
+            ->where('status', 'active')
             ->whereHas(
-                "role",
-                fn($q) => $q->where("name", RoleName::Manager->value),
+                'role',
+                fn ($q) => $q->where('name', RoleName::Manager->value),
             )
             ->get();
 
@@ -634,15 +620,15 @@ class TicketStatusService
         string $message,
     ): void {
         $this->notificationService->notifyMany(
-            $recipients->filter(fn($user) => $user !== null),
+            $recipients->filter(fn ($user) => $user !== null),
             $type,
             [
-                "ticket_id" => $ticket->id,
-                "ticket_number" => $ticket->ticket_number,
-                "title" => $ticket->title,
-                "actor_name" => $actor->full_name,
-                "message" => $message,
-                "url" => "/tickets/{$ticket->id}",
+                'ticket_id' => $ticket->id,
+                'ticket_number' => $ticket->ticket_number,
+                'title' => $ticket->title,
+                'actor_name' => $actor->full_name,
+                'message' => $message,
+                'url' => "/tickets/{$ticket->id}",
             ],
             $actor,
         );
@@ -659,11 +645,11 @@ class TicketStatusService
         ?string $new,
     ): void {
         TicketHistory::create([
-            "ticket_id" => $ticket->id,
-            "user_id" => $actor->id,
-            "field_changed" => $field,
-            "old_value" => $old,
-            "new_value" => $new,
+            'ticket_id' => $ticket->id,
+            'user_id' => $actor->id,
+            'field_changed' => $field,
+            'old_value' => $old,
+            'new_value' => $new,
         ]);
     }
 
@@ -672,14 +658,14 @@ class TicketStatusService
      */
     private function storeNote(Ticket $ticket, User $actor, ?string $note): void
     {
-        if ($note === null || trim($note) === "") {
+        if ($note === null || trim($note) === '') {
             return;
         }
 
         TicketComment::create([
-            "ticket_id" => $ticket->id,
-            "user_id" => $actor->id,
-            "body" => $note,
+            'ticket_id' => $ticket->id,
+            'user_id' => $actor->id,
+            'body' => $note,
         ]);
     }
 }

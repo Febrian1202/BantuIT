@@ -17,9 +17,6 @@ use App\Models\User;
  */
 class TicketActorResolver
 {
-    /**
-     *
-     */
     public function resolve(Ticket $ticket, User $user): array
     {
         $roles = [];
@@ -45,8 +42,8 @@ class TicketActorResolver
 
         if (
             $ticket->reporter_id === $user->id &&
-            !$user->isAdmin() &&
-            !$user->hasRole(RoleName::Manager, RoleName::Technician)
+            ! $user->isAdmin() &&
+            ! $user->hasRole(RoleName::Manager, RoleName::Technician)
         ) {
             $roles[] = TicketActor::Reporter;
         }

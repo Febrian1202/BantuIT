@@ -21,28 +21,28 @@ class AssetAssignedToReporter implements ValidationRule
         mixed $value,
         Closure $fail,
     ): void {
-        if (!$value) {
+        if (! $value) {
             return;
         }
 
         $activeAssignment = AssetAssignment::query()
-            ->where("asset_id", $value)
-            ->where("user_id", $this->user?->id)
-            ->whereNull("released_at")
+            ->where('asset_id', $value)
+            ->where('user_id', $this->user?->id)
+            ->whereNull('released_at')
             ->exists();
 
         $asset = Asset::whereKey($value)->first();
 
         if (
-            !$activeAssignment ||
-            !$asset ||
+            ! $activeAssignment ||
+            ! $asset ||
             in_array(
                 $asset->status,
                 [AssetStatus::Retired, AssetStatus::Lost],
                 true,
             )
         ) {
-            $fail("Asset yang dipilih tidak sedang ter-assign kepada Anda.");
+            $fail('Asset yang dipilih tidak sedang ter-assign kepada Anda.');
         }
     }
 }

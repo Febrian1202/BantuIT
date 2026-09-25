@@ -69,7 +69,7 @@ class SlaService
             return true;
         }
 
-        if (!$ticket->sla_deadline) {
+        if (! $ticket->sla_deadline) {
             return false;
         }
 
@@ -91,7 +91,7 @@ class SlaService
             return null;
         }
 
-        if (!$ticket->sla_deadline) {
+        if (! $ticket->sla_deadline) {
             return null;
         }
 
@@ -104,11 +104,11 @@ class SlaService
     public function breachCandidates(): Builder
     {
         return Ticket::query()
-            ->where("sla_breached", false)
-            ->whereNotNull("sla_deadline")
-            ->where("sla_deadline", "<", now())
-            ->whereHas("status", function (Builder $q) {
-                $q->where("is_closed", false);
+            ->where('sla_breached', false)
+            ->whereNotNull('sla_deadline')
+            ->where('sla_deadline', '<', now())
+            ->whereHas('status', function (Builder $q) {
+                $q->where('is_closed', false);
             });
     }
 
@@ -120,12 +120,12 @@ class SlaService
     public function scopeBreached(Builder $query): Builder
     {
         return $query->where(function (Builder $q) {
-            $q->where("sla_breached", true)->orWhere(function (Builder $sub) {
-                $sub->whereHas("status", function (Builder $statusQ) {
-                    return $statusQ->where("is_closed", false);
+            $q->where('sla_breached', true)->orWhere(function (Builder $sub) {
+                $sub->whereHas('status', function (Builder $statusQ) {
+                    return $statusQ->where('is_closed', false);
                 })
-                    ->whereNotNull("sla_deadline")
-                    ->where("sla_deadline", "<", now());
+                    ->whereNotNull('sla_deadline')
+                    ->where('sla_deadline', '<', now());
             });
         });
     }
@@ -136,12 +136,12 @@ class SlaService
     public function scopeOnTrack(Builder $query): Builder
     {
         return $query->where(function (Builder $q) {
-            $q->where("sla_breached", false)->where(function (Builder $sub) {
-                $sub->whereHas("status", function (Builder $statusQ) {
-                    return $statusQ->where("is_closed", true);
+            $q->where('sla_breached', false)->where(function (Builder $sub) {
+                $sub->whereHas('status', function (Builder $statusQ) {
+                    return $statusQ->where('is_closed', true);
                 })
-                    ->orWhere("sla_deadline", ">=", now())
-                    ->orWhereNull("sla_deadline");
+                    ->orWhere('sla_deadline', '>=', now())
+                    ->orWhereNull('sla_deadline');
             });
         });
     }

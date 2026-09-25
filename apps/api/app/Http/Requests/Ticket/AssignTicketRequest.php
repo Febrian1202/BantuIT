@@ -10,7 +10,7 @@ class AssignTicketRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        Gate::authorize("assign", $this->route("ticket"));
+        Gate::authorize('assign', $this->route('ticket'));
 
         return true;
     }
@@ -18,18 +18,18 @@ class AssignTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "technician_id" => [
-                "required",
-                "integer",
-                Rule::exists("users", "id")->where(function ($q) {
-                    $q->where("role_id", 3)->where("status", "active");
+            'technician_id' => [
+                'required',
+                'integer',
+                Rule::exists('users', 'id')->where(function ($q) {
+                    $q->where('role_id', 3)->where('status', 'active');
                 }),
             ],
-            "note" => ["nullable", "string", "max:2000"],
-            "expected_status_id" => [
-                "nullable",
-                "integer",
-                "exists:ticket_statuses,id",
+            'note' => ['nullable', 'string', 'max:2000'],
+            'expected_status_id' => [
+                'nullable',
+                'integer',
+                'exists:ticket_statuses,id',
             ],
         ];
     }
@@ -37,15 +37,12 @@ class AssignTicketRequest extends FormRequest
     public function messages(): array
     {
         return [
-            "technician_id.required" => "Teknisi wajib dipilih.",
-            "technician_id.exists" =>
-                "Teknisi yang dipilih tidak valid atau tidak aktif.",
-            "note.string" => "Catatan harus berupa teks.",
-            "note.max" => "Catatan tidak boleh lebih dari 2000 karakter.",
-            "expected_status_id.integer" =>
-                "Expected status harus berupa angka.",
-            "expected_status_id.exists" =>
-                "Expected status yang dipilih tidak valid.",
+            'technician_id.required' => 'Teknisi wajib dipilih.',
+            'technician_id.exists' => 'Teknisi yang dipilih tidak valid atau tidak aktif.',
+            'note.string' => 'Catatan harus berupa teks.',
+            'note.max' => 'Catatan tidak boleh lebih dari 2000 karakter.',
+            'expected_status_id.integer' => 'Expected status harus berupa angka.',
+            'expected_status_id.exists' => 'Expected status yang dipilih tidak valid.',
         ];
     }
 }

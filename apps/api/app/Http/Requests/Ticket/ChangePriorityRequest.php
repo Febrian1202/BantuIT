@@ -9,7 +9,7 @@ class ChangePriorityRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        Gate::authorize("changePriority", $this->route("ticket"));
+        Gate::authorize('changePriority', $this->route('ticket'));
 
         return true;
     }
@@ -17,10 +17,10 @@ class ChangePriorityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "priority_id" => [
-                "required",
-                "integer",
-                "exists:ticket_priorities,id",
+            'priority_id' => [
+                'required',
+                'integer',
+                'exists:ticket_priorities,id',
             ],
         ];
     }
@@ -28,9 +28,9 @@ class ChangePriorityRequest extends FormRequest
     public function messages(): array
     {
         return [
-            "priority_id.required" => "Prioritas wajib dipilih.",
-            "priority_id.integer" => "Prioritas harus berupa angka.",
-            "priority_id.exists" => "Prioritas yang dipilih tidak valid.",
+            'priority_id.required' => 'Prioritas wajib dipilih.',
+            'priority_id.integer' => 'Prioritas harus berupa angka.',
+            'priority_id.exists' => 'Prioritas yang dipilih tidak valid.',
         ];
     }
 }

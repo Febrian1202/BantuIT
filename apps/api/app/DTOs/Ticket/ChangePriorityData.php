@@ -8,6 +8,6 @@ class ChangePriorityData
 
     public static function fromArray(array $data): self
     {
-        return new self(priorityId: (int) $data["priority_id"]);
+        return new self(priorityId: (int) $data['priority_id']);
     }
 }

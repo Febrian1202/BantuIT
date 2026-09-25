@@ -6,7 +6,6 @@ use App\Enums\RoleName;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
-use Monolog\Handler\RotatingFileHandler;
 
 class TicketPolicy
 {

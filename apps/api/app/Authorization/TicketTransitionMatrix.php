@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Authorization;
 
 use App\Enums\TicketActor;
@@ -22,47 +23,47 @@ class TicketTransitionMatrix
      * @var array<string, array<string, array<TicketActor>>>
      */
     private const TRANSITIONS = [
-        "OPEN" => [
-            "ASSIGNED" => [TicketActor::Manager, TicketActor::Admin],
-            "IN_PROGRESS" => [
+        'OPEN' => [
+            'ASSIGNED' => [TicketActor::Manager, TicketActor::Admin],
+            'IN_PROGRESS' => [
                 TicketActor::AnyTechnician,
                 TicketActor::Manager,
                 TicketActor::Admin,
             ],
-            "CLOSED" => [TicketActor::Manager, TicketActor::Admin],
+            'CLOSED' => [TicketActor::Manager, TicketActor::Admin],
         ],
-        "ASSIGNED" => [
-            "OPEN" => [TicketActor::Manager, TicketActor::Admin],
-            "IN_PROGRESS" => [
+        'ASSIGNED' => [
+            'OPEN' => [TicketActor::Manager, TicketActor::Admin],
+            'IN_PROGRESS' => [
                 TicketActor::Technician,
                 TicketActor::Manager,
                 TicketActor::Admin,
             ],
-            "CLOSED" => [TicketActor::Manager, TicketActor::Admin],
+            'CLOSED' => [TicketActor::Manager, TicketActor::Admin],
         ],
-        "IN_PROGRESS" => [
-            "ASSIGNED" => [TicketActor::Manager, TicketActor::Admin],
-            "RESOLVED" => [
+        'IN_PROGRESS' => [
+            'ASSIGNED' => [TicketActor::Manager, TicketActor::Admin],
+            'RESOLVED' => [
                 TicketActor::Technician,
                 TicketActor::Manager,
                 TicketActor::Admin,
             ],
-            "CLOSED" => [TicketActor::Manager, TicketActor::Admin],
+            'CLOSED' => [TicketActor::Manager, TicketActor::Admin],
         ],
-        "RESOLVED" => [
-            "IN_PROGRESS" => [
+        'RESOLVED' => [
+            'IN_PROGRESS' => [
                 TicketActor::Reporter,
                 TicketActor::Technician,
                 TicketActor::Manager,
                 TicketActor::Admin,
             ],
-            "CLOSED" => [
+            'CLOSED' => [
                 TicketActor::Reporter,
                 TicketActor::Manager,
                 TicketActor::Admin,
             ],
         ],
-        "CLOSED" => [],
+        'CLOSED' => [],
     ];
 
     /**
@@ -84,6 +85,7 @@ class TicketTransitionMatrix
         if ($from === $to) {
             return false;
         }
+
         return in_array($actor, self::allowedRoles($from, $to), true);
     }
 }

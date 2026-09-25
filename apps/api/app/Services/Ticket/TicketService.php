@@ -40,91 +40,91 @@ class TicketService
         User $actor,
     ): LengthAwarePaginator {
         $query = Ticket::with([
-            "status",
-            "priority",
-            "category",
-            "reporter",
-            "technician",
+            'status',
+            'priority',
+            'category',
+            'reporter',
+            'technician',
         ]);
 
         $isPrevileged =
             $actor->isAdmin() ||
             $actor->hasRole(RoleName::Manager, RoleName::Technician);
 
-        if (!$isPrevileged) {
-            $query->where("reporter_id", $actor->id);
+        if (! $isPrevileged) {
+            $query->where('reporter_id', $actor->id);
         }
 
         $validated = $request->validated();
 
-        if (!empty($validated["search"])) {
+        if (! empty($validated['search'])) {
             $search = str_replace(
-                ["%", "_"],
-                ["\\%", "\\_"],
-                $validated["search"],
+                ['%', '_'],
+                ['\\%', '\\_'],
+                $validated['search'],
             );
             $query->where(function ($q) use ($search) {
-                $q->whereRaw("ticket_number LIKE ? ESCAPE ?", [
+                $q->whereRaw('ticket_number LIKE ? ESCAPE ?', [
                     "%{$search}%",
-                    "\\",
-                ])->orWhereRaw("title LIKE ? ESCAPE ?", ["%{$search}%", "\\"]);
+                    '\\',
+                ])->orWhereRaw('title LIKE ? ESCAPE ?', ["%{$search}%", '\\']);
             });
         }
 
-        foreach (["status_id", "priority_id", "category_id"] as $field) {
-            if (!empty($validated[$field])) {
-                $ids = array_map("intval", explode(",", $validated[$field]));
-                $ids = array_values(array_filter($ids, fn($v) => $v > 0));
+        foreach (['status_id', 'priority_id', 'category_id'] as $field) {
+            if (! empty($validated[$field])) {
+                $ids = array_map('intval', explode(',', $validated[$field]));
+                $ids = array_values(array_filter($ids, fn ($v) => $v > 0));
                 $query->whereIn($field, $ids);
             }
         }
 
-        if (!empty($validated["technician_id"])) {
-            if ($validated["technician_id"] == "unassigned") {
-                $query->whereNull("technician_id");
+        if (! empty($validated['technician_id'])) {
+            if ($validated['technician_id'] == 'unassigned') {
+                $query->whereNull('technician_id');
             } else {
-                $query->whereIn("technician_id", [
-                    (int) $validated["technician_id"],
+                $query->whereIn('technician_id', [
+                    (int) $validated['technician_id'],
                 ]);
             }
         }
 
-        if ($isPrevileged && !empty($validated["reporter_id"])) {
-            $query->where("reporter_id", (int) $validated["reporter_id"]);
+        if ($isPrevileged && ! empty($validated['reporter_id'])) {
+            $query->where('reporter_id', (int) $validated['reporter_id']);
         }
 
-        foreach (["department_id", "asset_id"] as $field) {
-            if (!empty($validated[$field])) {
+        foreach (['department_id', 'asset_id'] as $field) {
+            if (! empty($validated[$field])) {
                 $query->where($field, (int) $validated[$field]);
             }
         }
 
-        if (!empty($validated["sla_status"])) {
-            if ($validated["sla_status"] === "breached") {
+        if (! empty($validated['sla_status'])) {
+            if ($validated['sla_status'] === 'breached') {
                 $this->slaService->scopeBreached($query);
             } else {
                 $this->slaService->scopeOnTrack($query);
             }
         }
 
-        if (!empty($validated["created_from"])) {
+        if (! empty($validated['created_from'])) {
             $query->where(
-                "created_at",
-                ">=",
-                $validated["created_from"] . " 00:00:00",
+                'created_at',
+                '>=',
+                $validated['created_from'].' 00:00:00',
             );
         }
 
-        if (!empty($validated["created_to"])) {
+        if (! empty($validated['created_to'])) {
             $query->where(
-                "created_at",
-                "<=",
-                $validated["created_to"] . " 23:59:59",
+                'created_at',
+                '<=',
+                $validated['created_to'].' 23:59:59',
             );
         }
 
-        $sortBy = $validated["sort_by"] ?? "created_at";
-        $sortDir = $validated["sort_dir"] ?? "desc";
+        $sortBy = $validated['sort_by'] ?? 'created_at';
+        $sortDir = $validated['sort_dir'] ?? 'desc';
 
         return $query
             ->orderBy($sortBy, $sortDir)
@@ -141,21 +141,21 @@ class TicketService
             $status = TicketStatus::find(TicketStatusName::Open->id());
 
             $ticket = Ticket::create([
-                "ticket_number" => "TMP-" . Str::ulid(), // Placeholder
-                "title" => $data->title,
-                "description" => $data->description,
-                "category_id" => $data->categoryId,
-                "priority_id" => $data->priorityId,
-                "status_id" => $status->id,
-                "reporter_id" => $actor->id,
-                "department_id" => $actor->department_id,
-                "asset_id" => $data->assetid,
-                "sla_duration_minutes" => (int) $priority->sla_minutes,
+                'ticket_number' => 'TMP-'.Str::ulid(), // Placeholder
+                'title' => $data->title,
+                'description' => $data->description,
+                'category_id' => $data->categoryId,
+                'priority_id' => $data->priorityId,
+                'status_id' => $status->id,
+                'reporter_id' => $actor->id,
+                'department_id' => $actor->department_id,
+                'asset_id' => $data->assetid,
+                'sla_duration_minutes' => (int) $priority->sla_minutes,
             ]);
 
             $ticket
                 ->forceFill([
-                    "ticket_number" => sprintf("TCK-%04d", $ticket->id),
+                    'ticket_number' => sprintf('TCK-%04d', $ticket->id),
                 ])
                 ->save();
 
@@ -163,11 +163,11 @@ class TicketService
             $ticket->save();
 
             TicketHistory::create([
-                "ticket_id" => $ticket->id,
-                "user_id" => $actor->id,
-                "field_changed" => "status_id",
-                "old_value" => null,
-                "new_value" => TicketStatusName::Open->label(),
+                'ticket_id' => $ticket->id,
+                'user_id' => $actor->id,
+                'field_changed' => 'status_id',
+                'old_value' => null,
+                'new_value' => TicketStatusName::Open->label(),
             ]);
 
             $this->auditLogger->log(
@@ -179,13 +179,13 @@ class TicketService
             );
 
             return $ticket->load([
-                "status",
-                "priority",
-                "category",
-                "reporter",
-                "technician",
-                "department",
-                "asset",
+                'status',
+                'priority',
+                'category',
+                'reporter',
+                'technician',
+                'department',
+                'asset',
             ]);
         });
     }
@@ -197,15 +197,15 @@ class TicketService
     {
         return Ticket::query()
             ->with([
-                "status",
-                "priority",
-                "category",
-                "reporter.department",
-                "technician",
-                "department",
-                "asset" => fn($q) => $q->withTrashed(),
-                "comments",
-                "attachments",
+                'status',
+                'priority',
+                'category',
+                'reporter.department',
+                'technician',
+                'department',
+                'asset' => fn ($q) => $q->withTrashed(),
+                'comments',
+                'attachments',
             ])
             ->findOrFail($id);
     }
@@ -221,7 +221,7 @@ class TicketService
     ): Ticket {
         if ((bool) ($ticket->status?->is_final ?? false)) {
             throw new AccessDeniedHttpException(
-                "This ticket is closed and cannot be edited.",
+                'This ticket is closed and cannot be edited.',
             );
         }
 
@@ -233,11 +233,11 @@ class TicketService
             $old = $ticket->only($data->fields);
 
             foreach ($data->fields as $field) {
-                if ($field === "category_id") {
+                if ($field === 'category_id') {
                     $ticket->category_id = $data->categoryId;
-                } elseif ($field === "title") {
+                } elseif ($field === 'title') {
                     $ticket->title = $data->title;
-                } elseif ($field === "description") {
+                } elseif ($field === 'description') {
                     $ticket->description = $data->description;
                 }
             }
@@ -246,17 +246,17 @@ class TicketService
             foreach ($data->fields as $field) {
                 $newValue = $ticket->getAttribute($field);
                 if (
-                    (string) ($old[$field] ?? "") !== (string) ($newValue ?? "")
+                    (string) ($old[$field] ?? '') !== (string) ($newValue ?? '')
                 ) {
                     TicketHistory::create([
-                        "ticket_id" => $ticket->id,
-                        "user_id" => $actor->id,
-                        "field_changed" => $field,
-                        "old_value" => $this->displayValue(
+                        'ticket_id' => $ticket->id,
+                        'user_id' => $actor->id,
+                        'field_changed' => $field,
+                        'old_value' => $this->displayValue(
                             $field,
                             $old[$field] ?? null,
                         ),
-                        "new_value" => $this->displayValue(
+                        'new_value' => $this->displayValue(
                             $field,
                             $newValue ?? null,
                         ),
@@ -277,13 +277,13 @@ class TicketService
             return $ticket
                 ->fresh()
                 ->load([
-                    "status",
-                    "priority",
-                    "category",
-                    "reporter",
-                    "technician",
-                    "department",
-                    "asset",
+                    'status',
+                    'priority',
+                    'category',
+                    'reporter',
+                    'technician',
+                    'department',
+                    'asset',
                 ]);
         });
     }
@@ -312,7 +312,7 @@ class TicketService
     private function displayValue(string $field, mixed $value): ?string
     {
         return match ($field) {
-            "category_id" => TicketCategory::find($value)?->name,
+            'category_id' => TicketCategory::find($value)?->name,
             default => $value,
         };
     }

@@ -11,11 +11,11 @@ use Illuminate\Http\Request;
 class AuditLogger
 {
     public const REDACTED_KEYS = [
-        "password",
-        "remember_token",
-        "token",
-        "secret",
-        "api_token",
+        'password',
+        'remember_token',
+        'token',
+        'secret',
+        'api_token',
     ];
 
     public function __construct(protected ?Request $request = null) {}
@@ -35,25 +35,23 @@ class AuditLogger
             ($this->request ??
                 (app()->runningInConsole()
                     ? null
-                    : (app()->bound("request")
-                        ? app("request")
+                    : (app()->bound('request')
+                        ? app('request')
                         : null)));
+
         return AuditLog::create([
-            "user_id" => $actor?->id,
-            "action" => $action->value,
-            "module" => $module->value,
-            "module_id" => $moduleId,
-            "description" => $description,
-            "old_data" => $oldData !== null ? $this->redact($oldData) : null,
-            "new_data" => $newData !== null ? $this->redact($newData) : null,
-            "ip_address" => $req?->ip(),
-            "user_agent" => $req?->userAgent(),
+            'user_id' => $actor?->id,
+            'action' => $action->value,
+            'module' => $module->value,
+            'module_id' => $moduleId,
+            'description' => $description,
+            'old_data' => $oldData !== null ? $this->redact($oldData) : null,
+            'new_data' => $newData !== null ? $this->redact($newData) : null,
+            'ip_address' => $req?->ip(),
+            'user_agent' => $req?->userAgent(),
         ]);
     }
 
-    /**
-     *
-     */
     public function redact(array $data): array
     {
         $sanitized = $data;

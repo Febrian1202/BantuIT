@@ -8,6 +8,6 @@ class UpdateCommentData
 
     public static function fromArray(array $data): self
     {
-        return new self(body: $data["body"]);
+        return new self(body: $data['body']);
     }
 }

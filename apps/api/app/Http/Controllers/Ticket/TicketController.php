@@ -17,7 +17,6 @@ use App\Http\Requests\Ticket\StoreTicketRequest;
 use App\Http\Requests\Ticket\UpdateTicketRequest;
 use App\Http\Resources\Ticket\TicketListResource;
 use App\Http\Resources\Ticket\TicketResource;
-use App\Models\Role;
 use App\Models\Ticket;
 use App\Services\Ticket\TicketService;
 use App\Services\Ticket\TicketStatusService;
@@ -37,13 +36,13 @@ class TicketController extends Controller
      */
     public function index(IndexTicketRequest $request): JsonResponse
     {
-        $this->authorize("viewAny", Ticket::class);
+        $this->authorize('viewAny', Ticket::class);
 
         $paginator = $this->ticketService->paginate($request, $request->user());
 
         return ApiResponse::paginated(
             $paginator,
-            "Tickets retrieved successfully.",
+            'Tickets retrieved successfully.',
             TicketListResource::class,
         );
     }
@@ -53,7 +52,7 @@ class TicketController extends Controller
      */
     public function store(StoreTicketRequest $request): JsonResponse
     {
-        $this->authorize("create", Ticket::class);
+        $this->authorize('create', Ticket::class);
 
         $ticket = $this->ticketService->create(
             CreateTicketData::fromArray($request->validated()),
@@ -62,7 +61,7 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             new TicketResource($ticket),
-            "Ticket created successfully",
+            'Ticket created successfully',
             201,
         );
     }
@@ -72,12 +71,12 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket): JsonResponse
     {
-        $this->authorize("view", $ticket);
+        $this->authorize('view', $ticket);
         $ticket = $this->ticketService->find($ticket->id);
 
         return ApiResponse::success(
             new TicketResource($ticket),
-            "Ticket retrieved successfully.",
+            'Ticket retrieved successfully.',
             200,
         );
     }
@@ -89,13 +88,12 @@ class TicketController extends Controller
         UpdateTicketRequest $request,
         Ticket $ticket,
     ): JsonResponse {
-        $this->authorize("update", $ticket);
+        $this->authorize('update', $ticket);
 
         $whitelist = match (true) {
             $request->user()->isAdmin(),
-            $request->user()->hasRole(RoleName::Manager, RoleName::Technician)
-                => ["title", "description", "category_id"],
-            default => ["title", "description"],
+            $request->user()->hasRole(RoleName::Manager, RoleName::Technician) => ['title', 'description', 'category_id'],
+            default => ['title', 'description'],
         };
 
         $fields = array_values(
@@ -110,7 +108,7 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             new TicketResource($ticket),
-            "Ticket updated successfully,",
+            'Ticket updated successfully,',
         );
     }
 
@@ -119,10 +117,10 @@ class TicketController extends Controller
      */
     public function destroy(Request $request, Ticket $ticket): JsonResponse
     {
-        $this->authorize("delete", $ticket);
+        $this->authorize('delete', $ticket);
         $this->ticketService->delete($ticket, $request->user());
 
-        return ApiResponse::success(null, "Ticket deleted successfully.");
+        return ApiResponse::success(null, 'Ticket deleted successfully.');
     }
 
     /**
@@ -132,7 +130,7 @@ class TicketController extends Controller
         StatusTransitionRequest $request,
         Ticket $ticket,
     ): JsonResponse {
-        $this->authorize("changeStatus", $ticket);
+        $this->authorize('changeStatus', $ticket);
         $ticket = $this->statusService->transition(
             $ticket,
             StatusTransitionData::fromArray($request->validated()),
@@ -141,7 +139,7 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             new TicketResource($ticket),
-            "Status updated successfully.",
+            'Status updated successfully.',
         );
     }
 
@@ -152,7 +150,7 @@ class TicketController extends Controller
         AssignTicketRequest $request,
         Ticket $ticket,
     ): JsonResponse {
-        $this->authorize("assign", $ticket);
+        $this->authorize('assign', $ticket);
         $ticket = $this->statusService->assign(
             $ticket,
             AssignTicketData::fromArray($request->validated()),
@@ -161,7 +159,7 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             new TicketResource($ticket),
-            "Ticket assigned successfully.",
+            'Ticket assigned successfully.',
         );
     }
 
@@ -170,12 +168,12 @@ class TicketController extends Controller
      */
     public function unassign(Request $request, Ticket $ticket): JsonResponse
     {
-        $this->authorize("unassign", $ticket);
+        $this->authorize('unassign', $ticket);
         $ticket = $this->statusService->unassign($ticket, $request->user());
 
         return ApiResponse::success(
             new TicketResource($ticket),
-            "Ticket unassigned successfully.",
+            'Ticket unassigned successfully.',
         );
     }
 
@@ -186,7 +184,7 @@ class TicketController extends Controller
         ChangePriorityRequest $request,
         Ticket $ticket,
     ): JsonResponse {
-        $this->authorize("changePriority", $ticket);
+        $this->authorize('changePriority', $ticket);
         $ticket = $this->statusService->changePriority(
             $ticket,
             ChangePriorityData::fromArray($request->validated()),
@@ -195,7 +193,7 @@ class TicketController extends Controller
 
         return ApiResponse::success(
             new TicketResource($ticket),
-            "Priority updated successfully.",
+            'Priority updated successfully.',
         );
     }
 }
