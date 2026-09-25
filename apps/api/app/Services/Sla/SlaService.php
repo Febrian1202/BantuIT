@@ -6,63 +6,143 @@ use App\Models\Ticket;
 use App\Models\TicketPriority;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 
 class SlaService
 {
+    /**
+     * Menghitung deadline berdasarkan waktu pembuatan dan durasi dalam menit.
+     */
     public function calculateDeadline(
         CarbonInterface $createdAt,
         int $durationMinutes,
     ): CarbonInterface {
-        // TODO: Implement nanti
-        return $createdAt->addMinutes($durationMinutes);
+        return $createdAt->copy()->addMinutes($durationMinutes);
     }
 
-    public function snapshot(
-        Ticket $ticket,
-        TicketPriority $ticketPriority,
-    ): void {
-        // TODO: Implement nanti
+    /**
+     * Menyimpan snapshot SLA untuk tiket berdasarkan prioritas.
+     */
+    public function snapshot(Ticket $ticket, TicketPriority $priority): void
+    {
+        $createdAt = $ticket->created_at
+            ? Carbon::parse($ticket->created_at)
+            : now();
+        $ticket->sla_duration_minutes = (int) $priority->sla_minutes;
+        $ticket->sla_deadline = $this->calculateDeadline(
+            $createdAt,
+            (int) $priority->sla_minutes,
+        );
     }
 
+    /**
+     * Menghitung ulang SLA dari waktu pembuatan tiket.
+     */
     public function recalculateFromCreation(
         Ticket $ticket,
         TicketPriority $priority,
     ): void {
-        // TODO: Implement nanti
+        $createdAt = Carbon::parse($ticket->created_at);
+        $ticket->sla_duration_minutes = (int) $priority->sla_minutes;
+        $ticket->sla_deadline = $this->calculateDeadline(
+            $createdAt,
+            (int) $priority->sla_minutes,
+        );
     }
 
+    /**
+     * Menandai tiket sebagai terbreached (terlambat).
+     */
     public function markBreached(Ticket $ticket): void
     {
-        // TODO: Implement nanti
+        $ticket->sla_breached = true;
+        $ticket->sla_breached_at = now();
+        $ticket->save();
     }
 
+    /**
+     * Memeriksa apakah tiket terbreached (terlambat).
+     */
     public function isBreached(Ticket $ticket): bool
     {
-        // TODO: Implement nanti
-        return false;
+        if ($ticket->sla_breached) {
+            return true;
+        }
+
+        if (!$ticket->sla_deadline) {
+            return false;
+        }
+
+        $isClosed = (bool) ($ticket->status?->is_closed ?? false);
+
+        if ($isClosed) {
+            return false;
+        }
+
+        return now()->greaterThan(Carbon::parse($ticket->sla_deadline));
     }
 
+    /**
+     * Menghitung jumlah menit yang tersisa sebelum tiket terbreached (terlambat).
+     */
     public function remainingMinutes(Ticket $ticket): ?int
     {
-        // TODO: Implement nanti
-        return null;
+        if (($ticket->resolved_at !== null) | ($ticket->closed_at !== null)) {
+            return null;
+        }
+
+        if (!$ticket->sla_deadline) {
+            return null;
+        }
+
+        return (int) now()->diffInMinutes(Carbon::parse($ticket->sla_deadline));
     }
 
+    /**
+     * Mengambil tiket yang berpotensi terbreached (terlambat).
+     */
     public function breachCandidates(): Builder
     {
-        // TODO: Implement nanti
-        return Ticket::query();
+        return Ticket::query()
+            ->where("sla_breached", false)
+            ->whereNotNull("sla_deadline")
+            ->where("sla_deadline", "<", now())
+            ->whereHas("status", function (Builder $q) {
+                $q->where("is_closed", false);
+            });
     }
 
+    /**
+     * Mengambil tiket yang sudah terbreached
+     * baik yang sudah terbreached secara langsung,
+     * maupun yang masih terbuka dan deadline telah terlewat.
+     */
     public function scopeBreached(Builder $query): Builder
     {
-        // TODO: Implement nanti
-        return $query;
+        return $query->where(function (Builder $q) {
+            $q->where("sla_breached", true)->orWhere(function (Builder $sub) {
+                $sub->whereHas("status", function (Builder $statusQ) {
+                    return $statusQ->where("is_closed", false);
+                })
+                    ->whereNotNull("sla_deadline")
+                    ->where("sla_deadline", "<", now());
+            });
+        });
     }
 
+    /**
+     * Mengambil tiket yang masih dalam track (tidak terbreached dan deadline masih valid).
+     */
     public function scopeOnTrack(Builder $query): Builder
     {
-        // TODO: Implement nanti
-        return $query;
+        return $query->where(function (Builder $q) {
+            $q->where("sla_breached", false)->where(function (Builder $sub) {
+                $sub->whereHas("status", function (Builder $statusQ) {
+                    return $statusQ->where("is_closed", true);
+                })
+                    ->orWhere("sla_deadline", ">=", now())
+                    ->orWhereNull("sla_deadline");
+            });
+        });
     }
 }

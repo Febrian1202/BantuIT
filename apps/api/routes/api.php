@@ -12,26 +12,26 @@ Route::post("/login", [AuthController::class, "login"])
     ->middleware("throttle:login")
     ->name("auth.login");
 
-Route::post("/logout", [AuthController::class, "logout"])
-    ->middleware("auth:sanctum")
-    ->name("auth.logout");
+// Auth Routes sanctum
+Route::middleware("auth:sanctum")->group(function () {
+    Route::post("/logout", [AuthController::class, "logout"])->name(
+        "auth.logout",
+    );
+    Route::put("/me/password", [ProfileController::class, "updatePassword"])
+        ->middleware("auth:sanctum")
+        ->name("me.password.update");
 
-Route::get("/me", [ProfileController::class, "show"])
-    ->middleware(["auth:sanctum", "password.changed"])
-    ->name("me.show");
+    // Terauthentikasi dan flag must_change_password false
+    Route::middleware("password.changed")->group(function () {
+        // Profile endpoints
+        Route::get("/me", [ProfileController::class, "show"])->name("me.show");
+        Route::put("/me", [ProfileController::class, "update"])->name(
+            "me.update",
+        );
 
-Route::put("/me", [ProfileController::class, "update"])
-    ->middleware(["auth:sanctum", "password.changed"])
-    ->name("me.update");
-
-Route::put("/me/password", [ProfileController::class, "updatePassword"])
-    ->middleware("auth:sanctum")
-    ->name("me.password.update");
-
-Route::middleware(["auth:sanctum", "password.changed"])->group(function () {
-    // Ticket endpoint
-    Route::get("/tickets", [TicketController::class, "index"])
-        ->middleware("throttle:search")
-        ->name("tickets.index");
-    Route::apiResource("tickets", TicketController::class)->except(["index"]);
+        // Ticket module
+        Route::prefix("/tickets")
+            ->name("tickets.")
+            ->group(base_path("routes/Group/Ticket.php"));
+    });
 });
