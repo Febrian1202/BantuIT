@@ -7,6 +7,7 @@ use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\User;
 use App\Support\HandlesPagination;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -93,7 +94,7 @@ class AssetQueryService
     /**
      * Mengambil daftar aset yang dapat ditugaskan.
      */
-    public function assignable(User $user): LengthAwarePaginator
+    public function assignable(User $user): Collection
     {
         return Asset::whereIn(
             "id",
