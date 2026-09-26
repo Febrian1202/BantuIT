@@ -65,7 +65,7 @@ class SlaBreachDetector
                         }
 
                         if (
-                            $lockedTicket->status() &&
+                            $lockedTicket->status &&
                             $lockedTicket->status->is_closed
                         ) {
                             return;
@@ -78,11 +78,11 @@ class SlaBreachDetector
                         // Kumpulkan Penerima Notifikasi
                         $recipients = collect();
                         if (
-                            $lockedTicket->technician() &&
+                            $lockedTicket->technician &&
                             $lockedTicket->technician->status ===
                                 UserStatus::Active->value
                         ) {
-                            $recipients->push($lockedTicket->technician());
+                            $recipients->push($lockedTicket->technician);
                         }
                         $recipients = $recipients
                             ->merge($managers)
