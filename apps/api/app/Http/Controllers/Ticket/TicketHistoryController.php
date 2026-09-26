@@ -16,17 +16,17 @@ class TicketHistoryController extends Controller
      */
     public function index(Request $request, Ticket $ticket): JsonResponse
     {
-        $this->authorize("viewHistory", $ticket);
+        $this->authorize('viewHistory', $ticket);
 
         $histories = $ticket
             ->histories()
-            ->with("user:id,full_name")
-            ->orderBy("created_at", "asc")
+            ->with('user:id,full_name')
+            ->orderBy('created_at', 'asc')
             ->get();
 
         return ApiResponse::success(
             TicketHistoryResource::collection($histories),
-            "Histories retrieved successfully.",
+            'Histories retrieved successfully.',
         );
     }
 }

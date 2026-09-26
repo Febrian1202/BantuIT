@@ -20,39 +20,39 @@ class AssetQueryService
      */
     public function paginate(Request $request): LengthAwarePaginator
     {
-        $query = Asset::query()->with(["activeAssignment.user"]);
+        $query = Asset::query()->with(['activeAssignment.user']);
 
         if ($search = $request->search) {
-            $term = str_replace(["%", "_"], ["\\%", "\\_"], (string) $search);
+            $term = str_replace(['%', '_'], ['\\%', '\\_'], (string) $search);
             $query->where(function ($q) use ($term) {
-                $q->where("asset_tag", "LIKE", "%{$term}%")
-                    ->orWhere("serial_number", "LIKE", "%{$term}%")
-                    ->orWhere("name", "LIKE", "%{$term}%");
+                $q->where('asset_tag', 'LIKE', "%{$term}%")
+                    ->orWhere('serial_number', 'LIKE', "%{$term}%")
+                    ->orWhere('name', 'LIKE', "%{$term}%");
             });
         }
 
         if ($status = $request->status) {
-            $query->where("status", $status);
+            $query->where('status', $status);
         }
 
         if ($category = $request->category) {
-            $query->where("category", $category);
+            $query->where('category', $category);
         }
 
         if ($assignedUserId = $request->assignedUserId) {
-            $query->whereHas("activeAssignment", function ($q) use (
+            $query->whereHas('activeAssignment', function ($q) use (
                 $assignedUserId,
             ) {
-                $q->where("user_id", $assignedUserId);
+                $q->where('user_id', $assignedUserId);
             });
         }
 
         return $this->applySorting($query, $request, [
-            "asset_tag",
-            "name",
-            "status",
-            "purchase_date",
-            "created_at",
+            'asset_tag',
+            'name',
+            'status',
+            'purchase_date',
+            'created_at',
         ])->paginate($this->getPerPage($request));
     }
 
@@ -62,10 +62,10 @@ class AssetQueryService
     public function categories(): Asset
     {
         return Asset::query()
-            ->whereNotNull("category")
+            ->whereNotNull('category')
             ->distinct()
-            ->orderBy("category")
-            ->pluck("category");
+            ->orderBy('category')
+            ->pluck('category');
     }
 
     /**
@@ -73,7 +73,7 @@ class AssetQueryService
      */
     public function show(Asset $asset): Asset
     {
-        return $asset->load(["activeAssignment.user"]);
+        return $asset->load(['activeAssignment.user']);
     }
 
     /**
@@ -82,12 +82,12 @@ class AssetQueryService
     public function myAssets(User $user, Request $request): LengthAwarePaginator
     {
         return Asset::query()
-            ->with(["activeAssignment.user"])
+            ->with(['activeAssignment.user'])
             ->whereHas(
-                "activeAssignment",
-                fn($q) => $q->where("user_id", $user->id),
+                'activeAssignment',
+                fn ($q) => $q->where('user_id', $user->id),
             )
-            ->orderBy("created_at")
+            ->orderBy('created_at')
             ->paginate($this->getPerPage($request));
     }
 
@@ -97,12 +97,12 @@ class AssetQueryService
     public function assignable(User $user): Collection
     {
         return Asset::whereIn(
-            "id",
-            AssetAssignment::where("user_id", $user->id)
-                ->whereNull("released_at")
-                ->pluck("asset_id"),
+            'id',
+            AssetAssignment::where('user_id', $user->id)
+                ->whereNull('released_at')
+                ->pluck('asset_id'),
         )
-            ->whereIn("status", [AssetStatus::Available, AssetStatus::Assigned])
+            ->whereIn('status', [AssetStatus::Available, AssetStatus::Assigned])
             ->get();
     }
 }

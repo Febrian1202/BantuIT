@@ -24,15 +24,15 @@ class Asset extends Model
      * @var list<string>
      */
     protected $fillable = [
-        "asset_tag",
-        "name",
-        "category",
-        "brand",
-        "model",
-        "serial_number",
-        "purchase_date",
-        "status",
-        "notes",
+        'asset_tag',
+        'name',
+        'category',
+        'brand',
+        'model',
+        'serial_number',
+        'purchase_date',
+        'status',
+        'notes',
     ];
 
     /**
@@ -43,8 +43,8 @@ class Asset extends Model
     protected function casts(): array
     {
         return [
-            "purchase_date" => "date",
-            "status" => AssetStatus::class,
+            'purchase_date' => 'date',
+            'status' => AssetStatus::class,
         ];
     }
 
@@ -53,7 +53,7 @@ class Asset extends Model
      */
     public function activeAssignment(): HasOne
     {
-        return $this->hasOne(AssetAssignment::class)->whereNull("released_at");
+        return $this->hasOne(AssetAssignment::class)->whereNull('released_at');
     }
 
     /**
@@ -61,15 +61,15 @@ class Asset extends Model
      */
     public function currentHolder(): BelongsTo
     {
-        return $this->belongsTo(User::class, "id", "id")
+        return $this->belongsTo(User::class, 'id', 'id')
             ->join(
-                "asset_assignments",
-                "asset_assignments.user_id",
-                "=",
-                "users.id",
+                'asset_assignments',
+                'asset_assignments.user_id',
+                '=',
+                'users.id',
             )
-            ->where("asset_assignments.asset_id", $this->id)
-            ->whereNull("asset_assignments.released_at");
+            ->where('asset_assignments.asset_id', $this->id)
+            ->whereNull('asset_assignments.released_at');
     }
 
     /**

@@ -18,11 +18,11 @@ class NotificationService
         array $data,
     ): Notification {
         return Notification::create([
-            "user_id" => $recipient->id,
-            "type" => $type->value,
-            "data" => $data,
-            "is_read" => false,
-            "read_at" => null,
+            'user_id' => $recipient->id,
+            'type' => $type->value,
+            'data' => $data,
+            'is_read' => false,
+            'read_at' => null,
         ]);
     }
 
@@ -39,10 +39,10 @@ class NotificationService
 
         $uniqueRecipients = $recipients
             ->filter(
-                fn($u) => $u instanceof User &&
+                fn ($u) => $u instanceof User &&
                     ($actorId === null || $u->id !== $actorId),
             )
-            ->unique("id");
+            ->unique('id');
 
         foreach ($uniqueRecipients as $recipient) {
             $this->notify($recipient, $type, $data);

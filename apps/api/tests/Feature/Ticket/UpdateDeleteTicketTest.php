@@ -5,102 +5,102 @@ use App\Models\TicketCategory;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
-uses()->group("ticket");
+uses()->group('ticket');
 
 beforeEach(function () {
     $this->employee = User::factory()->employee()->create();
     Sanctum::actingAs($this->employee);
 });
 
-test("karyawan hanya bisa mengubah title dan description", function () {
+test('karyawan hanya bisa mengubah title dan description', function () {
     $ticket = Ticket::factory()
         ->open()
-        ->create(["reporter_id" => $this->employee->id]);
+        ->create(['reporter_id' => $this->employee->id]);
     $originalCategoryId = $ticket->category_id;
 
     $this->putJson("/api/tickets/{$ticket->id}", [
-        "title" => "Updated Title",
-        "description" => "Updated Description",
-        "category_id" => TicketCategory::where("name", "Laptop")->first()->id,
+        'title' => 'Updated Title',
+        'description' => 'Updated Description',
+        'category_id' => TicketCategory::where('name', 'Laptop')->first()->id,
     ])->assertStatus(200);
 
     $ticket->refresh();
-    expect($ticket->title)->toBe("Updated Title");
-    expect($ticket->description)->toBe("Updated Description");
+    expect($ticket->title)->toBe('Updated Title');
+    expect($ticket->description)->toBe('Updated Description');
     expect($ticket->category_id)->toBe($originalCategoryId);
 });
 
-test("teknisi bisa mengubah category_id", function () {
+test('teknisi bisa mengubah category_id', function () {
     $technician = User::factory()->technician()->create();
     $ticket = Ticket::factory()
         ->open()
         ->withTechnician()
-        ->create(["technician_id" => $technician->id]);
+        ->create(['technician_id' => $technician->id]);
     Sanctum::actingAs($technician);
 
-    $laptopCategory = TicketCategory::where("name", "Laptop")->first()->id;
+    $laptopCategory = TicketCategory::where('name', 'Laptop')->first()->id;
 
     $this->putJson("/api/tickets/{$ticket->id}", [
-        "category_id" => $laptopCategory,
+        'category_id' => $laptopCategory,
     ])->assertStatus(200);
 
     $ticket->refresh();
     expect($ticket->category_id)->toBe($laptopCategory);
 });
 
-test("tidak ada yang bisa mengubah CLOSED ticket", function () {
+test('tidak ada yang bisa mengubah CLOSED ticket', function () {
     $ticket = Ticket::factory()
         ->closed()
-        ->create(["reporter_id" => $this->employee->id]);
+        ->create(['reporter_id' => $this->employee->id]);
 
     $this->putJson("/api/tickets/{$ticket->id}", [
-        "title" => "Should not work",
+        'title' => 'Should not work',
     ])->assertStatus(403);
 });
 
-test("admin tidak bisa mengubah CLOSED ticket", function () {
+test('admin tidak bisa mengubah CLOSED ticket', function () {
     $admin = User::factory()->admin()->create();
     $ticket = Ticket::factory()
         ->closed()
-        ->create(["reporter_id" => $this->employee->id]);
+        ->create(['reporter_id' => $this->employee->id]);
     Sanctum::actingAs($admin);
 
     $this->putJson("/api/tickets/{$ticket->id}", [
-        "title" => "Admin try",
+        'title' => 'Admin try',
     ])->assertStatus(403);
 });
 
-test("karyawan bisa mengubah RESOLVED ticket", function () {
+test('karyawan bisa mengubah RESOLVED ticket', function () {
     $ticket = Ticket::factory()
         ->resolved()
-        ->create(["reporter_id" => $this->employee->id]);
+        ->create(['reporter_id' => $this->employee->id]);
 
     $this->putJson("/api/tickets/{$ticket->id}", [
-        "title" => "Fixed typo",
+        'title' => 'Fixed typo',
     ])->assertStatus(200);
-    expect($ticket->fresh()->title)->toBe("Fixed typo");
+    expect($ticket->fresh()->title)->toBe('Fixed typo');
 });
 
-test("body update menolak status_id dan technician_id", function () {
+test('body update menolak status_id dan technician_id', function () {
     $ticket = Ticket::factory()
         ->open()
-        ->create(["reporter_id" => $this->employee->id]);
+        ->create(['reporter_id' => $this->employee->id]);
 
     $this->putJson("/api/tickets/{$ticket->id}", [
-        "title" => "Test",
-        "status_id" => 3,
-        "technician_id" => 999,
+        'title' => 'Test',
+        'status_id' => 3,
+        'technician_id' => 999,
     ])
         ->assertStatus(422)
-        ->assertJsonPath("errors.status_id", [
-            "Status tiket tidak dapat diubah lewat update umum.",
+        ->assertJsonPath('errors.status_id', [
+            'Status tiket tidak dapat diubah lewat update umum.',
         ]);
 });
 
-test("soft-deletes ticket", function () {
+test('soft-deletes ticket', function () {
     $ticket = Ticket::factory()
         ->open()
-        ->create(["reporter_id" => $this->employee->id]);
+        ->create(['reporter_id' => $this->employee->id]);
     $ticketId = $ticket->id;
 
     $this->deleteJson("/api/tickets/{$ticket->id}")->assertStatus(403);
@@ -112,10 +112,10 @@ test("soft-deletes ticket", function () {
     expect(Ticket::withTrashed()->find($ticketId))->not->toBeNull();
 });
 
-test("user non-admin tidak bisa menghapus", function () {
+test('user non-admin tidak bisa menghapus', function () {
     $ticket = Ticket::factory()
         ->open()
-        ->create(["reporter_id" => $this->employee->id]);
+        ->create(['reporter_id' => $this->employee->id]);
 
     $this->deleteJson("/api/tickets/{$ticket->id}")->assertStatus(403);
 

@@ -32,13 +32,13 @@ class IndexAssetData
     public function toArray(): array
     {
         return [
-            "search" => $this->search,
-            "status" => $this->status,
-            "category" => $this->category,
-            "assignedUserId" => $this->assignedUserId,
-            "sortBy" => $this->sortBy,
-            "sortDir" => $this->sortDir,
-            "perPage" => $this->perPage,
+            'search' => $this->search,
+            'status' => $this->status,
+            'category' => $this->category,
+            'assignedUserId' => $this->assignedUserId,
+            'sortBy' => $this->sortBy,
+            'sortDir' => $this->sortDir,
+            'perPage' => $this->perPage,
         ];
     }
 }

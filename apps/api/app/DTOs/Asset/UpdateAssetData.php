@@ -20,15 +20,15 @@ class UpdateAssetData
     public static function fromArray(array $data, ?array $oldData = null): self
     {
         return new self(
-            assetTag: $data["assetTag"],
-            name: $data["name"],
-            category: $data["category"],
-            brand: $data["brand"],
-            model: $data["model"],
-            serialNumber: $data["serialNumber"],
-            purchaseDate: $data["purchaseDate"],
-            status: $data["status"],
-            notes: $data["notes"] ?? null,
+            assetTag: $data['assetTag'],
+            name: $data['name'],
+            category: $data['category'],
+            brand: $data['brand'],
+            model: $data['model'],
+            serialNumber: $data['serialNumber'],
+            purchaseDate: $data['purchaseDate'],
+            status: $data['status'],
+            notes: $data['notes'] ?? null,
             oldData: $oldData,
         );
     }
@@ -36,15 +36,15 @@ class UpdateAssetData
     public function toArray(): array
     {
         return [
-            "asset_tag" => $this->assetTag,
-            "name" => $this->name,
-            "category" => $this->category,
-            "brand" => $this->brand,
-            "model" => $this->model,
-            "serial_number" => $this->serialNumber,
-            "purchase_date" => $this->purchaseDate,
-            "status" => $this->status,
-            "notes" => $this->notes,
+            'asset_tag' => $this->assetTag,
+            'name' => $this->name,
+            'category' => $this->category,
+            'brand' => $this->brand,
+            'model' => $this->model,
+            'serial_number' => $this->serialNumber,
+            'purchase_date' => $this->purchaseDate,
+            'status' => $this->status,
+            'notes' => $this->notes,
         ];
     }
 

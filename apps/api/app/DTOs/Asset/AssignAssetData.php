@@ -12,8 +12,8 @@ class AssignAssetData
     public static function fromArray(array $data): self
     {
         return new self(
-            userId: (int) $data["user_id"],
-            notes: $data["notes"] ?? null,
+            userId: (int) $data['user_id'],
+            notes: $data['notes'] ?? null,
         );
     }
 }

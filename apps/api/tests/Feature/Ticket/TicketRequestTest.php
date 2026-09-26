@@ -7,7 +7,7 @@ use App\Models\TicketCategory;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
-uses()->group("ticket", "request");
+uses()->group('ticket', 'request');
 
 beforeEach(function () {
     $this->employee = User::factory()->employee()->create();
@@ -15,54 +15,54 @@ beforeEach(function () {
 });
 
 test(
-    "body harus mengirimkan title, description, category_id, priority_id",
+    'body harus mengirimkan title, description, category_id, priority_id',
     function () {
-        $this->postJson("/api/tickets", [])
+        $this->postJson('/api/tickets', [])
             ->assertStatus(422)
             ->assertJsonValidationErrors([
-                "title",
-                "description",
-                "category_id",
-                "priority_id",
+                'title',
+                'description',
+                'category_id',
+                'priority_id',
             ]);
     },
 );
 
-test("body menolak asset_id yang tidak ter-assign kepada pelapor", function () {
+test('body menolak asset_id yang tidak ter-assign kepada pelapor', function () {
     $otherUser = User::factory()->employee()->create();
-    $asset = Asset::factory()->create(["status" => AssetStatus::Assigned]);
+    $asset = Asset::factory()->create(['status' => AssetStatus::Assigned]);
     AssetAssignment::factory()->create([
-        "asset_id" => $asset->id,
-        "user_id" => $otherUser->id,
-        "released_at" => null,
+        'asset_id' => $asset->id,
+        'user_id' => $otherUser->id,
+        'released_at' => null,
     ]);
 
-    $this->postJson("/api/tickets", [
-        "title" => "Test Ticket",
-        "description" => "Test Description",
-        "category_id" => TicketCategory::where("name", "Laptop")->first()->id,
-        "priority_id" => 1,
-        "asset_id" => $asset->id,
+    $this->postJson('/api/tickets', [
+        'title' => 'Test Ticket',
+        'description' => 'Test Description',
+        'category_id' => TicketCategory::where('name', 'Laptop')->first()->id,
+        'priority_id' => 1,
+        'asset_id' => $asset->id,
     ])
         ->assertStatus(422)
-        ->assertJsonPath("errors.asset_id", [
-            "Asset yang dipilih tidak sedang ter-assign kepada Anda.",
+        ->assertJsonPath('errors.asset_id', [
+            'Asset yang dipilih tidak sedang ter-assign kepada Anda.',
         ]);
 });
 
-test("body menerima asset_id yang ter-assign kepada pelapor", function () {
-    $asset = Asset::factory()->create(["status" => AssetStatus::Assigned]);
+test('body menerima asset_id yang ter-assign kepada pelapor', function () {
+    $asset = Asset::factory()->create(['status' => AssetStatus::Assigned]);
     AssetAssignment::factory()->create([
-        "asset_id" => $asset->id,
-        "user_id" => $this->employee->id,
-        "released_at" => null,
+        'asset_id' => $asset->id,
+        'user_id' => $this->employee->id,
+        'released_at' => null,
     ]);
 
-    $this->postJson("/api/tickets", [
-        "title" => "Test Ticket",
-        "description" => "Test Description",
-        "category_id" => TicketCategory::where("name", "Laptop")->first()->id,
-        "priority_id" => 1,
-        "asset_id" => $asset->id,
+    $this->postJson('/api/tickets', [
+        'title' => 'Test Ticket',
+        'description' => 'Test Description',
+        'category_id' => TicketCategory::where('name', 'Laptop')->first()->id,
+        'priority_id' => 1,
+        'asset_id' => $asset->id,
     ])->assertStatus(201);
 });

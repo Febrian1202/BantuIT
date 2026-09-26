@@ -14,17 +14,17 @@ class AssignAssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "user_id" => ["required", "integer", "exists:users,id"],
-            "notes" => ["nullable", "string"],
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'notes' => ['nullable', 'string'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            "user_id.required" => "Pegawai penerima aset wajib dipilih.",
-            "user_id.integer" => "ID pegawai harus berupa angka.",
-            "user_id.exists" => "Pegawai yang dipilih tidak ditemukan.",
+            'user_id.required' => 'Pegawai penerima aset wajib dipilih.',
+            'user_id.integer' => 'ID pegawai harus berupa angka.',
+            'user_id.exists' => 'Pegawai yang dipilih tidak ditemukan.',
         ];
     }
 }

@@ -10,10 +10,10 @@ class AssignableAssetResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id" => $this->id,
-            "asset_tag" => $this->asset_tag,
-            "name" => $this->name,
-            "status" => $this->status->value,
+            'id' => $this->id,
+            'asset_tag' => $this->asset_tag,
+            'name' => $this->name,
+            'status' => $this->status->value,
         ];
     }
 }

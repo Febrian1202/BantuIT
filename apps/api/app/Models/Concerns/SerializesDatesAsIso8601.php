@@ -13,7 +13,7 @@ trait SerializesDatesAsIso8601
     protected function serializeDate(DateTimeInterface $date): string
     {
         return Carbon::instance($date)
-            ->setTimezone("UTC")
+            ->setTimezone('UTC')
             ->format("Y-m-d\TH:i:s\Z");
     }
 }

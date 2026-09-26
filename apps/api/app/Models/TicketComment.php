@@ -18,7 +18,7 @@ class TicketComment extends Model
     /**
      * Atribut yang dapat diisi (fillable) untuk model ini.
      */
-    protected $fillable = ["ticket_id", "user_id", "body"];
+    protected $fillable = ['ticket_id', 'user_id', 'body'];
 
     /**
      * Relasi ke model Ticket.

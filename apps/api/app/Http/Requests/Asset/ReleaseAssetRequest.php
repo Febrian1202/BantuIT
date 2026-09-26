@@ -14,7 +14,7 @@ class ReleaseAssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "notes" => ["nullable", "string"],
+            'notes' => ['nullable', 'string'],
         ];
     }
 }

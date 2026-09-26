@@ -39,13 +39,13 @@ class AssetController extends Controller
      */
     public function index(IndexAssetRequest $request): JsonResponse
     {
-        $this->authorize("viewAny", Asset::class);
+        $this->authorize('viewAny', Asset::class);
 
         $paginator = $this->queryService->paginate($request);
 
         return ApiResponse::success(
             $paginator,
-            "Assets retrieved successfully.",
+            'Assets retrieved successfully.',
             AssetListResource::class,
         );
     }
@@ -55,11 +55,11 @@ class AssetController extends Controller
      */
     public function categories(): JsonResponse
     {
-        $this->authorize("viewAny", Asset::class);
+        $this->authorize('viewAny', Asset::class);
 
         $categories = $this->queryService->categories();
 
-        return ApiResponse::success($categories, "Asset categories retrieved.");
+        return ApiResponse::success($categories, 'Asset categories retrieved.');
     }
 
     /**
@@ -67,13 +67,13 @@ class AssetController extends Controller
      */
     public function show(Asset $asset): JsonResponse
     {
-        $this->authorize("view", $asset);
+        $this->authorize('view', $asset);
 
         $data = $this->queryService->show($asset);
 
         return ApiResponse::success(
             new AssetResource($data),
-            "Asset details retrieved successfully.",
+            'Asset details retrieved successfully.',
         );
     }
 
@@ -82,7 +82,7 @@ class AssetController extends Controller
      */
     public function store(StoreAssetRequest $request): JsonResponse
     {
-        $this->authorize("create", Asset::class);
+        $this->authorize('create', Asset::class);
 
         $data = $this->assetService->create(
             CreateAssetData::fromArray($request->validated()),
@@ -91,7 +91,7 @@ class AssetController extends Controller
 
         return ApiResponse::success(
             new AssetListResource($data),
-            "Asset created successfully.",
+            'Asset created successfully.',
             201,
         );
     }
@@ -103,25 +103,25 @@ class AssetController extends Controller
         UpdateAssetRequest $request,
         Asset $asset,
     ): JsonResponse {
-        $this->authorize("update", $asset);
+        $this->authorize('update', $asset);
 
         $oldData = $asset->only([
-            "asset_tag",
-            "name",
-            "category",
-            "brand",
-            "model",
-            "serial_number",
-            "purchase_date",
-            "status",
-            "notes",
+            'asset_tag',
+            'name',
+            'category',
+            'brand',
+            'model',
+            'serial_number',
+            'purchase_date',
+            'status',
+            'notes',
         ]);
         $dto = UpdateAssetData::fromArray($request->validated(), $oldData);
         $updated = $this->assetService->update($asset, $dto, $request->user());
 
         return ApiResponse::success(
             new AssetListResource($updated),
-            "Asset updated successfully.",
+            'Asset updated successfully.',
         );
     }
 
@@ -130,11 +130,11 @@ class AssetController extends Controller
      */
     public function destroy(Request $request, Asset $asset): JsonResponse
     {
-        $this->authorize("delete", $asset);
+        $this->authorize('delete', $asset);
 
         $this->assetService->delete($asset, $request->user());
 
-        return ApiResponse::success(null, "Asset deleted successfully.");
+        return ApiResponse::success(null, 'Asset deleted successfully.');
     }
 
     /**
@@ -144,7 +144,7 @@ class AssetController extends Controller
         Asset $asset,
         AssignAssetRequest $request,
     ): JsonResponse {
-        $this->authorize("assign", $asset);
+        $this->authorize('assign', $asset);
 
         $dto = AssignAssetData::fromArray($request->validated());
         $assigned = $this->assignmentService->assign(
@@ -155,7 +155,7 @@ class AssetController extends Controller
 
         return ApiResponse::success(
             new AssetListResource($assigned),
-            "Asset assigned successfully.",
+            'Asset assigned successfully.',
         );
     }
 
@@ -166,7 +166,7 @@ class AssetController extends Controller
         ReleaseAssetRequest $request,
         Asset $asset,
     ): JsonResponse {
-        $this->authorize("release", $asset);
+        $this->authorize('release', $asset);
 
         $dto = ReleaseAssetData::fromArray($request->validated());
         $released = $this->assignmentService->release(
@@ -177,7 +177,7 @@ class AssetController extends Controller
 
         return ApiResponse::success(
             new AssetListResource($released),
-            "Asset released successfully.",
+            'Asset released successfully.',
         );
     }
 
@@ -186,26 +186,26 @@ class AssetController extends Controller
      */
     public function myAssets(Request $request): JsonResponse
     {
-        $this->authorize("viewOwn", Asset::class);
+        $this->authorize('viewOwn', Asset::class);
 
         $paginator = $this->queryService->myAssets($request->user(), $request);
 
         return ApiResponse::paginated(
             $paginator,
-            "My assets retrieved successfully.",
+            'My assets retrieved successfully.',
             AssetListResource::class,
         );
     }
 
     public function assignable(Request $request): JsonResponse
     {
-        $this->authorize("viewAssignable", Asset::class);
+        $this->authorize('viewAssignable', Asset::class);
 
         $assets = $this->queryService->assignable($request->user());
 
         return ApiResponse::success(
             AssignableAssetResource::collection($assets),
-            "Assignable assets retrieved.",
+            'Assignable assets retrieved.',
         );
     }
 }

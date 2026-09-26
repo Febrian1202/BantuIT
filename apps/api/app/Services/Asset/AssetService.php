@@ -29,7 +29,7 @@ class AssetService
             $this->recordHistory(
                 $asset,
                 AssetHistoryAction::Created,
-                "Aset dibuat.",
+                'Aset dibuat.',
             );
             $this->auditLogger->log(
                 $actor,
@@ -92,7 +92,7 @@ class AssetService
         DB::transaction(function () use ($asset, $actor): void {
             if ($asset->activeAssignment()->exists()) {
                 throw new StateConflictException(
-                    "Aset masih dimiliki pemegang aktif dan tidak dapat dihapus.",
+                    'Aset masih dimiliki pemegang aktif dan tidak dapat dihapus.',
                 );
             }
             $asset->delete();
@@ -115,10 +115,10 @@ class AssetService
         string $description,
     ): AssetHistory {
         return AssetHistory::create([
-            "asset_id" => $asset->id,
-            "action" => $action->value,
-            "description" => $description,
-            "action_at" => now(),
+            'asset_id' => $asset->id,
+            'action' => $action->value,
+            'description' => $description,
+            'action_at' => now(),
         ]);
     }
 }

@@ -8,6 +8,6 @@ class ReleaseAssetData
 
     public static function fromArray(array $data): self
     {
-        return new self(notes: $data["notes"] ?? null);
+        return new self(notes: $data['notes'] ?? null);
     }
 }

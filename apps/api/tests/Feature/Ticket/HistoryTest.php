@@ -5,70 +5,70 @@ use App\Models\TicketCategory;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
-uses()->group("ticket", "history");
+uses()->group('ticket', 'history');
 
 test(
-    "history menunjukkan nilai yang dapat dibaca manusia dan urutan kronologis",
+    'history menunjukkan nilai yang dapat dibaca manusia dan urutan kronologis',
     function () {
         $reporter = User::factory()->employee()->create();
         $manager = User::factory()->manager()->create();
         $technician = User::factory()->technician()->create();
 
         Sanctum::actingAs($reporter);
-        $ticketResponse = $this->postJson("/api/tickets", [
-            "title" => "Printer Rusak",
-            "description" => "Paper jam terus menerus",
-            "category_id" => TicketCategory::where("name", "Printer")->first()
+        $ticketResponse = $this->postJson('/api/tickets', [
+            'title' => 'Printer Rusak',
+            'description' => 'Paper jam terus menerus',
+            'category_id' => TicketCategory::where('name', 'Printer')->first()
                 ->id,
-            "priority_id" => 1,
+            'priority_id' => 1,
         ])
             ->assertStatus(201)
-            ->json("data");
+            ->json('data');
 
-        $ticketId = $ticketResponse["id"];
+        $ticketId = $ticketResponse['id'];
 
         Sanctum::actingAs($manager);
         $this->postJson("/api/tickets/{$ticketId}/assign", [
-            "technician_id" => $technician->id,
+            'technician_id' => $technician->id,
         ])->assertStatus(200);
 
         Sanctum::actingAs($technician);
         $this->postJson("/api/tickets/{$ticketId}/status", [
-            "status_id" => 3, // IN_PROGRESS
+            'status_id' => 3, // IN_PROGRESS
         ])->assertStatus(200);
 
         Sanctum::actingAs($reporter);
         $response = $this->getJson("/api/tickets/{$ticketId}/histories")
             ->assertStatus(200)
-            ->assertJsonPath("success", true)
-            ->assertJsonPath("message", "Histories retrieved successfully.");
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('message', 'Histories retrieved successfully.');
 
-        $data = $response->json("data");
+        $data = $response->json('data');
         expect($data)->toBeArray()->toHaveCount(4); // 1 create + 2 assign (status + tech) + 1 in_progress
 
         // Check first item: creation history
-        expect($data[0]["field_changed"])->toBe("status_id");
-        expect($data[0]["old_value"])->toBeNull();
-        expect($data[0]["new_value"])->toBe("OPEN");
-        expect($data[0]["user"]["id"])->toBe($reporter->id);
+        expect($data[0]['field_changed'])->toBe('status_id');
+        expect($data[0]['old_value'])->toBeNull();
+        expect($data[0]['new_value'])->toBe('OPEN');
+        expect($data[0]['user']['id'])->toBe($reporter->id);
 
         // Check last item: status change to IN_PROGRESS
         $last = end($data);
-        expect($last["field_changed"])->toBe("status_id");
-        expect($last["old_value"])->toBe("ASSIGNED");
-        expect($last["new_value"])->toBe("IN_PROGRESS");
-        expect($last["user"]["id"])->toBe($technician->id);
+        expect($last['field_changed'])->toBe('status_id');
+        expect($last['old_value'])->toBe('ASSIGNED');
+        expect($last['new_value'])->toBe('IN_PROGRESS');
+        expect($last['user']['id'])->toBe($technician->id);
     },
 );
 
 test(
-    "karyawan non-partisipan tidak dapat melihat riwayat tiket dan menerima 404",
+    'karyawan non-partisipan tidak dapat melihat riwayat tiket dan menerima 404',
     function () {
         $reporter = User::factory()->employee()->create();
         $other = User::factory()->employee()->create();
         $ticket = Ticket::factory()
             ->open()
-            ->create(["reporter_id" => $reporter->id]);
+            ->create(['reporter_id' => $reporter->id]);
 
         Sanctum::actingAs($other);
         $this->getJson("/api/tickets/{$ticket->id}/histories")->assertStatus(
@@ -77,13 +77,13 @@ test(
     },
 );
 
-test("manajer dan admin dapat melihat riwayat tiket", function () {
+test('manajer dan admin dapat melihat riwayat tiket', function () {
     $reporter = User::factory()->employee()->create();
     $manager = User::factory()->manager()->create();
     $admin = User::factory()->admin()->create();
     $ticket = Ticket::factory()
         ->open()
-        ->create(["reporter_id" => $reporter->id]);
+        ->create(['reporter_id' => $reporter->id]);
 
     Sanctum::actingAs($manager);
     $this->getJson("/api/tickets/{$ticket->id}/histories")->assertStatus(200);
