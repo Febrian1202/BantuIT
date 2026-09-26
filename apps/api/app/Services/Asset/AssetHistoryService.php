@@ -62,6 +62,7 @@ class AssetHistoryService
         return $assignments
             ->concat($histories)
             ->sortBy('occurred_at')
-            ->values();
+            ->values()
+            ->all();
     }
 }

@@ -7,9 +7,9 @@ use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\User;
 use App\Support\HandlesPagination;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class AssetQueryService
 {
@@ -39,7 +39,7 @@ class AssetQueryService
             $query->where('category', $category);
         }
 
-        if ($assignedUserId = $request->assignedUserId) {
+        if ($assignedUserId = $request->assigned_user_id) {
             $query->whereHas('activeAssignment', function ($q) use (
                 $assignedUserId,
             ) {
@@ -59,7 +59,7 @@ class AssetQueryService
     /**
      * Mengambil daftar kategori aset.
      */
-    public function categories(): Asset
+    public function categories(): Collection
     {
         return Asset::query()
             ->whereNotNull('category')

@@ -20,14 +20,11 @@ use App\Services\Asset\AssetAssignmentService;
 use App\Services\Asset\AssetQueryService;
 use App\Services\Asset\AssetService;
 use App\Support\ApiResponse;
-use App\Support\HandlesPagination;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AssetController extends Controller
 {
-    use HandlesPagination;
-
     public function __construct(
         private AssetQueryService $queryService,
         private AssetService $assetService,
@@ -43,7 +40,7 @@ class AssetController extends Controller
 
         $paginator = $this->queryService->paginate($request);
 
-        return ApiResponse::success(
+        return ApiResponse::paginated(
             $paginator,
             'Assets retrieved successfully.',
             AssetListResource::class,

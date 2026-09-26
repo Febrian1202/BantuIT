@@ -10,56 +10,56 @@ use Laravel\Sanctum\Sanctum;
 uses(RefreshDatabase::class);
 
 test(
-    "history asset menggabungkan assignment dan history berdasarkan occurred_at",
+    'history asset menggabungkan assignment dan history berdasarkan occurred_at',
     function () {
         $asset = Asset::factory()->create();
         $employee = User::factory()
             ->employee()
-            ->create(["full_name" => "Andi"]);
+            ->create(['full_name' => 'Andi']);
 
         AssetHistory::factory()->create([
-            "asset_id" => $asset->id,
-            "action" => "created",
-            "description" => "Aset dibuat.",
-            "action_at" => now()->subDays(5),
+            'asset_id' => $asset->id,
+            'action' => 'created',
+            'description' => 'Aset dibuat.',
+            'action_at' => now()->subDays(5),
         ]);
 
         AssetAssignment::factory()->create([
-            "asset_id" => $asset->id,
-            "user_id" => $employee->id,
-            "assigned_at" => now()->subDays(3),
-            "released_at" => now()->subDay(),
-            "notes" => "Catatan peminjaman",
+            'asset_id' => $asset->id,
+            'user_id' => $employee->id,
+            'assigned_at' => now()->subDays(3),
+            'released_at' => now()->subDay(),
+            'notes' => 'Catatan peminjaman',
         ]);
 
         AssetHistory::factory()->create([
-            "asset_id" => $asset->id,
-            "action" => "released",
-            "description" => "Aset dilepaskan.",
-            "action_at" => now()->subDay(),
+            'asset_id' => $asset->id,
+            'action' => 'released',
+            'description' => 'Aset dilepaskan.',
+            'action_at' => now()->subDay(),
         ]);
 
         Sanctum::actingAs(User::factory()->manager()->create());
 
         $response = $this->getJson("/api/assets/{$asset->id}/history")
             ->assertStatus(200)
-            ->assertJsonPath("success", true);
+            ->assertJsonPath('success', true);
 
-        $types = collect($response->json("data"))->pluck("type")->all();
-        expect($types)->toContain("assignment", "history");
+        $types = collect($response->json('data'))->pluck('type')->all();
+        expect($types)->toContain('assignment', 'history');
 
-        $assignmentItem = collect($response->json("data"))->firstWhere(
-            "type",
-            "assignment",
+        $assignmentItem = collect($response->json('data'))->firstWhere(
+            'type',
+            'assignment',
         );
         expect($assignmentItem)
-            ->toHaveKeys(["type", "action", "user", "notes", "occurred_at"])
-            ->and($assignmentItem["user"]["id"])
+            ->toHaveKeys(['type', 'action', 'user', 'notes', 'occurred_at'])
+            ->and($assignmentItem['user']['id'])
             ->toBe($employee->id);
     },
 );
 
-test("teknisi dapat melihat asset history", function () {
+test('teknisi dapat melihat asset history', function () {
     $asset = Asset::factory()->create();
     $technician = User::factory()->technician()->create();
 
@@ -67,7 +67,7 @@ test("teknisi dapat melihat asset history", function () {
     $this->getJson("/api/assets/{$asset->id}/history")->assertStatus(200);
 });
 
-test("pegawai tidak dapat melihat asset history", function () {
+test('pegawai tidak dapat melihat asset history', function () {
     $asset = Asset::factory()->create();
     $employee = User::factory()->employee()->create();
 

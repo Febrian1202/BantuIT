@@ -12,121 +12,121 @@ use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
-test("manager dapat membuat aset baru dan di return 201", function () {
+test('manager dapat membuat aset baru dan di return 201', function () {
     $manager = User::factory()->manager()->create();
     Sanctum::actingAs($manager);
 
     $payload = [
-        "asset_tag" => "AST-NEW-001",
-        "name" => "New Device",
-        "category" => "Laptop",
-        "brand" => "Lenovo",
-        "model" => "X1 Carbon",
-        "serial_number" => "SN-NEW-001",
-        "purchase_date" => "2025-03-15",
-        "status" => "available",
-        "notes" => "Catatan aset baru",
+        'asset_tag' => 'AST-NEW-001',
+        'name' => 'New Device',
+        'category' => 'Laptop',
+        'brand' => 'Lenovo',
+        'model' => 'X1 Carbon',
+        'serial_number' => 'SN-NEW-001',
+        'purchase_date' => '2025-03-15',
+        'status' => 'available',
+        'notes' => 'Catatan aset baru',
     ];
 
-    $response = $this->postJson("/api/assets", $payload)
+    $response = $this->postJson('/api/assets', $payload)
         ->assertStatus(201)
-        ->assertJsonPath("success", true)
-        ->assertJsonPath("data.asset_tag", "AST-NEW-001")
-        ->assertJsonPath("data.name", "New Device")
-        ->assertJsonPath("data.status", "available");
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('data.asset_tag', 'AST-NEW-001')
+        ->assertJsonPath('data.name', 'New Device')
+        ->assertJsonPath('data.status', 'available');
 
-    $assetId = $response->json("data.id");
+    $assetId = $response->json('data.id');
 
     expect(
-        AssetHistory::where("asset_id", $assetId)
-            ->where("action", AssetHistoryAction::Created->value)
+        AssetHistory::where('asset_id', $assetId)
+            ->where('action', AssetHistoryAction::Created->value)
             ->count(),
     )->toBe(1);
     expect(
-        AuditLog::where("module_id", $assetId)
-            ->where("module", "asset")
-            ->where("action", "create")
+        AuditLog::where('module_id', $assetId)
+            ->where('module', 'asset')
+            ->where('action', 'create')
             ->count(),
     )->toBe(1);
 });
 
-test("asset_tag dan serial_number tidak boleh duplikat (422)", function () {
+test('asset_tag dan serial_number tidak boleh duplikat (422)', function () {
     Asset::factory()->create([
-        "asset_tag" => "AST-DUP-001",
-        "serial_number" => "SN-DUP-001",
+        'asset_tag' => 'AST-DUP-001',
+        'serial_number' => 'SN-DUP-001',
     ]);
 
     $manager = User::factory()->manager()->create();
     Sanctum::actingAs($manager);
 
-    $this->postJson("/api/assets", [
-        "asset_tag" => "AST-DUP-001",
-        "name" => "Duplicate Tag Device",
-        "category" => "Laptop",
-        "brand" => "Lenovo",
-        "model" => "X1",
-        "serial_number" => "SN-UNIQUE-001",
-        "purchase_date" => "2025-03-15",
-        "status" => "available",
+    $this->postJson('/api/assets', [
+        'asset_tag' => 'AST-DUP-001',
+        'name' => 'Duplicate Tag Device',
+        'category' => 'Laptop',
+        'brand' => 'Lenovo',
+        'model' => 'X1',
+        'serial_number' => 'SN-UNIQUE-001',
+        'purchase_date' => '2025-03-15',
+        'status' => 'available',
     ])
         ->assertStatus(422)
-        ->assertJsonValidationErrors("asset_tag");
+        ->assertJsonValidationErrors('asset_tag');
 
-    $this->postJson("/api/assets", [
-        "asset_tag" => "AST-UNIQUE-001",
-        "name" => "Duplicate SN Device",
-        "category" => "Laptop",
-        "brand" => "Lenovo",
-        "model" => "X1",
-        "serial_number" => "SN-DUP-001",
-        "purchase_date" => "2025-03-15",
-        "status" => "available",
+    $this->postJson('/api/assets', [
+        'asset_tag' => 'AST-UNIQUE-001',
+        'name' => 'Duplicate SN Device',
+        'category' => 'Laptop',
+        'brand' => 'Lenovo',
+        'model' => 'X1',
+        'serial_number' => 'SN-DUP-001',
+        'purchase_date' => '2025-03-15',
+        'status' => 'available',
     ])
         ->assertStatus(422)
-        ->assertJsonValidationErrors("serial_number");
+        ->assertJsonValidationErrors('serial_number');
 });
 
-test("manager dapat mengupdate aset dan riwayat status", function () {
+test('manager dapat mengupdate aset dan riwayat status', function () {
     $asset = Asset::factory()
         ->available()
         ->create([
-            "name" => "Old Name",
+            'name' => 'Old Name',
         ]);
 
     $manager = User::factory()->manager()->create();
     Sanctum::actingAs($manager);
 
     $payload = [
-        "asset_tag" => $asset->asset_tag,
-        "name" => "Updated Name",
-        "category" => $asset->category,
-        "brand" => $asset->brand,
-        "model" => $asset->model,
-        "serial_number" => $asset->serial_number,
-        "purchase_date" => $asset->purchase_date->format("Y-m-d"),
-        "status" => "maintenance",
-        "notes" => "Under maintenance",
+        'asset_tag' => $asset->asset_tag,
+        'name' => 'Updated Name',
+        'category' => $asset->category,
+        'brand' => $asset->brand,
+        'model' => $asset->model,
+        'serial_number' => $asset->serial_number,
+        'purchase_date' => $asset->purchase_date->format('Y-m-d'),
+        'status' => 'maintenance',
+        'notes' => 'Under maintenance',
     ];
 
     $this->putJson("/api/assets/{$asset->id}", $payload)
         ->assertStatus(200)
-        ->assertJsonPath("data.name", "Updated Name")
-        ->assertJsonPath("data.status", "maintenance");
+        ->assertJsonPath('data.name', 'Updated Name')
+        ->assertJsonPath('data.status', 'maintenance');
 
     expect(
-        AssetHistory::where("asset_id", $asset->id)
-            ->where("action", AssetHistoryAction::StatusChanged->value)
+        AssetHistory::where('asset_id', $asset->id)
+            ->where('action', AssetHistoryAction::StatusChanged->value)
             ->count(),
     )->toBe(1);
     expect(
-        AuditLog::where("module_id", $asset->id)
-            ->where("module", "asset")
-            ->where("action", "update")
+        AuditLog::where('module_id', $asset->id)
+            ->where('module', 'asset')
+            ->where('action', 'update')
             ->count(),
     )->toBe(1);
 });
 
-test("teknisi tidak dapat menghapus aset", function () {
+test('teknisi tidak dapat menghapus aset', function () {
     $asset = Asset::factory()->create();
     $technician = User::factory()->technician()->create();
 
@@ -134,13 +134,13 @@ test("teknisi tidak dapat menghapus aset", function () {
     $this->deleteJson("/api/assets/{$asset->id}")->assertStatus(403);
 });
 
-test("teknisi tidak dapat menghapus aset dengan assignment aktif", function () {
+test('teknisi tidak dapat menghapus aset dengan assignment aktif', function () {
     $asset = Asset::factory()->assigned()->create();
     $employee = User::factory()->employee()->create();
     AssetAssignment::factory()->create([
-        "asset_id" => $asset->id,
-        "user_id" => $employee->id,
-        "released_at" => null,
+        'asset_id' => $asset->id,
+        'user_id' => $employee->id,
+        'released_at' => null,
     ]);
 
     $manager = User::factory()->manager()->create();
@@ -149,9 +149,9 @@ test("teknisi tidak dapat menghapus aset dengan assignment aktif", function () {
     $this->deleteJson("/api/assets/{$asset->id}")->assertStatus(409);
 });
 
-test("soft delete aset tetap menyimpan riwayat ticket", function () {
+test('soft delete aset tetap menyimpan riwayat ticket', function () {
     $asset = Asset::factory()->create();
-    $ticket = Ticket::factory()->create(["asset_id" => $asset->id]);
+    $ticket = Ticket::factory()->create(['asset_id' => $asset->id]);
 
     $admin = User::factory()->admin()->create();
     Sanctum::actingAs($admin);
@@ -162,9 +162,9 @@ test("soft delete aset tetap menyimpan riwayat ticket", function () {
     expect(Asset::withTrashed()->find($asset->id))->not->toBeNull();
     expect($ticket->fresh()->asset_id)->toBe($asset->id);
     expect(
-        AuditLog::where("module_id", $asset->id)
-            ->where("module", "asset")
-            ->where("action", "delete")
+        AuditLog::where('module_id', $asset->id)
+            ->where('module', 'asset')
+            ->where('action', 'delete')
             ->count(),
     )->toBe(1);
 });

@@ -106,7 +106,7 @@ class AssetAssignmentService
     ): Asset {
         return DB::transaction(function () use ($asset, $data, $actor): Asset {
             /** @var Asset $locked */
-            $locked = Asset::whereKey($asset->geyKey())
+            $locked = Asset::whereKey($asset->getKey())
                 ->lockForUpdate()
                 ->firstOrFail();
 

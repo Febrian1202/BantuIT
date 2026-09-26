@@ -5,26 +5,26 @@ use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 test(
-    "asset categories endpoint mengembalikan daftar kategori aset",
+    'asset categories endpoint mengembalikan daftar kategori aset',
     function () {
-        Asset::factory()->create(["category" => "Laptop"]);
-        Asset::factory()->create(["category" => "Monitor"]);
-        Asset::factory()->create(["category" => "Laptop"]); // duplicate
+        Asset::factory()->create(['category' => 'Laptop']);
+        Asset::factory()->create(['category' => 'Monitor']);
+        Asset::factory()->create(['category' => 'Laptop']); // duplicate
 
         $user = User::factory()->technician()->create();
         Sanctum::actingAs($user);
 
-        $response = $this->getJson("/api/assets/categories");
+        $response = $this->getJson('/api/assets/categories');
         $response
             ->assertStatus(200)
-            ->assertJsonCount(2, "data")
-            ->assertJsonPath("data.0", "Laptop")
-            ->assertJsonPath("data.1", "Monitor");
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0', 'Laptop')
+            ->assertJsonPath('data.1', 'Monitor');
     },
 );
 
-test("asset categories membutuhkan asset.viewAny", function () {
+test('asset categories membutuhkan asset.viewAny', function () {
     $emp = User::factory()->employee()->create();
     Sanctum::actingAs($emp);
-    $this->getJson("/api/assets/categories")->assertStatus(403);
+    $this->getJson('/api/assets/categories')->assertStatus(403);
 });

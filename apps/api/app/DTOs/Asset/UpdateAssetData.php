@@ -20,13 +20,13 @@ class UpdateAssetData
     public static function fromArray(array $data, ?array $oldData = null): self
     {
         return new self(
-            assetTag: $data['assetTag'],
+            assetTag: $data['asset_tag'],
             name: $data['name'],
             category: $data['category'],
             brand: $data['brand'],
             model: $data['model'],
-            serialNumber: $data['serialNumber'],
-            purchaseDate: $data['purchaseDate'],
+            serialNumber: $data['serial_number'],
+            purchaseDate: $data['purchase_date'],
             status: $data['status'],
             notes: $data['notes'] ?? null,
             oldData: $oldData,
