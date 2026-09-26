@@ -16,20 +16,20 @@ class NotificationQueryService
         User $user,
         array $filters = [],
         int $perPage = 10,
-        string $sortBy = "created_at",
-        string $sortDirection = "desc",
+        string $sortBy = 'created_at',
+        string $sortDirection = 'desc',
     ): LengthAwarePaginator {
-        $query = Notification::query()->where("user_id", $user->id);
+        $query = Notification::query()->where('user_id', $user->id);
 
-        if (isset($filters["is_read"])) {
+        if (isset($filters['is_read'])) {
             $query->where(
-                "is_read",
-                filter_var($filters["is_read"], FILTER_VALIDATE_BOOLEAN),
+                'is_read',
+                filter_var($filters['is_read'], FILTER_VALIDATE_BOOLEAN),
             );
         }
 
-        if (!empty($filters["type"])) {
-            $query->where("type", $filters["type"]);
+        if (! empty($filters['type'])) {
+            $query->where('type', $filters['type']);
         }
 
         return $query->orderBy($sortBy, $sortDirection)->paginate($perPage);
@@ -41,8 +41,8 @@ class NotificationQueryService
     public function getUnreadCount(User $user): int
     {
         return Notification::query()
-            ->where("user_id", $user->id)
-            ->where("is_read", false)
+            ->where('user_id', $user->id)
+            ->where('is_read', false)
             ->count();
     }
 
@@ -51,10 +51,10 @@ class NotificationQueryService
      */
     public function markAsRead(Notification $notification): void
     {
-        if (!$notification->is_read) {
+        if (! $notification->is_read) {
             $notification->update([
-                "is_read" => true,
-                "read_at" => now(),
+                'is_read' => true,
+                'read_at' => now(),
             ]);
         }
     }
@@ -65,11 +65,11 @@ class NotificationQueryService
     public function markAllAsRead(User $user): int
     {
         return Notification::query()
-            ->where("user_id", $user->id)
-            ->where("is_read", false)
+            ->where('user_id', $user->id)
+            ->where('is_read', false)
             ->update([
-                "is_read" => true,
-                "read_at" => now(),
+                'is_read' => true,
+                'read_at' => now(),
             ]);
     }
 }

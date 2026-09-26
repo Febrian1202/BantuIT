@@ -30,16 +30,16 @@ class SlaBreachDetector
 
         // Ambil seluruh manager aktif
         $managers = User::query()
-            ->where("status", UserStatus::Active->value)
+            ->where('status', UserStatus::Active->value)
             ->whereHas(
-                "role",
-                fn($q) => $q->where("name", RoleName::Manager->value),
+                'role',
+                fn ($q) => $q->where('name', RoleName::Manager->value),
             )
             ->get();
 
         $this->slaService
             ->breachCandidates()
-            ->with(["technician", "status"])
+            ->with(['technician', 'status'])
             ->chunkById($chunkSize, function ($tickets) use (
                 &$checked,
                 &$breached,
@@ -56,11 +56,11 @@ class SlaBreachDetector
                         $managers,
                     ) {
                         /** @var Ticket|null $lockedTicket */
-                        $lockedTicket = Ticket::where("id", $ticket->id)
+                        $lockedTicket = Ticket::where('id', $ticket->id)
                             ->lockForUpdate()
                             ->first();
 
-                        if (!$lockedTicket || $lockedTicket->sla_breached) {
+                        if (! $lockedTicket || $lockedTicket->sla_breached) {
                             return;
                         }
 
@@ -86,16 +86,16 @@ class SlaBreachDetector
                         }
                         $recipients = $recipients
                             ->merge($managers)
-                            ->unique("id");
+                            ->unique('id');
 
                         // Kirim Notifikasi
                         $notifData = [
-                            "ticket_id" => $lockedTicket->id,
-                            "ticket_number" => $lockedTicket->ticket_number,
-                            "title" => $lockedTicket->title,
-                            "actor_name" => "Sistem",
-                            "message" => "SLA tiket #{$lockedTicket->ticket_number} telah terlampaui.",
-                            "url" => "/tickets/{$lockedTicket->id}",
+                            'ticket_id' => $lockedTicket->id,
+                            'ticket_number' => $lockedTicket->ticket_number,
+                            'title' => $lockedTicket->title,
+                            'actor_name' => 'Sistem',
+                            'message' => "SLA tiket #{$lockedTicket->ticket_number} telah terlampaui.",
+                            'url' => "/tickets/{$lockedTicket->id}",
                         ];
 
                         $this->notificationService->notifyMany(

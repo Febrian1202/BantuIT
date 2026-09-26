@@ -10,24 +10,24 @@ use Illuminate\Support\Facades\Artisan;
 uses(RefreshDatabase::class);
 
 test(
-    "artisan tickets:check-sla menandai tiket yang melewati deadline dengan time travel",
+    'artisan tickets:check-sla menandai tiket yang melewati deadline dengan time travel',
     function () {
         $manager = User::factory()->manager()->create();
         $technician = User::factory()->technician()->create();
 
         // Buat tiket dengan SLA deadline 2 jam dari sekarang
         $ticket = Ticket::factory()->create([
-            "status_id" => 2,
-            "technician_id" => $technician->id,
-            "sla_duration_minutes" => 120,
-            "sla_deadline" => now()->addMinutes(120),
-            "sla_breached" => false,
+            'status_id' => 2,
+            'technician_id' => $technician->id,
+            'sla_duration_minutes' => 120,
+            'sla_deadline' => now()->addMinutes(120),
+            'sla_breached' => false,
         ]);
 
         // Majukan waktu 3 jam ke masa depan (melewati deadline)
         $this->travel(3)->hours();
 
-        Artisan::call("tickets:check-sla");
+        Artisan::call('tickets:check-sla');
 
         $ticket->refresh();
         expect($ticket->sla_breached)
@@ -37,7 +37,7 @@ test(
 
         expect(
             Notification::where(
-                "type",
+                'type',
                 NotificationType::TicketSlaBreached->value,
             )->count(),
         )->toBe(2); // 1 technician + 1 manager
@@ -45,29 +45,29 @@ test(
 );
 
 test(
-    "artisan tickets:check-sla idempotent dan tidak mengirimkan notifikasi duplikat pada run kedua",
+    'artisan tickets:check-sla idempotent dan tidak mengirimkan notifikasi duplikat pada run kedua',
     function () {
         $manager = User::factory()->manager()->create();
         $ticket = Ticket::factory()
             ->open()
             ->create([
-                "sla_deadline" => now()->subMinutes(10),
-                "sla_breached" => false,
+                'sla_deadline' => now()->subMinutes(10),
+                'sla_breached' => false,
             ]);
 
-        Artisan::call("tickets:check-sla");
+        Artisan::call('tickets:check-sla');
         expect(
             Notification::where(
-                "type",
+                'type',
                 NotificationType::TicketSlaBreached->value,
             )->count(),
         )->toBe(1);
 
         // Jalankan kedua kali
-        Artisan::call("tickets:check-sla");
+        Artisan::call('tickets:check-sla');
         expect(
             Notification::where(
-                "type",
+                'type',
                 NotificationType::TicketSlaBreached->value,
             )->count(),
         )->toBe(1);
@@ -75,23 +75,23 @@ test(
 );
 
 test(
-    "tiket yang sudah selesai dan melewati deadline tidak ditandai sebagai melewati oleh scheduler",
+    'tiket yang sudah selesai dan melewati deadline tidak ditandai sebagai melewati oleh scheduler',
     function () {
         $manager = User::factory()->manager()->create();
         $ticket = Ticket::factory()
             ->resolved()
             ->create([
-                "sla_deadline" => now()->subMinutes(10),
-                "sla_breached" => false,
+                'sla_deadline' => now()->subMinutes(10),
+                'sla_breached' => false,
             ]);
 
-        Artisan::call("tickets:check-sla");
+        Artisan::call('tickets:check-sla');
 
         $ticket->refresh();
         expect($ticket->sla_breached)->toBeFalse();
         expect(
             Notification::where(
-                "type",
+                'type',
                 NotificationType::TicketSlaBreached->value,
             )->count(),
         )->toBe(0);

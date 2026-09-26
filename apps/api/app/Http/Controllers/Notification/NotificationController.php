@@ -25,11 +25,11 @@ class NotificationController extends Controller
      */
     public function index(IndexNotificationRequest $request): JsonResponse
     {
-        $this->authorize("viewAny", Notification::class);
+        $this->authorize('viewAny', Notification::class);
 
         $perPage = $this->getPerPage($request);
-        $sortBy = $request->query("sort_by", "created_at");
-        $sortDir = $request->query("sort_dir", "desc");
+        $sortBy = $request->query('sort_by', 'created_at');
+        $sortDir = $request->query('sort_dir', 'desc');
 
         $paginator = $this->queryService->paginate(
             user: $request->user(),
@@ -41,7 +41,7 @@ class NotificationController extends Controller
 
         return ApiResponse::paginated(
             $paginator,
-            "Notifications retrieved successfully.",
+            'Notifications retrieved successfully.',
             NotificationResource::class,
         );
     }
@@ -51,15 +51,15 @@ class NotificationController extends Controller
      */
     public function unreadCount(Request $request): JsonResponse
     {
-        $this->authorize("viewAny", Notification::class);
+        $this->authorize('viewAny', Notification::class);
 
         $count = $this->queryService->getUnreadCount($request->user());
 
         return ApiResponse::success(
             data: [
-                "unread_count" => $count,
+                'unread_count' => $count,
             ],
-            message: "Unread notifications count retrieved successfully.",
+            message: 'Unread notifications count retrieved successfully.',
         );
     }
 
@@ -71,22 +71,22 @@ class NotificationController extends Controller
         Notification $notification,
     ): JsonResponse {
         if ($notification->user_id !== $request->user()->id) {
-            abort(404, "Resource not found.");
+            abort(404, 'Resource not found.');
         }
 
-        $this->authorize("markAsRead", $notification);
+        $this->authorize('markAsRead', $notification);
 
         $this->queryService->markAsRead($notification);
 
-        return ApiResponse::success(null, "Notification marked as read.");
+        return ApiResponse::success(null, 'Notification marked as read.');
     }
 
     public function readAll(Request $request): JsonResponse
     {
-        $this->authorize("markAllAsRead", Notification::class);
+        $this->authorize('markAllAsRead', Notification::class);
 
         $this->queryService->markAllAsRead($request->user());
 
-        return ApiResponse::success(null, "All notifications marked as read.");
+        return ApiResponse::success(null, 'All notifications marked as read.');
     }
 }
