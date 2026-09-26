@@ -28,8 +28,8 @@ class NotificationQueryService
             );
         }
 
-        if ($type = $filters["type"]) {
-            $query->where("type", $type);
+        if (!empty($filters["type"])) {
+            $query->where("type", $filters["type"]);
         }
 
         return $query->orderBy($sortBy, $sortDirection)->paginate($perPage);
