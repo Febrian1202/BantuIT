@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\AssetStatus;
 use App\Models\Concerns\SerializesDatesAsIso8601;
+use App\Policies\AssetPolicy;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[UsePolicy(AssetPolicy::class)]
 class Asset extends Model
 {
     use HasFactory, SerializesDatesAsIso8601, SoftDeletes;
@@ -21,15 +24,15 @@ class Asset extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'asset_tag',
-        'name',
-        'category',
-        'brand',
-        'model',
-        'serial_number',
-        'purchase_date',
-        'status',
-        'notes',
+        "asset_tag",
+        "name",
+        "category",
+        "brand",
+        "model",
+        "serial_number",
+        "purchase_date",
+        "status",
+        "notes",
     ];
 
     /**
@@ -40,8 +43,8 @@ class Asset extends Model
     protected function casts(): array
     {
         return [
-            'purchase_date' => 'date',
-            'status' => AssetStatus::class,
+            "purchase_date" => "date",
+            "status" => AssetStatus::class,
         ];
     }
 
@@ -50,7 +53,7 @@ class Asset extends Model
      */
     public function activeAssignment(): HasOne
     {
-        return $this->hasOne(AssetAssignment::class)->whereNull('released_at');
+        return $this->hasOne(AssetAssignment::class)->whereNull("released_at");
     }
 
     /**
@@ -58,15 +61,15 @@ class Asset extends Model
      */
     public function currentHolder(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'id')
+        return $this->belongsTo(User::class, "id", "id")
             ->join(
-                'asset_assignments',
-                'asset_assignments.user_id',
-                '=',
-                'users.id',
+                "asset_assignments",
+                "asset_assignments.user_id",
+                "=",
+                "users.id",
             )
-            ->where('asset_assignments.asset_id', $this->id)
-            ->whereNull('asset_assignments.released_at');
+            ->where("asset_assignments.asset_id", $this->id)
+            ->whereNull("asset_assignments.released_at");
     }
 
     /**
