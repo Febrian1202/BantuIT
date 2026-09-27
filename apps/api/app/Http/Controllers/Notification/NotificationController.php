@@ -36,7 +36,7 @@ class NotificationController extends Controller
             filters: $request->validated(),
             perPage: $perPage,
             sortBy: $sortBy,
-            sortDirection: $sortDir,
+            sortDir: $sortDir,
         );
 
         return ApiResponse::paginated(

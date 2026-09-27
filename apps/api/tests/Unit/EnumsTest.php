@@ -1,6 +1,11 @@
 <?php
 
+use App\Enums\ArticleStatus;
+use App\Enums\AssetHistoryAction;
 use App\Enums\AssetStatus;
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
+use App\Enums\NotificationType;
 use App\Enums\RoleName;
 use App\Enums\TicketStatusName;
 use App\Enums\UserStatus;
@@ -64,3 +69,82 @@ test(
         );
     },
 );
+
+test('AuditAction punya semua 22 case', function () {
+    $cases = array_map(fn ($c) => $c->value, AuditAction::cases());
+    expect($cases)->toContain(
+        'create',
+        'update',
+        'delete',
+        'assign',
+        'reassign',
+        'unassign',
+        'self_assign',
+        'status_change',
+        'priority_change',
+        'reopen',
+        'resolve',
+        'close',
+        'cancel',
+        'login',
+        'logout',
+        'password_reset',
+        'sla_breach',
+        'release',
+        'publish',
+        'unpublish',
+        'activate',
+        'deactivate',
+    );
+});
+
+test('AuditModule punya semua 9 case', function () {
+    $cases = array_map(fn ($c) => $c->value, AuditModule::cases());
+    expect($cases)->toContain(
+        'ticket',
+        'asset',
+        'article',
+        'user',
+        'role',
+        'department',
+        'ticket_category',
+        'ticket_priority',
+        'auth',
+        'knowledge_category',
+    );
+});
+
+test('NotificationType punya semua 11 case', function () {
+    $cases = array_map(fn ($c) => $c->value, NotificationType::cases());
+    expect($cases)->toContain(
+        'TICKET_ASSIGNED',
+        'TICKET_REASSIGNED',
+        'TICKET_UNASSIGNED',
+        'TICKET_STATUS_CHANGED',
+        'TICKET_SELF_ASSIGNED',
+        'TICKET_REOPENED',
+        'TICKET_RESOLVED',
+        'TICKET_CLOSED',
+        'TICKET_CANCELLED',
+        'TICKET_COMMENTED',
+        'TICKET_SLA_BREACHED',
+    );
+});
+
+test('ArticleStatus enum berisi draft dan published', function () {
+    expect(ArticleStatus::Draft->value)
+        ->toBe('draft')
+        ->and(ArticleStatus::Published->value)
+        ->toBe('published');
+});
+
+test('AssetHistoryAction enum berisi semua 4 case', function () {
+    expect(AssetHistoryAction::Created->value)
+        ->toBe('created')
+        ->and(AssetHistoryAction::Assigned->value)
+        ->toBe('assigned')
+        ->and(AssetHistoryAction::Released->value)
+        ->toBe('released')
+        ->and(AssetHistoryAction::StatusChanged->value)
+        ->toBe('status_changed');
+});

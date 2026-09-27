@@ -17,7 +17,7 @@ class NotificationQueryService
         array $filters = [],
         int $perPage = 10,
         string $sortBy = 'created_at',
-        string $sortDirection = 'desc',
+        string $sortDir = 'desc',
     ): LengthAwarePaginator {
         $query = Notification::query()->where('user_id', $user->id);
 
@@ -32,7 +32,7 @@ class NotificationQueryService
             $query->where('type', $filters['type']);
         }
 
-        return $query->orderBy($sortBy, $sortDirection)->paginate($perPage);
+        return $query->orderBy($sortBy, $sortDir)->paginate($perPage);
     }
 
     /**
