@@ -56,7 +56,7 @@ class KnowledgeCategoryController extends Controller
             actor: $request->user(),
         );
 
-        return ApiResponse::success(
+        return ApiResponse::created(
             new KnowledgeCategoryResource($category),
             "Knowledge category created successfully.",
         );

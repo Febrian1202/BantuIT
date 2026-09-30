@@ -7,7 +7,7 @@ Route::get("/", [ArticleController::class, "index"])
     ->middleware("throttle:search")
     ->name("index");
 
-Route::post("/", [ArticleController::class . "store"])->name("store");
+Route::post("/", [ArticleController::class, "store"])->name("store");
 
 Route::get("/{article}/edit", [ArticleController::class, "edit"])->name("edit");
 

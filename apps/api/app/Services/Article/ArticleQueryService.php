@@ -25,7 +25,7 @@ class ArticleQueryService
         $query = KnowledgeArticle::with(["category", "author"]);
 
         $isEmployee =
-            !$actor->isAdmin() ||
+            !$actor->isAdmin() &&
             !$actor->hasRole(RoleName::Manager, RoleName::Technician);
 
         if ($isEmployee) {
@@ -33,7 +33,7 @@ class ArticleQueryService
         }
 
         if ($search = $request->query("search")) {
-            $term = str_replace(["%", "_"], ["\\&", "\\_"], $search);
+            $term = str_replace(["%", "_"], ["\\%", "\\_"], $search);
             $query->where(function ($q) use ($term) {
                 $q->whereRaw("title LIKE ? ESCAPE ?", ["%{$term}%", "\\"]);
                 $q->orWhereRaw("content LIKE ? ESCAPE ?", ["%{$term}%", "\\"]);
@@ -45,7 +45,7 @@ class ArticleQueryService
         }
 
         if (!$isEmployee && ($status = $request->query("status"))) {
-            $query->where("status", (int) $status);
+            $query->where("status", $status);
         }
 
         if ($authorId = $request->query("author_id")) {

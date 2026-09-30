@@ -78,7 +78,7 @@ class ArticleController extends Controller
         $dto = CreateArticleData::fromArray($request->validated());
         $article = $this->articleService->create($dto, $request->user());
 
-        return ApiResponse::success(
+        return ApiResponse::created(
             new ArticleResource($article),
             "Article created successfully.",
         );

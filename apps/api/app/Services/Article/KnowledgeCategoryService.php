@@ -10,6 +10,7 @@ use App\Exceptions\StateConflictException;
 use App\Models\KnowledgeCategory;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
+use Illuminate\Database\Eloquent\Collection;
 
 class KnowledgeCategoryService
 {
@@ -18,7 +19,7 @@ class KnowledgeCategoryService
     /**
      * Mengambil semua kategori artikel dengan jumlah artikel terkait
      */
-    public function index(): KnowledgeCategory
+    public function index(): Collection
     {
         return KnowledgeCategory::query()
             ->withCount("articles")
@@ -88,9 +89,9 @@ class KnowledgeCategoryService
      */
     public function destroy(KnowledgeCategory $category, User $actor): void
     {
-        if ($category->articles()->exist()) {
+        if ($category->articles()->exists()) {
             throw new StateConflictException(
-                "Kategori artikel tidak dapat dihapus karena memiliki artikel terkait",
+                "Kategori masih memiliki artikel dan tidak dapat dihapus.",
             );
         }
 
