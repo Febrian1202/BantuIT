@@ -17,12 +17,12 @@ class KnowledgeCategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id" => $this->id,
-            "name" => $this->name,
-            "description" => $this->description,
-            "articles_count" => $this->whenCounted("articles"),
-            "created_at" => $this->created_at?->toISOString(),
-            "updated_at" => $this->updated_at?->toISOString(),
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'articles_count' => $this->whenCounted('articles'),
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
         ];
     }
 }

@@ -5,13 +5,13 @@ use App\Models\KnowledgeCategory;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
-test("technician bisa publish article", function () {
+test('technician bisa publish article', function () {
     $tech = User::factory()->technician()->create();
     $article = KnowledgeArticle::factory()
         ->draft()
         ->create([
-            "author_id" => $tech->id,
-            "published_at" => null,
+            'author_id' => $tech->id,
+            'published_at' => null,
         ]);
 
     Sanctum::actingAs($tech);
@@ -20,19 +20,19 @@ test("technician bisa publish article", function () {
 
     $response
         ->assertStatus(200)
-        ->assertJsonPath("success", true)
-        ->assertJsonPath("data.status", "published");
+        ->assertJsonPath('success', true)
+        ->assertJsonPath('data.status', 'published');
 
     expect($article->fresh()->published_at)->not->toBeNull();
 });
 
 test(
-    "view_count di increment ketika show tanpa merubah updated_at",
+    'view_count di increment ketika show tanpa merubah updated_at',
     function () {
         $article = KnowledgeArticle::factory()->create([
-            "status" => "published",
-            "view_count" => 5,
-            "updated_at" => now()->subDay(),
+            'status' => 'published',
+            'view_count' => 5,
+            'updated_at' => now()->subDay(),
         ]);
 
         $originalUpdatedAt = $article->updated_at->toISOString();
@@ -52,12 +52,12 @@ test(
 );
 
 test(
-    "unpublish set status ke draft dan mempertahankan published_at",
+    'unpublish set status ke draft dan mempertahankan published_at',
     function () {
         $publishedTime = now()->subDays(2);
         $article = KnowledgeArticle::factory()->create([
-            "status" => "published",
-            "published_at" => $publishedTime,
+            'status' => 'published',
+            'published_at' => $publishedTime,
         ]);
 
         Sanctum::actingAs(User::factory()->manager()->create());
@@ -66,19 +66,19 @@ test(
 
         $response
             ->assertStatus(200)
-            ->assertJsonPath("success", true)
-            ->assertJsonPath("data.status", "draft");
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.status', 'draft');
 
         $fresh = $article->fresh();
         expect($fresh->status->value)
-            ->toBe("draft")
+            ->toBe('draft')
             ->and($fresh->published_at)
             ->not->toBeNull();
     },
 );
 
-test("employee tidak bisa publish atau unpublish article", function () {
-    $article = KnowledgeArticle::factory()->create(["status" => "published"]);
+test('employee tidak bisa publish atau unpublish article', function () {
+    $article = KnowledgeArticle::factory()->create(['status' => 'published']);
     $draftArticle = KnowledgeArticle::factory()->draft()->create();
 
     Sanctum::actingAs(User::factory()->employee()->create());
@@ -92,21 +92,21 @@ test("employee tidak bisa publish atau unpublish article", function () {
 });
 
 test(
-    "show mengembalikan sampai 5 published article yang berhubungan dengan category yang sama kecuali article yang sedang ditampilkan",
+    'show mengembalikan sampai 5 published article yang berhubungan dengan category yang sama kecuali article yang sedang ditampilkan',
     function () {
         $category = KnowledgeCategory::factory()->create();
         $mainArticle = KnowledgeArticle::factory()->create([
-            "category_id" => $category->id,
-            "status" => "published",
-            "slug" => "main-article",
+            'category_id' => $category->id,
+            'status' => 'published',
+            'slug' => 'main-article',
         ]);
 
         // Create 6 other published articles in same category
         for ($i = 1; $i <= 6; $i++) {
             KnowledgeArticle::factory()->create([
-                "category_id" => $category->id,
-                "status" => "published",
-                "view_count" => $i * 10,
+                'category_id' => $category->id,
+                'status' => 'published',
+                'view_count' => $i * 10,
             ]);
         }
 
@@ -114,13 +114,13 @@ test(
         KnowledgeArticle::factory()
             ->draft()
             ->create([
-                "category_id" => $category->id,
+                'category_id' => $category->id,
             ]);
 
         // Create 1 article in another category
         KnowledgeArticle::factory()->create([
-            "category_id" => KnowledgeCategory::factory()->create()->id,
-            "status" => "published",
+            'category_id' => KnowledgeCategory::factory()->create()->id,
+            'status' => 'published',
         ]);
 
         Sanctum::actingAs(User::factory()->employee()->create());
@@ -129,12 +129,12 @@ test(
 
         $response->assertStatus(200);
         $related =
-            $response->json("data.related_articles") ??
-            $response->json("related_articles");
+            $response->json('data.related_articles') ??
+            $response->json('related_articles');
 
         expect($related)->toBeArray()->and(count($related))->toBe(5);
 
-        $ids = array_column($related, "id");
+        $ids = array_column($related, 'id');
         expect($ids)->not->toContain($mainArticle->id);
     },
 );

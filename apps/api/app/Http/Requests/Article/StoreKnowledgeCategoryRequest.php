@@ -17,13 +17,13 @@ class StoreKnowledgeCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => [
-                "required",
-                "string",
-                "max:100",
-                "unique:knowledge_categories,name",
+            'name' => [
+                'required',
+                'string',
+                'max:100',
+                'unique:knowledge_categories,name',
             ],
-            "description" => ["nullable", "string", "max:255"],
+            'description' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -33,10 +33,10 @@ class StoreKnowledgeCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            "name.required" => "Nama kategori wajib diisi.",
-            "name.max" => "Nama kategori maksimal 100 karakter.",
-            "name.unique" => "Nama kategori sudah digunakan.",
-            "description.max" => "Deskripsi kategori maksimal 255 karakter.",
+            'name.required' => 'Nama kategori wajib diisi.',
+            'name.max' => 'Nama kategori maksimal 100 karakter.',
+            'name.unique' => 'Nama kategori sudah digunakan.',
+            'description.max' => 'Deskripsi kategori maksimal 255 karakter.',
         ];
     }
 }

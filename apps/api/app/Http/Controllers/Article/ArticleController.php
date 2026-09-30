@@ -29,13 +29,13 @@ class ArticleController extends Controller
      */
     public function index(IndexArticleRequest $request): JsonResponse
     {
-        $this->authorize("viewAny", KnowledgeArticle::class);
+        $this->authorize('viewAny', KnowledgeArticle::class);
 
         $paginator = $this->queryService->paginate($request, $request->user());
 
         return ApiResponse::paginated(
             $paginator,
-            "Articles retrieved successfully.",
+            'Articles retrieved successfully.',
             ArticleListResource::class,
         );
     }
@@ -45,13 +45,13 @@ class ArticleController extends Controller
      */
     public function show(KnowledgeArticle $article): JsonResponse
     {
-        $this->authorize("view", $article);
+        $this->authorize('view', $article);
 
         $resource = $this->queryService->show($article);
 
         return ApiResponse::success(
             $resource,
-            "Article retrieved successfully.",
+            'Article retrieved successfully.',
         );
     }
 
@@ -60,11 +60,11 @@ class ArticleController extends Controller
      */
     public function edit(KnowledgeArticle $article): JsonResponse
     {
-        $this->authorize("update", $article);
+        $this->authorize('update', $article);
 
         return ApiResponse::success(
-            new ArticleResource($article->load(["category", "author"])),
-            "Article retrieved for editing.",
+            new ArticleResource($article->load(['category', 'author'])),
+            'Article retrieved for editing.',
         );
     }
 
@@ -73,14 +73,14 @@ class ArticleController extends Controller
      */
     public function store(StoreArticleRequest $request): JsonResponse
     {
-        $this->authorize("create", KnowledgeArticle::class);
+        $this->authorize('create', KnowledgeArticle::class);
 
         $dto = CreateArticleData::fromArray($request->validated());
         $article = $this->articleService->create($dto, $request->user());
 
         return ApiResponse::created(
             new ArticleResource($article),
-            "Article created successfully.",
+            'Article created successfully.',
         );
     }
 
@@ -91,7 +91,7 @@ class ArticleController extends Controller
         UpdateArticleRequest $request,
         KnowledgeArticle $article,
     ): JsonResponse {
-        $this->authorize("update", $article);
+        $this->authorize('update', $article);
 
         $dto = UpdateArticleData::fromArray($request->validated());
         $updated = $this->articleService->update(
@@ -102,7 +102,7 @@ class ArticleController extends Controller
 
         return ApiResponse::success(
             new ArticleResource($updated),
-            "Article updated successfully.",
+            'Article updated successfully.',
         );
     }
 
@@ -113,10 +113,10 @@ class ArticleController extends Controller
         KnowledgeArticle $article,
         Request $request,
     ): JsonResponse {
-        $this->authorize("delete", $article);
+        $this->authorize('delete', $article);
         $this->articleService->delete($article, $request->user());
 
-        return ApiResponse::success(null, "Article deleted successfully.");
+        return ApiResponse::success(null, 'Article deleted successfully.');
     }
 
     /**
@@ -126,13 +126,13 @@ class ArticleController extends Controller
         Request $request,
         KnowledgeArticle $article,
     ): JsonResponse {
-        $this->authorize("publish", $article);
+        $this->authorize('publish', $article);
 
         $published = $this->articleService->publish($article, $request->user());
 
         return ApiResponse::success(
             new ArticleResource($published),
-            "Article published successfully.",
+            'Article published successfully.',
         );
     }
 
@@ -143,7 +143,7 @@ class ArticleController extends Controller
         Request $request,
         KnowledgeArticle $article,
     ): JsonResponse {
-        $this->authorize("unpublish", $article);
+        $this->authorize('unpublish', $article);
 
         $unpublished = $this->articleService->unpublish(
             $article,
@@ -152,7 +152,7 @@ class ArticleController extends Controller
 
         return ApiResponse::success(
             new ArticleResource($unpublished),
-            "Article unpublished successfully.",
+            'Article unpublished successfully.',
         );
     }
 }

@@ -2,12 +2,11 @@
 
 namespace App\Policies;
 
-use App\Enums\RoleName;
 use App\Enums\ArticleStatus;
+use App\Enums\RoleName;
 use App\Models\KnowledgeArticle;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Routing\RouteUrlGenerator;
 
 class ArticlePolicy
 {
@@ -19,8 +18,8 @@ class ArticlePolicy
     public function view(User $user, KnowledgeArticle $article): Response|bool
     {
         if (
-            !$user->isAdmin() &&
-            !$user->hasRole(RoleName::Manager, RoleName::Technician)
+            ! $user->isAdmin() &&
+            ! $user->hasRole(RoleName::Manager, RoleName::Technician)
         ) {
             $status =
                 $article->status instanceof ArticleStatus

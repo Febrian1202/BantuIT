@@ -17,19 +17,19 @@ class UpdateKnowledgeCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $category = $this->route("knowledge_category");
+        $category = $this->route('knowledge_category');
         $categoryId = is_object($category) ? $category->id : $category;
 
         return [
-            "name" => [
-                "required",
-                "string",
-                "max:100",
-                Rule::unique("knowledge_categories", "name")->ignore(
+            'name' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('knowledge_categories', 'name')->ignore(
                     $categoryId,
                 ),
             ],
-            "description" => ["nullable", "string", "max:255"],
+            'description' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -39,10 +39,10 @@ class UpdateKnowledgeCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            "name.required" => "Nama kategori wajib diisi.",
-            "name.max" => "Nama kategori maksimal 100 karakter.",
-            "name.unique" => "Nama kategori sudah digunakan.",
-            "description.max" => "Deskripsi kategori maksimal 255 karakter.",
+            'name.required' => 'Nama kategori wajib diisi.',
+            'name.max' => 'Nama kategori maksimal 100 karakter.',
+            'name.unique' => 'Nama kategori sudah digunakan.',
+            'description.max' => 'Deskripsi kategori maksimal 255 karakter.',
         ];
     }
 }

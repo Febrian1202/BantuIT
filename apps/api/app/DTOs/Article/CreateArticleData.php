@@ -8,16 +8,16 @@ class CreateArticleData
         public int $categoryId,
         public string $title,
         public string $content,
-        public ?string $status = "draft",
+        public ?string $status = 'draft',
     ) {}
 
     public static function fromArray(array $data): self
     {
         return new self(
-            categoryId: (int) $data["category_id"],
-            title: (string) $data["title"],
-            content: (string) $data["content"],
-            status: $data["status"] ?? "draft",
+            categoryId: (int) $data['category_id'],
+            title: (string) $data['title'],
+            content: (string) $data['content'],
+            status: $data['status'] ?? 'draft',
         );
     }
 }

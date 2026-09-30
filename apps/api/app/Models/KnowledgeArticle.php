@@ -20,14 +20,14 @@ class KnowledgeArticle extends Model
      * Atribut yang dapat diisi (fillable)
      */
     protected $fillable = [
-        "category_id",
-        "author_id",
-        "title",
-        "slug",
-        "content",
-        "status",
-        "view_count",
-        "published_at",
+        'category_id',
+        'author_id',
+        'title',
+        'slug',
+        'content',
+        'status',
+        'view_count',
+        'published_at',
     ];
 
     /**
@@ -36,9 +36,9 @@ class KnowledgeArticle extends Model
     protected function casts(): array
     {
         return [
-            "status" => ArticleStatus::class,
-            "view_count" => "integer",
-            "published_at" => "datetime",
+            'status' => ArticleStatus::class,
+            'view_count' => 'integer',
+            'published_at' => 'datetime',
         ];
     }
 
@@ -47,7 +47,7 @@ class KnowledgeArticle extends Model
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(KnowledgeCategory::class, "category_id");
+        return $this->belongsTo(KnowledgeCategory::class, 'category_id');
     }
 
     /**
@@ -55,6 +55,6 @@ class KnowledgeArticle extends Model
      */
     public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class, "author_id");
+        return $this->belongsTo(User::class, 'author_id');
     }
 }

@@ -22,8 +22,8 @@ class KnowledgeCategoryService
     public function index(): Collection
     {
         return KnowledgeCategory::query()
-            ->withCount("articles")
-            ->orderBy("name")
+            ->withCount('articles')
+            ->orderBy('name')
             ->get();
     }
 
@@ -32,7 +32,7 @@ class KnowledgeCategoryService
      */
     public function show(KnowledgeCategory $category): KnowledgeCategory
     {
-        return $category->loadCount("articles");
+        return $category->loadCount('articles');
     }
 
     /**
@@ -51,7 +51,7 @@ class KnowledgeCategoryService
             $category->id,
             "Kategori artikel {$category->name} dibuat",
             null,
-            $category->only(["name", "description"]),
+            $category->only(['name', 'description']),
         );
 
         return $category;
@@ -65,7 +65,7 @@ class KnowledgeCategoryService
         UpdateKnowledgeCategoryData $data,
         User $actor,
     ): KnowledgeCategory {
-        $oldData = $category->only(["name", "description"]);
+        $oldData = $category->only(['name', 'description']);
 
         $category->update($data->toArray());
 
@@ -76,7 +76,7 @@ class KnowledgeCategoryService
             $category->id,
             "Kategori artikel {$category->name} diperbarui",
             $oldData,
-            $category->only(["name", "description"]),
+            $category->only(['name', 'description']),
         );
 
         return $category->fresh();
@@ -91,7 +91,7 @@ class KnowledgeCategoryService
     {
         if ($category->articles()->exists()) {
             throw new StateConflictException(
-                "Kategori masih memiliki artikel dan tidak dapat dihapus.",
+                'Kategori masih memiliki artikel dan tidak dapat dihapus.',
             );
         }
 

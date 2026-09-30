@@ -13,9 +13,9 @@ class UpdateArticleData
     public static function fromArray(array $data): self
     {
         return new self(
-            categoryId: (int) $data["category_id"],
-            title: (string) $data["title"],
-            content: (string) $data["content"],
+            categoryId: (int) $data['category_id'],
+            title: (string) $data['title'],
+            content: (string) $data['content'],
         );
     }
 }

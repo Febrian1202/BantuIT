@@ -25,30 +25,31 @@ class KnowledgeCategoryController extends Controller
      */
     public function index(): JsonResponse
     {
-        $this->authorize("knowledge-category.viewAny");
+        $this->authorize('knowledge-category.viewAny');
 
         $categories = $this->categoryService->index();
+
         return ApiResponse::success(
             KnowledgeCategoryResource::collection($categories),
-            "Knowledge categories retrieved successfully.",
+            'Knowledge categories retrieved successfully.',
         );
     }
 
     public function show(KnowledgeCategory $knowledgeCategory): JsonResponse
     {
-        $this->authorize("knowledge-category.viewAny");
+        $this->authorize('knowledge-category.viewAny');
 
         return ApiResponse::success(
             new KnowledgeCategoryResource(
-                $knowledgeCategory->loadCount("articles"),
+                $knowledgeCategory->loadCount('articles'),
             ),
-            "Knowledge category retrieved successfully.",
+            'Knowledge category retrieved successfully.',
         );
     }
 
     public function store(StoreKnowledgeCategoryRequest $request): JsonResponse
     {
-        $this->authorize("knowledge-category.manage");
+        $this->authorize('knowledge-category.manage');
 
         $dto = CreateKnowledgeCategoryData::fromArray($request->validated());
         $category = $this->categoryService->store(
@@ -58,7 +59,7 @@ class KnowledgeCategoryController extends Controller
 
         return ApiResponse::created(
             new KnowledgeCategoryResource($category),
-            "Knowledge category created successfully.",
+            'Knowledge category created successfully.',
         );
     }
 
@@ -66,7 +67,7 @@ class KnowledgeCategoryController extends Controller
         UpdateKnowledgeCategoryRequest $request,
         KnowledgeCategory $knowledgeCategory,
     ): JsonResponse {
-        $this->authorize("knowledge-category.manage");
+        $this->authorize('knowledge-category.manage');
 
         $dto = UpdateKnowledgeCategoryData::fromArray($request->validated());
         $category = $this->categoryService->update(
@@ -77,7 +78,7 @@ class KnowledgeCategoryController extends Controller
 
         return ApiResponse::success(
             new KnowledgeCategoryResource($category),
-            "Knowledge category updated successfully.",
+            'Knowledge category updated successfully.',
         );
     }
 
@@ -85,13 +86,13 @@ class KnowledgeCategoryController extends Controller
         KnowledgeCategory $knowledgeCategory,
         Request $request,
     ): JsonResponse {
-        $this->authorize("knowledge-category.manage");
+        $this->authorize('knowledge-category.manage');
 
         $this->categoryService->destroy(
             actor: $request->user(),
             category: $knowledgeCategory,
         );
 
-        return ApiResponse::success(null, "Knowledge category deleted.");
+        return ApiResponse::success(null, 'Knowledge category deleted.');
     }
 }

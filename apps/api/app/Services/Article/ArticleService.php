@@ -10,7 +10,6 @@ use App\Enums\AuditModule;
 use App\Models\KnowledgeArticle;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
-use Database\Factories\AuditLogFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -33,14 +32,14 @@ class ArticleService
             $isPublished = $status === ArticleStatus::Published->value;
 
             $article = KnowledgeArticle::create([
-                "category_id" => $data->categoryId,
-                "author_id" => $actor->id,
-                "title" => $data->title,
-                "slug" => $this->generateSlug($data->title),
-                "content" => $data->content,
-                "status" => $status,
-                "published_at" => $isPublished ? now() : null,
-                "view_count" => 0,
+                'category_id' => $data->categoryId,
+                'author_id' => $actor->id,
+                'title' => $data->title,
+                'slug' => $this->generateSlug($data->title),
+                'content' => $data->content,
+                'status' => $status,
+                'published_at' => $isPublished ? now() : null,
+                'view_count' => 0,
             ]);
 
             $this->auditLogger->log(
@@ -51,14 +50,13 @@ class ArticleService
                 "Artikel {$article->title} dibuat.",
                 null,
                 [
-                    "title" => $article->title,
-                    "category_id" => $data->categoryId,
-                    "status" =>
-                        $article->status?->value ?? (string) $article->status,
+                    'title' => $article->title,
+                    'category_id' => $data->categoryId,
+                    'status' => $article->status?->value ?? (string) $article->status,
                 ],
             );
 
-            return $article->load(["category", "author"]);
+            return $article->load(['category', 'author']);
         });
     }
 
@@ -70,7 +68,7 @@ class ArticleService
         UpdateArticleData $data,
         User $actor,
     ): KnowledgeArticle {
-        $oldData = $article->only(["title", "content", "category_id"]);
+        $oldData = $article->only(['title', 'content', 'category_id']);
 
         return DB::transaction(function () use (
             $data,
@@ -79,9 +77,9 @@ class ArticleService
             $actor,
         ): KnowledgeArticle {
             $article->update([
-                "title" => $data->title,
-                "content" => $data->content,
-                "category_id" => $data->categoryId,
+                'title' => $data->title,
+                'content' => $data->content,
+                'category_id' => $data->categoryId,
             ]);
 
             $this->auditLogger->log(
@@ -92,13 +90,13 @@ class ArticleService
                 "Artikel {$article->title} diperbarui.",
                 $oldData,
                 [
-                    "title" => $data->title,
-                    "content" => $data->content,
-                    "category_id" => $data->categoryId,
+                    'title' => $data->title,
+                    'content' => $data->content,
+                    'category_id' => $data->categoryId,
                 ],
             );
 
-            return $article->fresh()->load(["category", "author"]);
+            return $article->fresh()->load(['category', 'author']);
         });
     }
 
@@ -132,8 +130,8 @@ class ArticleService
             $actor,
         ): KnowledgeArticle {
             $article->update([
-                "status" => ArticleStatus::Published,
-                "published_at" => now(),
+                'status' => ArticleStatus::Published,
+                'published_at' => now(),
             ]);
 
             $this->auditLogger->log(
@@ -144,7 +142,7 @@ class ArticleService
                 "Artikel {$article->title} dipublikasikan.",
             );
 
-            return $article->fresh()->load(["category", "author"]);
+            return $article->fresh()->load(['category', 'author']);
         });
     }
 
@@ -160,7 +158,7 @@ class ArticleService
             $actor,
         ): KnowledgeArticle {
             $article->update([
-                "status" => ArticleStatus::Draft,
+                'status' => ArticleStatus::Draft,
             ]);
 
             $this->auditLogger->log(
@@ -171,7 +169,7 @@ class ArticleService
                 "Artikel {$article->title} ditarik dari publikasi.",
             );
 
-            return $article->fresh()->load(["category", "author"]);
+            return $article->fresh()->load(['category', 'author']);
         });
     }
 
@@ -182,15 +180,15 @@ class ArticleService
     {
         $base = Str::slug($title);
 
-        if ($base === "") {
-            $base = "article-" . Str::lower(Str::random(6));
+        if ($base === '') {
+            $base = 'article-'.Str::lower(Str::random(6));
         }
 
         $slug = $base;
         $counter = 1;
 
         while (
-            KnowledgeArticle::withTrashed()->where("slug", $slug)->exists()
+            KnowledgeArticle::withTrashed()->where('slug', $slug)->exists()
         ) {
             $counter++;
             $slug = "{$base}-{$counter}";
