@@ -59,10 +59,9 @@ class TicketController extends Controller
             $request->user(),
         );
 
-        return ApiResponse::success(
+        return ApiResponse::created(
             new TicketResource($ticket),
             'Ticket created successfully',
-            201,
         );
     }
 

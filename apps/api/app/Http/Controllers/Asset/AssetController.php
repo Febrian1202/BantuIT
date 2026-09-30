@@ -86,10 +86,9 @@ class AssetController extends Controller
             $request->user(),
         );
 
-        return ApiResponse::success(
+        return ApiResponse::created(
             new AssetListResource($data),
             'Asset created successfully.',
-            201,
         );
     }
 
