@@ -45,7 +45,7 @@ class ReferenceService
         $technicianRoleId = Role::where(
             "name",
             RoleName::Technician->value,
-        )->value();
+        )->value("id");
 
         return User::where("role_id", $technicianRoleId)
             ->where("status", UserStatus::Active->value)
