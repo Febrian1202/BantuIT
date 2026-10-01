@@ -18,17 +18,17 @@ class StoreTicketCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => [
-                "required",
-                "string",
-                "max:100",
-                Rule::unique("ticket_categories", "name"),
+            'name' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('ticket_categories', 'name'),
             ],
-            "description" => ["nullable", "string", "max:500"],
-            "parent_id" => [
-                "nullable",
-                "integer",
-                "exists:ticket_categories,id",
+            'description' => ['nullable', 'string', 'max:500'],
+            'parent_id' => [
+                'nullable',
+                'integer',
+                'exists:ticket_categories,id',
             ],
         ];
     }
@@ -39,9 +39,9 @@ class StoreTicketCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            "name.required" => "Nama kategori tiket wajib diisi.",
-            "name.unique" => "Nama kategori tiket sudah digunakan.",
-            "parent_id.exists" => "Kategori induk tidak valid.",
+            'name.required' => 'Nama kategori tiket wajib diisi.',
+            'name.unique' => 'Nama kategori tiket sudah digunakan.',
+            'parent_id.exists' => 'Kategori induk tidak valid.',
         ];
     }
 }

@@ -26,7 +26,7 @@ class TicketPriorityServices
      */
     public function index(): Collection
     {
-        return TicketPriority::orderBy("sla_minutes")->get();
+        return TicketPriority::orderBy('sla_minutes')->get();
     }
 
     /**
@@ -46,10 +46,10 @@ class TicketPriorityServices
                 "Prioritas tiket {$priority->name} dibuat.",
                 null,
                 $priority->only([
-                    "name",
-                    "level",
-                    "sla_minutes",
-                    "description",
+                    'name',
+                    'level',
+                    'sla_minutes',
+                    'description',
                 ]),
             );
 
@@ -65,7 +65,7 @@ class TicketPriorityServices
         TicketPriority $priority,
         User $actor,
     ): TicketPriority {
-        $old = $priority->only(["name", "level", "sla_minutes", "description"]);
+        $old = $priority->only(['name', 'level', 'sla_minutes', 'description']);
 
         return DB::transaction(function () use (
             $data,
@@ -83,10 +83,10 @@ class TicketPriorityServices
                 "Prioritas tiket {$priority->name} diperbarui.",
                 $old,
                 $priority->only([
-                    "name",
-                    "level",
-                    "sla_minutes",
-                    "description",
+                    'name',
+                    'level',
+                    'sla_minutes',
+                    'description',
                 ]),
             );
 
@@ -100,7 +100,7 @@ class TicketPriorityServices
     public function destroy(TicketPriority $priority, User $actor): void
     {
         $this->guard->assertUnreferenced([
-            "Prioritas tiket" => Ticket::where("priority_id", $priority->id),
+            'Prioritas tiket' => Ticket::where('priority_id', $priority->id),
         ]);
 
         DB::transaction(function () use ($priority, $actor): void {

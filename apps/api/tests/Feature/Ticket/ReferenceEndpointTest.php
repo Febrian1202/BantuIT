@@ -6,88 +6,88 @@ use App\Models\Role;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
-uses()->group("ticket");
+uses()->group('ticket');
 
-test("ticket categories list mengembalikan semua 22 kategori", function () {
+test('ticket categories list mengembalikan semua 22 kategori', function () {
     $employee = User::factory()->employee()->create();
     Sanctum::actingAs($employee);
 
-    $this->getJson("/api/ticket-categories")
+    $this->getJson('/api/ticket-categories')
         ->assertStatus(200)
-        ->assertJsonCount(22, "data");
+        ->assertJsonCount(22, 'data');
 });
 
 test(
-    "ticket priorities list mengembalikan 4 priorities dengan sla_minutes",
+    'ticket priorities list mengembalikan 4 priorities dengan sla_minutes',
     function () {
         $employee = User::factory()->employee()->create();
         Sanctum::actingAs($employee);
 
-        $response = $this->getJson("/api/ticket-priorities")
+        $response = $this->getJson('/api/ticket-priorities')
             ->assertStatus(200)
-            ->assertJsonCount(4, "data");
+            ->assertJsonCount(4, 'data');
 
         $response->assertJsonStructure([
-            "data" => [
-                "*" => ["id", "name", "sla_minutes"],
+            'data' => [
+                '*' => ['id', 'name', 'sla_minutes'],
             ],
         ]);
-        expect($response->json("data.0"))->toHaveKeys([
-            "id",
-            "name",
-            "sla_minutes",
+        expect($response->json('data.0'))->toHaveKeys([
+            'id',
+            'name',
+            'sla_minutes',
         ]);
     },
 );
 
-test("ticket statuses list hanya GET", function () {
+test('ticket statuses list hanya GET', function () {
     $employee = User::factory()->employee()->create();
     Sanctum::actingAs($employee);
 
-    $this->getJson("/api/ticket-statuses")
+    $this->getJson('/api/ticket-statuses')
         ->assertStatus(200)
-        ->assertJsonCount(5, "data");
+        ->assertJsonCount(5, 'data');
 
-    $this->postJson("/api/ticket-statuses", [])->assertStatus(405);
+    $this->postJson('/api/ticket-statuses', [])->assertStatus(405);
 });
 
-test("technicians list hanya mengembalikan active technicians", function () {
+test('technicians list hanya mengembalikan active technicians', function () {
     $manager = User::factory()->manager()->create();
     Sanctum::actingAs($manager);
 
     $technicianRoleId = Role::where(
-        "name",
+        'name',
         RoleName::Technician->value,
     )->first()->id;
 
     $activeTechnician = User::factory()->create([
-        "role_id" => $technicianRoleId,
-        "status" => UserStatus::Active->value,
-        "full_name" => "Active Tech",
+        'role_id' => $technicianRoleId,
+        'status' => UserStatus::Active->value,
+        'full_name' => 'Active Tech',
     ]);
 
     User::factory()->create([
-        "role_id" => $technicianRoleId,
-        "status" => UserStatus::Inactive->value,
-        "full_name" => "Inactive Tech",
+        'role_id' => $technicianRoleId,
+        'status' => UserStatus::Inactive->value,
+        'full_name' => 'Inactive Tech',
     ]);
 
     User::factory()
         ->employee()
         ->create([
-            "full_name" => "Regular Employee",
+            'full_name' => 'Regular Employee',
         ]);
 
-    $this->getJson("/api/technicians")
+    $this->getJson('/api/technicians')
         ->assertStatus(200)
-        ->assertJsonCount(1, "data")
-        ->assertJsonPath("data.0.id", $activeTechnician->id)
-        ->assertJsonPath("data.0.full_name", "Active Tech");
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.id', $activeTechnician->id)
+        ->assertJsonPath('data.0.full_name', 'Active Tech');
 });
 
-test("employee tidak bisa access technicians list", function () {
+test('employee tidak bisa access technicians list', function () {
     $employee = User::factory()->employee()->create();
     Sanctum::actingAs($employee);
 
-    $this->getJson("/api/technicians")->assertStatus(403);
+    $this->getJson('/api/technicians')->assertStatus(403);
 });

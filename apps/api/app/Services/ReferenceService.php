@@ -18,7 +18,7 @@ class ReferenceService
      */
     public function ticketCategories(): Collection
     {
-        return TicketCategory::all(["id", "name"]);
+        return TicketCategory::all(['id', 'name']);
     }
 
     /**
@@ -26,7 +26,7 @@ class ReferenceService
      */
     public function ticketPriorities(): Collection
     {
-        return TicketPriority::all("id", "name", "sla_minutes");
+        return TicketPriority::all('id', 'name', 'sla_minutes');
     }
 
     /**
@@ -34,7 +34,7 @@ class ReferenceService
      */
     public function ticketStatuses(): Collection
     {
-        return TicketStatus::all("id", "name");
+        return TicketStatus::all('id', 'name');
     }
 
     /**
@@ -43,12 +43,12 @@ class ReferenceService
     public function technicianList(): Collection
     {
         $technicianRoleId = Role::where(
-            "name",
+            'name',
             RoleName::Technician->value,
-        )->value("id");
+        )->value('id');
 
-        return User::where("role_id", $technicianRoleId)
-            ->where("status", UserStatus::Active->value)
-            ->get(["id", "full_name"]);
+        return User::where('role_id', $technicianRoleId)
+            ->where('status', UserStatus::Active->value)
+            ->get(['id', 'full_name']);
     }
 }

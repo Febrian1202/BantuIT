@@ -11,7 +11,7 @@ class ReferentialIntegrityGuard
     /**
      * Memastikan tidak ada data terkait yang masih digunakan.
      *
-     * @param array<string, Builder|Relation> $references label => query/relation
+     * @param  array<string, Builder|Relation>  $references  label => query/relation
      *
      * @throws StateConflictException jika ada data terkait yang masih digunakan
      */

@@ -26,7 +26,7 @@ class TicketCategoryServices
      */
     public function index(): Collection
     {
-        return TicketCategory::with("parent")->orderBy("name")->get();
+        return TicketCategory::with('parent')->orderBy('name')->get();
     }
 
     /**
@@ -34,7 +34,7 @@ class TicketCategoryServices
      */
     public function show(TicketCategory $ticketCategory): TicketCategory
     {
-        return $ticketCategory->load("parent");
+        return $ticketCategory->load('parent');
     }
 
     /**
@@ -46,9 +46,9 @@ class TicketCategoryServices
     ): TicketCategory {
         return DB::transaction(function () use ($data, $actor): TicketCategory {
             $ticketCategory = TicketCategory::create([
-                "name" => $data->name,
-                "parent_id" => $data->parentId,
-                "description" => $data->description,
+                'name' => $data->name,
+                'parent_id' => $data->parentId,
+                'description' => $data->description,
             ]);
 
             $this->auditLogger->log(
@@ -58,7 +58,7 @@ class TicketCategoryServices
                 $ticketCategory->id,
                 "Kategori tiket {$ticketCategory->name} dibuat.",
                 null,
-                $ticketCategory->only(["name", "description", "parent_id"]),
+                $ticketCategory->only(['name', 'description', 'parent_id']),
             );
 
             return $ticketCategory;
@@ -73,7 +73,7 @@ class TicketCategoryServices
         TicketCategory $ticketCategory,
         User $actor,
     ): TicketCategory {
-        $oldData = $ticketCategory->only(["name", "description", "parent_id"]);
+        $oldData = $ticketCategory->only(['name', 'description', 'parent_id']);
 
         return DB::transaction(function () use (
             $data,
@@ -82,9 +82,9 @@ class TicketCategoryServices
             $oldData,
         ): TicketCategory {
             $ticketCategory->update([
-                "name" => $data->name,
-                "parent_id" => $data->parentId,
-                "description" => $data->description,
+                'name' => $data->name,
+                'parent_id' => $data->parentId,
+                'description' => $data->description,
             ]);
 
             $this->auditLogger->log(
@@ -94,10 +94,10 @@ class TicketCategoryServices
                 $ticketCategory->id,
                 "Kategori tiket {$ticketCategory->name} diperbarui.",
                 $oldData,
-                $ticketCategory->only(["name", "description", "parent_id"]),
+                $ticketCategory->only(['name', 'description', 'parent_id']),
             );
 
-            return $ticketCategory->fresh()->load("parent");
+            return $ticketCategory->fresh()->load('parent');
         });
     }
 
@@ -107,12 +107,12 @@ class TicketCategoryServices
     public function destroy(TicketCategory $ticketCategory, User $actor): void
     {
         $this->guard->assertUnreferenced([
-            "Kategori tiket" => Ticket::where(
-                "category_id",
+            'Kategori tiket' => Ticket::where(
+                'category_id',
                 $ticketCategory->id,
             ),
-            "Kategori tiket (induk)" => TicketCategory::where(
-                "parent_id",
+            'Kategori tiket (induk)' => TicketCategory::where(
+                'parent_id',
                 $ticketCategory->id,
             ),
         ]);

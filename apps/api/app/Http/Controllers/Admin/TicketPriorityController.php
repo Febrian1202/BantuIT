@@ -24,11 +24,12 @@ class TicketPriorityController extends Controller
      */
     public function index(): JsonResponse
     {
-        $this->authorize("ticket-priority.viewAny");
+        $this->authorize('ticket-priority.viewAny');
         $priorities = $this->priorityServices->index();
+
         return ApiResponse::success(
             $priorities,
-            "Ticket priorities retrieved.",
+            'Ticket priorities retrieved.',
         );
     }
 
@@ -37,11 +38,11 @@ class TicketPriorityController extends Controller
      */
     public function show(TicketPriority $ticketPriority): JsonResponse
     {
-        $this->authorize("ticket-priority.viewAny");
+        $this->authorize('ticket-priority.viewAny');
 
         return ApiResponse::success(
             $ticketPriority,
-            "Ticket priority retrieved.",
+            'Ticket priority retrieved.',
         );
     }
 
@@ -50,14 +51,14 @@ class TicketPriorityController extends Controller
      */
     public function store(StoreTicketPriorityRequest $request): JsonResponse
     {
-        $this->authorize("ticket-priority.manage");
+        $this->authorize('ticket-priority.manage');
 
         $dto = CreateTicketPriorityData::fromArray($request->validated());
         $priority = $this->priorityServices->store($dto, $request->user());
 
         return ApiResponse::created(
             $priority,
-            "Ticket priority created successfully.",
+            'Ticket priority created successfully.',
         );
     }
 
@@ -68,7 +69,7 @@ class TicketPriorityController extends Controller
         UpdateTicketPriorityRequest $request,
         TicketPriority $ticketPriority,
     ): JsonResponse {
-        $this->authorize("ticket-priority.manage");
+        $this->authorize('ticket-priority.manage');
 
         $dto = UpdateTicketPriorityData::fromArray($request->validated());
         $priority = $this->priorityServices->update(
@@ -79,7 +80,7 @@ class TicketPriorityController extends Controller
 
         return ApiResponse::success(
             $priority,
-            "Ticket priority updated successfully.",
+            'Ticket priority updated successfully.',
         );
     }
 
@@ -90,13 +91,13 @@ class TicketPriorityController extends Controller
         TicketPriority $ticketPriority,
         Request $request,
     ): JsonResponse {
-        $this->authorize("ticket-priority.manage");
+        $this->authorize('ticket-priority.manage');
 
         $this->priorityServices->destroy($ticketPriority, $request->user());
 
         return ApiResponse::success(
             null,
-            "Ticket priority deleted successfully.",
+            'Ticket priority deleted successfully.',
         );
     }
 }

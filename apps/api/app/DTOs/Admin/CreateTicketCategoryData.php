@@ -13,9 +13,9 @@ class CreateTicketCategoryData
     public static function fromArray(array $data): self
     {
         return new self(
-            name: $data["name"],
-            parentId: $data["parent_id"] ?? null,
-            description: $data["description"] ?? null,
+            name: $data['name'],
+            parentId: $data['parent_id'] ?? null,
+            description: $data['description'] ?? null,
         );
     }
 }

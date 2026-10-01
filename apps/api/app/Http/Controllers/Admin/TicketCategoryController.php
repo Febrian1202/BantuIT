@@ -24,13 +24,13 @@ class TicketCategoryController extends Controller
      */
     public function index(): JsonResponse
     {
-        $this->authorize("ticket-category.viewAny");
+        $this->authorize('ticket-category.viewAny');
 
         $categories = $this->categoryServices->index();
 
         return ApiResponse::success(
             $categories,
-            "Ticket categories retrieved.",
+            'Ticket categories retrieved.',
         );
     }
 
@@ -39,11 +39,11 @@ class TicketCategoryController extends Controller
      */
     public function show(TicketCategory $ticketCategory): JsonResponse
     {
-        $this->authorize("ticket-category.viewAny");
+        $this->authorize('ticket-category.viewAny');
 
         $category = $this->categoryServices->show($ticketCategory);
 
-        return ApiResponse::success($category, "Ticket category retrieved.");
+        return ApiResponse::success($category, 'Ticket category retrieved.');
     }
 
     /**
@@ -51,14 +51,14 @@ class TicketCategoryController extends Controller
      */
     public function store(StoreTicketCategoryRequest $request): JsonResponse
     {
-        $this->authorize("ticket-category.manage");
+        $this->authorize('ticket-category.manage');
 
         $dto = CreateTicketCategoryData::fromArray($request->validated());
         $category = $this->categoryServices->store($dto, $request->user());
 
         return ApiResponse::created(
             $category,
-            "Ticket category created successfully.",
+            'Ticket category created successfully.',
         );
     }
 
@@ -69,7 +69,7 @@ class TicketCategoryController extends Controller
         UpdateTicketCategoryRequest $request,
         TicketCategory $ticketCategory,
     ): JsonResponse {
-        $this->authorize("ticket-category.manage");
+        $this->authorize('ticket-category.manage');
 
         $dto = UpdateTicketCategoryData::fromArray($request->validated());
         $category = $this->categoryServices->update(
@@ -80,7 +80,7 @@ class TicketCategoryController extends Controller
 
         return ApiResponse::success(
             $category,
-            "Ticket category updated successfully.",
+            'Ticket category updated successfully.',
         );
     }
 
@@ -91,13 +91,13 @@ class TicketCategoryController extends Controller
         TicketCategory $ticketCategory,
         Request $request,
     ): JsonResponse {
-        $this->authorize("ticket-category.manage");
+        $this->authorize('ticket-category.manage');
 
         $this->categoryServices->destroy($ticketCategory, $request->user());
 
         return ApiResponse::success(
             null,
-            "Ticket category deleted successfully.",
+            'Ticket category deleted successfully.',
         );
     }
 }

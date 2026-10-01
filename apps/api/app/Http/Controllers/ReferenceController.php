@@ -15,11 +15,11 @@ class ReferenceController extends Controller
      */
     public function categories(): JsonResponse
     {
-        $this->authorize("ticket-category.viewAny");
+        $this->authorize('ticket-category.viewAny');
 
         return ApiResponse::success(
             $this->referenceService->ticketCategories(),
-            "Ticket categories retrieved.",
+            'Ticket categories retrieved.',
         );
     }
 
@@ -28,11 +28,11 @@ class ReferenceController extends Controller
      */
     public function priorities(): JsonResponse
     {
-        $this->authorize("ticket-priority.viewAny");
+        $this->authorize('ticket-priority.viewAny');
 
         return ApiResponse::success(
             $this->referenceService->ticketPriorities(),
-            "Ticket priorities retrieved.",
+            'Ticket priorities retrieved.',
         );
     }
 
@@ -41,11 +41,11 @@ class ReferenceController extends Controller
      */
     public function statuses(): JsonResponse
     {
-        $this->authorize("ticket-status.viewAny");
+        $this->authorize('ticket-status.viewAny');
 
         return ApiResponse::success(
             $this->referenceService->ticketStatuses(),
-            "Ticket statuses retrieved.",
+            'Ticket statuses retrieved.',
         );
     }
 
@@ -54,11 +54,11 @@ class ReferenceController extends Controller
      */
     public function technicians(): JsonResponse
     {
-        $this->authorize("technician.list");
+        $this->authorize('technician.list');
 
         return ApiResponse::success(
             $this->referenceService->technicianList(),
-            "Technicians retrieved.",
+            'Technicians retrieved.',
         );
     }
 }
