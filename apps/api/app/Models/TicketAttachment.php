@@ -3,10 +3,16 @@
 namespace App\Models;
 
 use App\Models\Concerns\SerializesDatesAsIso8601;
+use App\Observers\TicketAttachmentObserver;
+use App\Policies\TicketAttachmentPolicy;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ObservedBy([TicketAttachmentObserver::class])]
+#[UsePolicy(TicketAttachmentPolicy::class)]
 class TicketAttachment extends Model
 {
     use HasFactory, SerializesDatesAsIso8601;
