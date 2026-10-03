@@ -13,9 +13,9 @@ class TicketAttachmentPolicy
         User $user,
         TicketAttachment $ticketAttachment,
     ): Response|bool {
-        return $user->can('view', $ticketAttachment->ticket())
+        return $user->can('view', $ticketAttachment->ticket)
             ? true
-            : Response::deny();
+            : Response::denyAsNotFound();
     }
 
     public function download(

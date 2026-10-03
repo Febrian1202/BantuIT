@@ -51,7 +51,7 @@ class TicketAttachmentController extends Controller
 
         return ApiResponse::created(
             new TicketAttachmentResource($attachment),
-            'Attachment uploaded successfully',
+            'Attachment uploaded successfully.',
         );
     }
 

@@ -2,28 +2,43 @@
 
 namespace App\Http\Requests\Ticket;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTicketAttachmentRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, list<string>>
      */
     public function rules(): array
     {
         return [
-            //
+            'file' => [
+                'required',
+                'file',
+                'max:5120',
+                'mimetypes:image/jpeg,image/png,application/pdf',
+                'mimes:jpg,jpeg,png,pdf',
+                'extensions:jpg,jpeg,png,pdf',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'file.required' => 'File wajib diunggah.',
+            'file.file' => 'Kolom file harus berupa berkas.',
+            'file.max' => 'Ukuran file tidak boleh melebihi 5 MB.',
+            'file.mimetypes' => 'Tipe file tidak diizinkan. Hanya JPG, JPEG, PNG, atau PDF.',
+            'file.extensions' => 'Ekstensi file tidak diizinkan. Hanya jpg, jpeg, png, atau pdf.',
         ];
     }
 }

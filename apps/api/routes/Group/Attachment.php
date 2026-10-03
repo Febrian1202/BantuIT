@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('{attachment}/download', [
     TicketAttachmentController::class,
-    'donwload',
+    'download',
 ])->name('donwload');
 Route::delete('{attachment}', [
     TicketAttachmentController::class,

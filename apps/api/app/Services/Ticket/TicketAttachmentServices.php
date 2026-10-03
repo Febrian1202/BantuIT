@@ -97,7 +97,7 @@ class TicketAttachmentServices
 
         return Storage::disk('private')->download(
             $filepath,
-            $attachment->originale_filename,
+            $attachment->original_filename,
             [
                 'Content-Type' => $attachment->mime_type,
             ],
