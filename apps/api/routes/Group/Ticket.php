@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Ticket\TicketAttachmentController;
 use App\Http\Controllers\Ticket\TicketCommentController;
 use App\Http\Controllers\Ticket\TicketController;
 use App\Http\Controllers\Ticket\TicketHistoryController;
@@ -17,6 +18,15 @@ Route::delete('/{ticket}', [TicketController::class, 'destroy'])->name(
 );
 
 Route::prefix('{ticket}')->group(function () {
+    // Ticket attachment
+    Route::get('/attachments', [
+        TicketAttachmentController::class,
+        'index',
+    ])->name('tickets.attachments.index');
+    Route::post('/attachments', [TicketAttachmentController::class, 'store'])
+        ->middleware('throttle:upload')
+        ->name('tickets.attachments.store');
+
     // Ticket transition
     Route::post('/status', [TicketController::class, 'transition'])->name(
         'status',

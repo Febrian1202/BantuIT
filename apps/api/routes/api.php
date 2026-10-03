@@ -33,6 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
             'me.update',
         );
 
+        // Attachment endpoint
+        Route::prefix('/attachments')
+            ->name('attachments.')
+            ->group(base_path('routes/Group/Attachment.php'));
+
         // Ticket module
         Route::prefix('/tickets')
             ->name('tickets.')
