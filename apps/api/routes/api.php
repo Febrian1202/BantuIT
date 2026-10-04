@@ -99,5 +99,10 @@ Route::middleware('auth:sanctum')->group(function () {
             '/knowledge-categories',
             KnowledgeCategoryController::class,
         );
+
+        // Audit Log module
+        Route::prefix('/audit-logs')
+            ->name('audit-logs.')
+            ->group(base_path('routes/Group/Audit.php'));
     });
 });
