@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\TicketCategoryController;
 use App\Http\Controllers\Admin\TicketPriorityController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Article\KnowledgeCategoryController;
 use App\Http\Controllers\Asset\AssetController;
 use App\Http\Controllers\Auth\AuthController;
@@ -33,10 +35,21 @@ Route::middleware('auth:sanctum')->group(function () {
             'me.update',
         );
 
+        // User module
+        Route::get('/roles', [UserController::class, 'roles'])->name(
+            'roles.index',
+        );
+        Route::prefix('/users')
+            ->name('users.')
+            ->group(base_path('routes/Group/User.php'));
+
         // Attachment endpoint
         Route::prefix('/attachments')
             ->name('attachments.')
             ->group(base_path('routes/Group/Attachment.php'));
+
+        // Department module
+        Route::apiResource('departments', DepartmentController::class);
 
         // Ticket module
         Route::prefix('/tickets')
