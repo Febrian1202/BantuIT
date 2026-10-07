@@ -57,7 +57,7 @@ async function handleProxy(
 
     const responseHeaders = new Headers();
     response.headers.forEach((val, key) => {
-      if (!["content-encoding", "content-type"].includes(key.toLowerCase())) {
+      if (!["content-encoding", "content-length"].includes(key.toLowerCase())) {
         responseHeaders.set(key, val);
       }
     });
