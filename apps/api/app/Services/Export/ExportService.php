@@ -25,102 +25,102 @@ class ExportService
     public function exportTickets(User $actor, array $filters): StreamedResponse
     {
         if ($actor->hasRole(RoleName::Employee)) {
-            abort(403, "Anda tidak memiliki hak akses untuk mengekspor tiket.");
+            abort(403, 'Anda tidak memiliki hak akses untuk mengekspor tiket.');
         }
 
         $query = Ticket::with([
-            "status",
-            "priority",
-            "category",
-            "reporter",
-            "technician",
+            'status',
+            'priority',
+            'category',
+            'reporter',
+            'technician',
         ]);
 
-        if (!empty($filters["search"])) {
+        if (! empty($filters['search'])) {
             $search = str_replace(
-                ["%", "_"],
-                ["\\%", "\\_"],
-                (string) $filters["search"],
+                ['%', '_'],
+                ['\\%', '\\_'],
+                (string) $filters['search'],
             );
             $query->where(function ($q) use ($search) {
-                $q->whereRaw("ticket_number LIKE ? ESCAPE ?", [
+                $q->whereRaw('ticket_number LIKE ? ESCAPE ?', [
                     "%{$search}%",
-                    "\\",
-                ])->orWhereRaw("title LIKE ? ESCAPE ?", ["%{$search}%", "\\"]);
+                    '\\',
+                ])->orWhereRaw('title LIKE ? ESCAPE ?', ["%{$search}%", '\\']);
             });
         }
 
-        foreach (["status_id", "priority_id", "category_id"] as $field) {
-            if (!empty($filters[$field])) {
+        foreach (['status_id', 'priority_id', 'category_id'] as $field) {
+            if (! empty($filters[$field])) {
                 $ids = array_map(
-                    "intval",
-                    explode(",", (string) $filters[$field]),
+                    'intval',
+                    explode(',', (string) $filters[$field]),
                 );
-                $ids = array_values(array_filter($ids, fn($v) => $v > 0));
+                $ids = array_values(array_filter($ids, fn ($v) => $v > 0));
                 $query->whereIn($field, $ids);
             }
         }
 
-        if (!empty($filters["technician_id"])) {
-            if ($filters["technician_id"] === "unassigned") {
-                $query->whereNull("technician_id");
+        if (! empty($filters['technician_id'])) {
+            if ($filters['technician_id'] === 'unassigned') {
+                $query->whereNull('technician_id');
             } else {
-                $query->whereIn("technician_id", [
-                    (int) $filters["technician_id"],
+                $query->whereIn('technician_id', [
+                    (int) $filters['technician_id'],
                 ]);
             }
         }
 
-        if (!empty($filters["reporter_id"])) {
-            $query->where("reporter_id", (int) $filters["reporter_id"]);
+        if (! empty($filters['reporter_id'])) {
+            $query->where('reporter_id', (int) $filters['reporter_id']);
         }
 
-        foreach (["department_id", "asset_id"] as $field) {
-            if (!empty($filters[$field])) {
+        foreach (['department_id', 'asset_id'] as $field) {
+            if (! empty($filters[$field])) {
                 $query->where($field, (int) $filters[$field]);
             }
         }
 
-        if (!empty($filters["sla_status"])) {
-            if ($filters["sla_status"] === "breached") {
+        if (! empty($filters['sla_status'])) {
+            if ($filters['sla_status'] === 'breached') {
                 $this->slaService->scopeBreached($query);
             } else {
                 $this->slaService->scopeOnTrack($query);
             }
         }
 
-        if (!empty($filters["created_from"])) {
+        if (! empty($filters['created_from'])) {
             $query->where(
-                "created_at",
-                ">=",
-                $filters["created_from"] . " 00:00:00",
+                'created_at',
+                '>=',
+                $filters['created_from'].' 00:00:00',
             );
         }
 
-        if (!empty($filters["created_to"])) {
+        if (! empty($filters['created_to'])) {
             $query->where(
-                "created_at",
-                "<=",
-                $filters["created_to"] . " 23:59:59",
+                'created_at',
+                '<=',
+                $filters['created_to'].' 23:59:59',
             );
         }
 
-        $sortBy = $filters["sort_by"] ?? "created_at";
-        $sortDir = $filters["sort_dir"] ?? "desc";
+        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $sortDir = $filters['sort_dir'] ?? 'desc';
         $query->orderBy($sortBy, $sortDir);
 
         $headers = [
-            "ticket_number",
-            "title",
-            "status",
-            "priority",
-            "category",
-            "reporter",
-            "technician",
-            "sla_deadline",
-            "sla_status",
-            "created_at",
-            "resolved_at",
+            'ticket_number',
+            'title',
+            'status',
+            'priority',
+            'category',
+            'reporter',
+            'technician',
+            'sla_deadline',
+            'sla_status',
+            'created_at',
+            'resolved_at',
         ];
 
         $generator = function () use ($query) {
@@ -135,15 +135,15 @@ class ExportService
                     $ticket->technician?->full_name,
                     $ticket->sla_deadline?->toISOString(),
                     $this->slaService->isBreached($ticket)
-                        ? "breached"
-                        : "on_track",
+                        ? 'breached'
+                        : 'on_track',
                     $ticket->created_at?->toISOString(),
                     $ticket->resolved_at?->toISOString(),
                 ];
             }
         };
 
-        $filename = sprintf("tickets-export-%s.csv", now()->format("Ymd"));
+        $filename = sprintf('tickets-export-%s.csv', now()->format('Ymd'));
 
         return $this->exporter->stream($filename, $headers, $generator());
     }
@@ -153,53 +153,53 @@ class ExportService
      */
     public function exportAssets(array $filters): StreamedResponse
     {
-        $query = Asset::query()->with(["activeAssignment.user"]);
+        $query = Asset::query()->with(['activeAssignment.user']);
 
-        if (!empty($filters["search"])) {
+        if (! empty($filters['search'])) {
             $term = str_replace(
-                ["%", "_"],
-                ["\\%", "\\_"],
-                (string) $filters["search"],
+                ['%', '_'],
+                ['\\%', '\\_'],
+                (string) $filters['search'],
             );
             $query->where(function ($q) use ($term) {
-                $q->where("asset_tag", "LIKE", "%{$term}%")
-                    ->orWhere("serial_number", "LIKE", "%{$term}%")
-                    ->orWhere("name", "LIKE", "%{$term}%");
+                $q->where('asset_tag', 'LIKE', "%{$term}%")
+                    ->orWhere('serial_number', 'LIKE', "%{$term}%")
+                    ->orWhere('name', 'LIKE', "%{$term}%");
             });
         }
 
-        if (!empty($filters["status"])) {
-            $query->where("status", $filters["status"]);
+        if (! empty($filters['status'])) {
+            $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters["category"])) {
-            $query->where("category", $filters["category"]);
+        if (! empty($filters['category'])) {
+            $query->where('category', $filters['category']);
         }
 
-        if (!empty($filters["assigned_user_id"])) {
-            $assignedUserId = $filters["assigned_user_id"];
-            $query->whereHas("activeAssignment", function ($q) use (
+        if (! empty($filters['assigned_user_id'])) {
+            $assignedUserId = $filters['assigned_user_id'];
+            $query->whereHas('activeAssignment', function ($q) use (
                 $assignedUserId,
             ) {
-                $q->where("user_id", $assignedUserId);
+                $q->where('user_id', $assignedUserId);
             });
         }
 
-        $sortBy = $filters["sort_by"] ?? "asset_tag";
-        $sortDir = $filters["sort_dir"] ?? "asc";
+        $sortBy = $filters['sort_by'] ?? 'asset_tag';
+        $sortDir = $filters['sort_dir'] ?? 'asc';
         $query->orderBy($sortBy, $sortDir);
 
         $headers = [
-            "asset_tag",
-            "name",
-            "category",
-            "brand",
-            "model",
-            "serial_number",
-            "status",
-            "assigned_to",
-            "purchase_date",
-            "created_at",
+            'asset_tag',
+            'name',
+            'category',
+            'brand',
+            'model',
+            'serial_number',
+            'status',
+            'assigned_to',
+            'purchase_date',
+            'created_at',
         ];
 
         $generator = function () use ($query) {
@@ -213,13 +213,13 @@ class ExportService
                     $asset->serial_number,
                     $asset->status?->value ?? (string) $asset->status,
                     $asset->activeAssignment?->user?->full_name,
-                    $asset->purchase_date?->format("Y-m-d"),
+                    $asset->purchase_date?->format('Y-m-d'),
                     $asset->created_at?->toISOString(),
                 ];
             }
         };
 
-        $filename = sprintf("assets-export-%s.csv", now()->format("Ymd"));
+        $filename = sprintf('assets-export-%s.csv', now()->format('Ymd'));
 
         return $this->exporter->stream($filename, $headers, $generator());
     }
@@ -232,57 +232,57 @@ class ExportService
         array $filters,
         ?Carbon $dateFrom = null,
         ?Carbon $dateTo = null,
-        string $sortBy = "created_at",
-        string $sortDir = "desc",
+        string $sortBy = 'created_at',
+        string $sortDir = 'desc',
     ): StreamedResponse {
-        $query = AuditLog::query()->with("user");
+        $query = AuditLog::query()->with('user');
 
-        if (!$actor->isAdmin()) {
+        if (! $actor->isAdmin()) {
             if ($actor->hasRole(RoleName::Manager)) {
                 $query->whereIn(
-                    "module",
+                    'module',
                     AuditLogQueryService::MANAGER_ALLOWED_MODULES,
                 );
             } else {
-                abort(403, "Aksi ini tidak diizinkan.");
+                abort(403, 'Aksi ini tidak diizinkan.');
             }
         }
 
-        if (!empty($filters["user_id"])) {
-            $query->where("user_id", $filters["user_id"]);
+        if (! empty($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
         }
 
-        if (!empty($filters["module"])) {
-            $query->where("module", $filters["module"]);
+        if (! empty($filters['module'])) {
+            $query->where('module', $filters['module']);
         }
 
-        if (!empty($filters["action"])) {
-            $query->where("action", $filters["action"]);
+        if (! empty($filters['action'])) {
+            $query->where('action', $filters['action']);
         }
 
-        if (!empty($filters["module_id"])) {
-            $query->where("module_id", $filters["module_id"]);
+        if (! empty($filters['module_id'])) {
+            $query->where('module_id', $filters['module_id']);
         }
 
         if ($dateFrom !== null) {
-            $query->where("created_at", ">=", $dateFrom);
+            $query->where('created_at', '>=', $dateFrom);
         }
 
         if ($dateTo !== null) {
-            $query->where("created_at", "<=", $dateTo);
+            $query->where('created_at', '<=', $dateTo);
         }
 
         $query->orderBy($sortBy, $sortDir);
 
         $headers = [
-            "id",
-            "created_at",
-            "user",
-            "action",
-            "module",
-            "module_id",
-            "ip_address",
-            "description",
+            'id',
+            'created_at',
+            'user',
+            'action',
+            'module',
+            'module_id',
+            'ip_address',
+            'description',
         ];
 
         $generator = function () use ($query) {
@@ -300,7 +300,7 @@ class ExportService
             }
         };
 
-        $filename = sprintf("audit-logs-export-%s.csv", now()->format("Ymd"));
+        $filename = sprintf('audit-logs-export-%s.csv', now()->format('Ymd'));
 
         return $this->exporter->stream($filename, $headers, $generator());
     }

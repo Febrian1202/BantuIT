@@ -8,8 +8,6 @@ use App\Http\Requests\Audit\IndexAuditLogRequest;
 use App\Http\Requests\Ticket\IndexTicketRequest;
 use App\Models\Asset;
 use App\Services\Export\ExportService;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Exceptions\StreamedResponseException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportController extends Controller
@@ -32,7 +30,7 @@ class ExportController extends Controller
      */
     public function assets(IndexAssetRequest $request): StreamedResponse
     {
-        $this->authorize("viewAny", Asset::class);
+        $this->authorize('viewAny', Asset::class);
 
         return $this->exportService->exportAssets($request->validated());
     }
@@ -42,15 +40,15 @@ class ExportController extends Controller
      */
     public function auditLogs(IndexAuditLogRequest $request): StreamedResponse
     {
-        $this->authorize("audit-log.viewAny");
+        $this->authorize('audit-log.viewAny');
 
         return $this->exportService->exportAuditLogs(
             actor: $request->user(),
             filters: $request->validated(),
             dateFrom: $request->getDateFromUtc(),
             dateTo: $request->getDateToUtc(),
-            sortBy: $request->query("sort_by", "created_at"),
-            sortDir: $request->query("sort_dir", "desc"),
+            sortBy: $request->query('sort_by', 'created_at'),
+            sortDir: $request->query('sort_dir', 'desc'),
         );
     }
 }

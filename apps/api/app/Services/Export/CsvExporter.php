@@ -9,10 +9,9 @@ class CsvExporter
     /**
      * Stream file CSV ke response
      *
-     * @param string $filename Nama file CSV
-     * @param array $headers Header CSV
-     * @param iterable $rows Data CSV
-     * @return StreamedResponse
+     * @param  string  $filename  Nama file CSV
+     * @param  array  $headers  Header CSV
+     * @param  iterable  $rows  Data CSV
      */
     public function stream(
         string $filename,
@@ -20,19 +19,19 @@ class CsvExporter
         iterable $rows,
     ): StreamedResponse {
         $responseHeaders = [
-            "Content-Type" => "text/csv; charset=UTF-8",
-            "Content-Disposition" => sprintf(
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => sprintf(
                 'attachment; filename="%s"',
                 $filename,
             ),
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         return response()->stream(
             function () use ($headers, $rows) {
-                $handle = fopen("php://output", "w");
+                $handle = fopen('php://output', 'w');
 
                 // UTF-8 BOM untuk Excel Indonesia
                 fwrite($handle, "\xEF\xBB\xBF");
@@ -45,11 +44,12 @@ class CsvExporter
                         $handle,
                         array_map(function ($val) {
                             if ($val === null) {
-                                return "";
+                                return '';
                             }
                             if (is_bool($val)) {
-                                return $val ? "true" : "false";
+                                return $val ? 'true' : 'false';
                             }
+
                             return (string) $val;
                         }, $row),
                     );
