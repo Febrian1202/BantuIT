@@ -19,45 +19,45 @@ class EmployeeDashboardService
      */
     public function get(User $actor): array
     {
-        $tickets = Ticket::query()->where("reporter_id", $actor->id);
+        $tickets = Ticket::query()->where('reporter_id', $actor->id);
 
         return [
-            "my_open_tickets" => $this->countsQuery->countOpenTickets($tickets),
-            "my_in_progress_tickets" => $this->countsQuery->countOpenByStatus(
+            'my_open_tickets' => $this->countsQuery->countOpenTickets($tickets),
+            'my_in_progress_tickets' => $this->countsQuery->countOpenByStatus(
                 clone $tickets,
                 3,
             ),
-            "my_resolved_tickets" => (clone $tickets)
-                ->whereNotNull("resolved_at")
+            'my_resolved_tickets' => (clone $tickets)
+                ->whereNotNull('resolved_at')
                 ->count(),
-            "recent_tickets" => TicketListResource::collection(
+            'recent_tickets' => TicketListResource::collection(
                 (clone $tickets)
                     ->with([
-                        "status",
-                        "priority",
-                        "category",
-                        "reporter",
-                        "technician",
+                        'status',
+                        'priority',
+                        'category',
+                        'reporter',
+                        'technician',
                     ])
-                    ->latest("created_at")
+                    ->latest('created_at')
                     ->limit(5)
                     ->get(),
             )->resolve(),
-            "my_assets" => AssignableAssetResource::collection(
+            'my_assets' => AssignableAssetResource::collection(
                 Asset::whereHas(
-                    "activeAssignment",
-                    fn($q) => $q->where("user_id", $actor->id),
+                    'activeAssignment',
+                    fn ($q) => $q->where('user_id', $actor->id),
                 )
-                    ->orderBy("asset_tag")
+                    ->orderBy('asset_tag')
                     ->limit(5)
                     ->get(),
             )->resolve(),
-            "recent_articles" => ArticleListResource::collection(
+            'recent_articles' => ArticleListResource::collection(
                 KnowledgeArticle::query()
-                    ->where("status", "published")
-                    ->whereNotNull("published_at")
-                    ->with(["category", "author"])
-                    ->latest("published_at")
+                    ->where('status', 'published')
+                    ->whereNotNull('published_at')
+                    ->with(['category', 'author'])
+                    ->latest('published_at')
                     ->limit(5)
                     ->get(),
             )->resolve(),

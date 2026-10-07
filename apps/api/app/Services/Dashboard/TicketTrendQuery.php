@@ -17,38 +17,38 @@ class TicketTrendQuery
         Builder $ticketQuery,
         DashboardDateRange $range,
     ): array {
-        $bucket = $this->queryService->dateBucket("created_at");
-        $resolvedBucket = $this->queryService->dateBucket("resolved_at");
+        $bucket = $this->queryService->dateBucket('created_at');
+        $resolvedBucket = $this->queryService->dateBucket('resolved_at');
 
         // Membuat query untuk menghitung jumlah tiket yang dibuat per hari
         $created = (clone $ticketQuery)
             ->selectRaw("{$bucket} as date, COUNT(*) as count")
-            ->whereBetween("created_at", [$range->fromUtc, $range->toUtc])
-            ->groupBy("date")
-            ->orderBy("date")
-            ->pluck("count", "date")
+            ->whereBetween('created_at', [$range->fromUtc, $range->toUtc])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('count', 'date')
             ->toArray();
 
         // Menghitung jumlah tiket yang selesai (diterima) per hari
         $resolved = (clone $ticketQuery)
-            ->whereNotNull("resolved_at")
+            ->whereNotNull('resolved_at')
             ->selectRaw("{$resolvedBucket} as date, COUNT(*) as count")
-            ->whereBetween("resolved_at", [$range->fromUtc, $range->toUtc])
-            ->groupBy("date")
-            ->orderBy("date")
-            ->pluck("count", "date")
+            ->whereBetween('resolved_at', [$range->fromUtc, $range->toUtc])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('count', 'date')
             ->toArray();
 
         // Mengisi semua hari dalam rentang waktu dengan data yang tersedia
-        $current = $range->fromUtc->setTimezone("Asia/Jakarta")->startOfDay();
-        $end = $range->toUtc->setTimezone("Asia/Jakarta")->startOfDay();
+        $current = $range->fromUtc->setTimezone('Asia/Jakarta')->startOfDay();
+        $end = $range->toUtc->setTimezone('Asia/Jakarta')->startOfDay();
         $result = [];
         while ($current->lte($end)) {
-            $date = $current->format("Y-m-d");
+            $date = $current->format('Y-m-d');
             $result[] = [
-                "date" => $date,
-                "created" => (int) ($created[$date] ?? 0),
-                "resolved" => (int) ($resolved[$date] ?? 0),
+                'date' => $date,
+                'created' => (int) ($created[$date] ?? 0),
+                'resolved' => (int) ($resolved[$date] ?? 0),
             ];
             $current = $current->addDay();
         }

@@ -22,34 +22,34 @@ class ManagerDashboardService
         $tickets = Ticket::query();
 
         $sla = $this->slaMetrics->resolvedMetrics(clone $tickets, $range);
-        unset($sla["total_resolved"]);
+        unset($sla['total_resolved']);
 
         return [
-            "total_tickets" => $this->countsQuery->countTickets(
+            'total_tickets' => $this->countsQuery->countTickets(
                 clone $tickets,
                 $range,
             ),
-            "open_tickets" => $this->countsQuery->countOpenTickets(
+            'open_tickets' => $this->countsQuery->countOpenTickets(
                 clone $tickets,
             ),
-            "resolved_tickets" => $range
+            'resolved_tickets' => $range
                 ->applyToResolved(clone $tickets)
                 ->count(),
-            "closed_tickets" => $this->countsQuery->countClosed(clone $tickets),
-            "unassigned_tickets" => $this->countsQuery->countUnassigned(
+            'closed_tickets' => $this->countsQuery->countClosed(clone $tickets),
+            'unassigned_tickets' => $this->countsQuery->countUnassigned(
                 clone $tickets,
             ),
-            "sla" => $sla,
-            "ticket_trend" => $this->trendQuery->daily(clone $tickets, $range),
-            "by_priority" => $this->countsQuery->countByPriority(
-                clone $tickets,
-                $range,
-            ),
-            "by_category" => $this->countsQuery->countByCategory(
+            'sla' => $sla,
+            'ticket_trend' => $this->trendQuery->daily(clone $tickets, $range),
+            'by_priority' => $this->countsQuery->countByPriority(
                 clone $tickets,
                 $range,
             ),
-            "technician_performance" => $this->performanceQuery->forRole(
+            'by_category' => $this->countsQuery->countByCategory(
+                clone $tickets,
+                $range,
+            ),
+            'technician_performance' => $this->performanceQuery->forRole(
                 clone $tickets,
                 $range,
             ),
