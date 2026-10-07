@@ -46,7 +46,7 @@ class UserController extends Controller
     {
         $this->authorize('user.lookup');
 
-        $users = $this->userService->assignable($request->search);
+        $users = $this->userService->assignable($request);
 
         return ApiResponse::success($users, 'Assignable users retrieved.');
     }
