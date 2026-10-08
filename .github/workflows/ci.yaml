@@ -56,3 +56,36 @@ jobs:
 
       - name: Run Pest test suite (SQLite in-memory)
         run: php artisan test --compact
+
+  frontend:
+    name: Frontend (Next.js 16 / Node 22)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Vitest unit & component tests
+        run: npm run test
+
+      - name: Run Next.js production build
+        run: npm run build
