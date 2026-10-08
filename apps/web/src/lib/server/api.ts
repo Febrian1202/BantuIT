@@ -5,7 +5,7 @@ export const API_BASE_URL = process.env.API_BASE_URL ?? "http://api:8000/api";
 // Pembungkus fetch untuk Laravel dengan otentikasi otomatis
 export async function laravelFetch(
   endpoint: string,
-  options?: RequestInit,
+  options?: RequestInit
 ): Promise<Response> {
   const token = await getToken();
 

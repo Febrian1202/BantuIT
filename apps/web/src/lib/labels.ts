@@ -11,7 +11,7 @@ import type {
 } from "@/types/api";
 
 export function getTicketStatusLabel(
-  status: TicketStatusName | string,
+  status: TicketStatusName | string
 ): string {
   switch (status) {
     case "OPEN":
@@ -99,7 +99,7 @@ export function getArticleStatusLabel(status: ArticleStatus | string): string {
 }
 
 export function getNotificationTypeLabel(
-  type: NotificationType | string,
+  type: NotificationType | string
 ): string {
   switch (type) {
     case "TICKET_ASSIGNED":

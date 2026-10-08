@@ -10,7 +10,7 @@ export function useNotificationsPoll() {
     queryKey: notificationKeys.unreadCount(),
     queryFn: async () => {
       const res = await apiFetch<UnreadCountResponse>(
-        "/notifications/unread-count",
+        "/notifications/unread-count"
       );
       return res.data;
     },

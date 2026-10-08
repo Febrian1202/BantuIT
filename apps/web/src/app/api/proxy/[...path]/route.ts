@@ -11,7 +11,7 @@ const API_BASE_URL = process.env.API_BASE_URL ?? "http://api:8000/api";
  */
 async function handleProxy(
   request: NextRequest,
-  { params }: { params: Promise<{ path: string[] }> },
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   const { path } = await params;
   const token = await getToken();
@@ -69,7 +69,7 @@ async function handleProxy(
   } catch {
     return NextResponse.json(
       { success: false, message: "Backend service unreachable.", errors: null },
-      { status: 503 },
+      { status: 503 }
     );
   }
 }

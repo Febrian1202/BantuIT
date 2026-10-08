@@ -114,7 +114,7 @@ export const NAV_ITEMS: NavItem[] = [
 
 export function filterNavItems(
   permissions: string[] = [],
-  role?: RoleName | string,
+  role?: RoleName | string
 ): NavItem[] {
   return NAV_ITEMS.filter((item) => {
     // Cek role yang diizinkan

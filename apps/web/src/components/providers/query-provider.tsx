@@ -12,7 +12,7 @@ export function QueryProvider({ children }: { children: ReactNode }) {
             refetchOnWindowFocus: true,
           },
         },
-      }),
+      })
   );
 
   return (

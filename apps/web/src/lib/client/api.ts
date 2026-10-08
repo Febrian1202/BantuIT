@@ -8,7 +8,7 @@ export class ApiClientError extends Error {
   constructor(
     status: number,
     message: string,
-    errors?: Record<string, string[]>,
+    errors?: Record<string, string[]>
   ) {
     super(message);
     this.name = "ApiClientError";
@@ -19,7 +19,7 @@ export class ApiClientError extends Error {
 
 export async function apiFetch<T>(
   endpoint: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const proxyUrl = `api/proxy${cleanEndpoint}`;

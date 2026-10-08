@@ -16,9 +16,9 @@ export function AppSidebar() {
   const adminItems = navItems.filter((item) => item.section === "admin");
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-border border-r bg-card transition-transform md:flex">
+    <aside className="border-border bg-card fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r transition-transform md:flex">
       {/* Brand Header */}
-      <div className="flex h-14 items-center border-border border-b px-5">
+      <div className="border-border flex h-14 items-center border-b px-5">
         <Link
           href="/"
           className="transition-opacity hover:opacity-90 focus-visible:outline-hidden"
@@ -29,9 +29,9 @@ export function AppSidebar() {
       </div>
 
       {/* Navigation List */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+      <div className="flex-1 space-y-6 overflow-y-auto px-3 py-4">
         <div>
-          <p className="mb-2 px-3 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          <p className="text-muted-foreground mb-2 px-3 text-xs font-medium tracking-wider uppercase">
             Menu Utama
           </p>
           <nav className="space-y-1">
@@ -50,7 +50,7 @@ export function AppSidebar() {
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     isActive
                       ? "bg-secondary text-foreground font-semibold"
-                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                   )}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -63,7 +63,7 @@ export function AppSidebar() {
 
         {adminItems.length > 0 && (
           <div>
-            <p className="mb-2 px-3 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+            <p className="text-muted-foreground mb-2 px-3 text-xs font-medium tracking-wider uppercase">
               Administrasi
             </p>
             <nav className="space-y-1">
@@ -79,7 +79,7 @@ export function AppSidebar() {
                       "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                       isActive
                         ? "bg-secondary text-foreground font-semibold"
-                        : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+                        : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                     )}
                   >
                     <Icon className="h-4 w-4 shrink-0" />
@@ -94,8 +94,8 @@ export function AppSidebar() {
 
       {/* Sidebar Footer */}
       <div className="border-border border-t p-3">
-        <div className="rounded-lg bg-muted/50 p-2 text-center">
-          <p className="text-[11px] text-muted-foreground">
+        <div className="bg-muted/50 rounded-lg p-2 text-center">
+          <p className="text-muted-foreground text-[11px]">
             JARVIS OPS{" "}
             {(() => {
               const rawVersion =

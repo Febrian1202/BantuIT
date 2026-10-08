@@ -31,16 +31,16 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="fixed top-0 bottom-0 left-0 right-auto z-50 flex h-full w-72 max-w-none flex-col gap-0 translate-x-0 translate-y-0 rounded-none border-r border-border bg-card p-0 shadow-xl data-[state=open]:animate-sheet-in-left data-[state=closed]:animate-sheet-out-left">
-        <DialogHeader className="flex h-14 shrink-0 flex-row items-center space-y-0 border-b border-border px-4 text-left">
+      <DialogContent className="border-border bg-card data-[state=open]:animate-sheet-in-left data-[state=closed]:animate-sheet-out-left fixed top-0 right-auto bottom-0 left-0 z-50 flex h-full w-72 max-w-none translate-x-0 translate-y-0 flex-col gap-0 rounded-none border-r p-0 shadow-xl">
+        <DialogHeader className="border-border flex h-14 shrink-0 flex-row items-center space-y-0 border-b px-4 text-left">
           <DialogTitle className="flex items-center pr-8">
             <Computer size="sm" />
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-5">
+        <div className="flex-1 space-y-5 overflow-y-auto px-3 py-3">
           <div>
-            <p className="mb-2 px-3 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+            <p className="text-muted-foreground mb-2 px-3 text-xs font-medium tracking-wider uppercase">
               Menu Utama
             </p>
             <nav className="space-y-1">
@@ -60,7 +60,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
                       "flex min-h-[44px] items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                       isActive
                         ? "bg-secondary text-foreground font-semibold"
-                        : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+                        : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                     )}
                   >
                     <Icon className="h-4 w-4 shrink-0" />
@@ -73,7 +73,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
 
           {adminItems.length > 0 && (
             <div>
-              <p className="mb-2 px-3 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+              <p className="text-muted-foreground mb-2 px-3 text-xs font-medium tracking-wider uppercase">
                 Administrasi
               </p>
               <nav className="space-y-1">
@@ -90,7 +90,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
                         "flex min-h-[44px] items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                         isActive
                           ? "bg-secondary text-foreground font-semibold"
-                          : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
+                          : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                       )}
                     >
                       <Icon className="h-4 w-4 shrink-0" />
@@ -103,9 +103,9 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
           )}
         </div>
 
-        <div className="shrink-0 border-t border-border p-3">
-          <div className="rounded-lg bg-muted/50 p-2 text-center">
-            <p className="text-[11px] text-muted-foreground">
+        <div className="border-border shrink-0 border-t p-3">
+          <div className="bg-muted/50 rounded-lg p-2 text-center">
+            <p className="text-muted-foreground text-[11px]">
               JARVIS OPS{" "}
               {(() => {
                 const rawVersion =

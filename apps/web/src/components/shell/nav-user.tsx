@@ -40,10 +40,10 @@ export function NavUser() {
         <button
           type="button"
           aria-label="Menu profil pengguna"
-          className="flex items-center gap-2 rounded-full p-1 text-left outline-none ring-offset-background transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="ring-offset-background hover:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-full p-1 text-left transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
         >
-          <Avatar className="h-8 w-8 border border-border">
-            <AvatarFallback className="bg-primary/10 font-medium text-foreground text-xs">
+          <Avatar className="border-border h-8 w-8 border">
+            <AvatarFallback className="bg-primary/10 text-foreground text-xs font-medium">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -52,7 +52,7 @@ export function NavUser() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="font-medium text-foreground text-sm leading-none">
+            <p className="text-foreground text-sm leading-none font-medium">
               {user.full_name}
             </p>
             <p className="text-muted-foreground text-xs leading-none">
@@ -81,7 +81,7 @@ export function NavUser() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => void logout()}
-          className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+          className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer"
         >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Keluar</span>

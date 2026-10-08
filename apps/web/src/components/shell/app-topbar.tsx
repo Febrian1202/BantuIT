@@ -32,7 +32,7 @@ export function AppTopbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-14 w-full items-center justify-between border-border border-b bg-card/80 px-4 backdrop-blur-sm sm:px-6">
+      <header className="border-border bg-card/80 sticky top-0 z-20 flex h-14 w-full items-center justify-between border-b px-4 backdrop-blur-sm sm:px-6">
         {/* Left: Mobile Toggle & Page Title */}
         <div className="flex items-center gap-3">
           <Button
@@ -45,7 +45,7 @@ export function AppTopbar() {
             <Menu className="h-5 w-5" />
           </Button>
 
-          <h1 className="font-semibold text-foreground text-base tracking-tight">
+          <h1 className="text-foreground text-base font-semibold tracking-tight">
             {pageTitle}
           </h1>
         </div>

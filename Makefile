@@ -2,7 +2,8 @@ export UID := $(shell id -u)
 export GID := $(shell id -g)
 
 .PHONY: setup up down sh sh-web migrate fresh seed test pint logs install \
-	test-api test-web lint-web typecheck-web build-web test-all check
+	test-api test-web lint-web typecheck-web build-web test-all check \
+	format-web format-check-web
 
 setup:
 	@if [ ! -f apps/api/.env ]; then cp apps/api/.env.example apps/api/.env; fi
@@ -54,10 +55,16 @@ build-web:
 
 test-all: test-api test-web
 
-check: test-api pint lint-web typecheck-web test-web
+check: test-api pint format-check-web lint-web typecheck-web test-web
 
 pint:
 	docker compose exec api vendor/bin/pint
+
+format-web:
+	docker compose exec web npm run format
+
+format-check-web:
+	docker compose exec web npm run format:check
 
 logs:
 	docker compose logs -f
