@@ -1,4 +1,10 @@
 export * from "./auth";
+export * from "./tickets";
+export * from "./assets";
+export * from "./articles";
+export * from "./notifications";
+export * from "./audit";
+export * from "./dashboard";
 
 export interface ApiResponse<T> {
   success: boolean;
