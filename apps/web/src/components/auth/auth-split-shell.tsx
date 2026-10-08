@@ -26,7 +26,7 @@ export function AuthSplitShell({
       {/* Brand Panel */}
       <aside
         aria-label="Informasi Sistem"
-        className="border-border bg-secondary/40 flex w-full flex-col justify-between border-b p-6 sm:p-8 lg:w-[560px] lg:shrink-0 lg:border-r lg:border-b-0 lg:p-14"
+        className="border-border bg-secondary/40 flex w-full flex-col justify-between border-b p-6 sm:p-8 lg:w-140 lg:shrink-0 lg:border-r lg:border-b-0 lg:p-14"
       >
         {/* Lockup */}
         <div className="inline-flex items-center">
@@ -35,7 +35,7 @@ export function AuthSplitShell({
 
         {/* Statement */}
         <div className="my-8 space-y-4 lg:my-0 lg:space-y-4.5">
-          <h1 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl lg:text-[30px] lg:leading-[1.25]">
+          <h1 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl lg:text-[30px] lg:leading-tight">
             {headline}
           </h1>
           <p className="text-muted-foreground text-sm leading-relaxed sm:text-base lg:text-[14px]">
