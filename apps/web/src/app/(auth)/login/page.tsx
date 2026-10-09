@@ -16,7 +16,6 @@ import { ApiResponse, AuthUser, ApiError } from "@/types/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { error } from "node:console";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";

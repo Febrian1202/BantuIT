@@ -57,7 +57,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
                     href={item.href}
                     onClick={() => onOpenChange(false)}
                     className={cn(
-                      "flex min-h-[44px] items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                      "flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                       isActive
                         ? "bg-secondary text-foreground font-semibold"
                         : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
@@ -87,7 +87,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
                       href={item.href}
                       onClick={() => onOpenChange(false)}
                       className={cn(
-                        "flex min-h-[44px] items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                        "flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                         isActive
                           ? "bg-secondary text-foreground font-semibold"
                           : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
