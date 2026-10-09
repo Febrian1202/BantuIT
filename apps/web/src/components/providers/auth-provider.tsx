@@ -1,3 +1,5 @@
+"use client";
+
 import { apiFetch } from "@/lib/client/api";
 import { authKeys } from "@/lib/query-key";
 import { AuthUser, RoleName } from "@/types/auth";

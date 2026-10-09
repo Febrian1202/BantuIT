@@ -29,8 +29,11 @@ export function AuthSplitShell({
         className="border-border bg-secondary/40 flex w-full flex-col justify-between border-b p-6 sm:p-8 lg:w-140 lg:shrink-0 lg:border-r lg:border-b-0 lg:p-14"
       >
         {/* Lockup */}
-        <div className="inline-flex items-center">
-          <Computer size="md" />
+        <div className="inline-flex items-center gap-2.5">
+          <Computer className="text-foreground size-5 shrink-0" />
+          <span className="text-foreground text-lg font-bold tracking-tight">
+            BantuIT
+          </span>
         </div>
 
         {/* Statement */}

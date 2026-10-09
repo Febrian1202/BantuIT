@@ -7,6 +7,8 @@ import { ThemeProvider } from "next-themes";
 const jakarta = localFont({
   src: "./fonts/PlusJakartaSans-Variable.woff2",
   variable: "--font-jakarta",
+  style: "normal",
+  weight: "200 800",
   display: "swap",
 });
 
