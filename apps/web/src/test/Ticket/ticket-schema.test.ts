@@ -1,23 +1,23 @@
-import { describe, it, expect } from 'vitest';
-import { ticketSchema } from '@/schemas/ticket';
+import { describe, it, expect } from "vitest";
+import { ticketSchema } from "@/schemas/ticket";
 
-describe('ticketSchema', () => {
-  it('validates a correct payload', () => {
+describe("ticketSchema", () => {
+  it("validates a correct payload", () => {
     const validData = {
       category_id: 1,
       priority_id: 2,
       asset_id: null,
-      title: 'Monitor tidak menyala',
-      description: 'Monitor tiba-tiba mati saat bekerja.',
+      title: "Monitor tidak menyala",
+      description: "Monitor tiba-tiba mati saat bekerja.",
     };
     const result = ticketSchema.safeParse(validData);
     expect(result.success).toBe(true);
   });
 
-  it('fails when required fields are missing', () => {
+  it("fails when required fields are missing", () => {
     const invalidData = {
-      title: '',
-      description: '',
+      title: "",
+      description: "",
     };
     const result = ticketSchema.safeParse(invalidData);
     expect(result.success).toBe(false);
@@ -30,12 +30,12 @@ describe('ticketSchema', () => {
     }
   });
 
-  it('rejects title longer than 200 characters', () => {
+  it("rejects title longer than 200 characters", () => {
     const data = {
       category_id: 1,
       priority_id: 1,
-      title: 'a'.repeat(201),
-      description: 'Deskripsi valid',
+      title: "a".repeat(201),
+      description: "Deskripsi valid",
     };
     const result = ticketSchema.safeParse(data);
     expect(result.success).toBe(false);
