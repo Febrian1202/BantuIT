@@ -13,7 +13,7 @@ const jakarta = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "JARVIS OPS — IT Service Management",
+  title: "BantuIT — IT Service Management",
   description: "Platform manajemen tiket, aset, dan layanan IT perusahaan.",
   // icons: {
   //   icon: [
