@@ -7,7 +7,7 @@ export default async function DashboardRouterPage() {
     const res = await laravelFetch("/me");
 
     if (!res.ok) {
-      redirect("login");
+      redirect("/login");
     }
 
     const json = await res.json();

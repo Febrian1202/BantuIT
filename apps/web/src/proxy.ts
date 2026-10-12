@@ -18,9 +18,8 @@ export function proxy(request: NextRequest) {
   // Jika belum login dan mencoba mengakses rute yang dilindungi (kecuali API dan path publik)
   if (!hasToken && !isPublic && !pathname.startsWith("/api/")) {
     return NextResponse.redirect(new URL("/login", request.url));
-
-    return NextResponse.next();
   }
+  return NextResponse.next();
 }
 
 export const config = {
