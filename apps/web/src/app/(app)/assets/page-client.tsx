@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AssetFilters } from "@/components/assets/AssetFilters";
 import { AssetTable } from "@/components/assets/AssetTable";
-import { CsvExportButton } from "@/components/shared/CsvExportButton";
+import { CsvExportButton } from "@/components/shared/csv-export-button";
 import { useAssets, type AssetQueryParams } from "@/hooks/use-assets";
 import { useAuth } from "@/components/providers/auth-provider";
 

@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TicketFilters } from "@/components/tickets/TicketFilters";
 import { TicketTable } from "@/components/tickets/TicketTable";
-import { CsvExportButton } from "@/components/shared/CsvExportButton";
+import { CsvExportButton } from "@/components/shared/csv-export-button";
 import { useTickets, type TicketQueryParams } from "@/hooks/use-tickets";
 import { useAuth } from "@/components/providers/auth-provider";
 
