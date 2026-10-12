@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { EditAssetPageClient } from "./page-client";
 
 export const metadata = {
-  title: "Ubah Aset | JARVIS OPS",
+  title: "Ubah Aset | BantuIT",
   description: "Perbarui informasi data aset pada inventaris IT perusahaan.",
 };
 
