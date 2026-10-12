@@ -5,7 +5,7 @@ import { requireAdmin } from "@/lib/server/require-admin";
 import { UsersPageClient } from "./page-client";
 
 export const metadata: Metadata = {
-  title: "Kelola Pengguna | JARVIS OPS",
+  title: "Kelola Pengguna | BantuIT",
   description:
     "Pusat administrasi akun pengguna, penetapan peran (role), aktivasi status, dan reset password.",
 };

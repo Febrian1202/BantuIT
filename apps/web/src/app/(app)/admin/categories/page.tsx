@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/server/require-admin";
 import { TicketCategoriesPageClient } from "./page-client";
 
 export const metadata = {
-  title: "Kategori Tiket | JARVIS OPS",
+  title: "Kategori Tiket | BantuIT",
   description: "Kelola kategori tiket dan hierarki layanan.",
 };
 
