@@ -36,7 +36,7 @@ fresh:
 seed:
 	docker compose exec api php artisan db:seed
 
-test: test-api
+test: test-api test-web
 
 test-api:
 	docker compose exec api php artisan test
@@ -68,3 +68,28 @@ format-check-web:
 
 logs:
 	docker compose logs -f
+
+package:
+	@echo "Creating clean submission zip (excluding credentials, node_modules, vendor, git)..."
+	@TIMESTAMP=$$(date +%Y%m%d_%H%M%S); \
+	ZIP_NAME="bantuit_submission_$${TIMESTAMP}.zip"; \
+	zip -r "$${ZIP_NAME}" . \
+		-x '*.git*' \
+		-x '.env.prod' \
+		-x 'apps/api/.env' \
+		-x 'apps/api/.env.production' \
+		-x 'apps/web/.env' \
+		-x 'apps/web/.env.production' \
+		-x '*/node_modules/*' \
+		-x '*/vendor/*' \
+		-x '*/.next/*' \
+		-x '*/storage/logs/*' \
+		-x '*/storage/framework/cache/*' \
+		-x '*/storage/framework/sessions/*' \
+		-x '*/storage/framework/views/*' \
+		-x '*.zip'; \
+	echo "Clean submission package created: $${ZIP_NAME}"
+
+clean-package:
+	@rm -f bantuit_submission_*.zip
+	@echo "Cleaned submission zip files."

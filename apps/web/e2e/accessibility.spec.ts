@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("WCAG 2.2 AA Accessibility & Keyboard Navigation E2E", () => {
-  test("1. Document HTML semantics: lang='id' and unique title", async ({ page }) => {
+  test("1. Document HTML semantics: lang='id' and unique title", async ({
+    page,
+  }) => {
     await page.goto("/login");
 
     const htmlLang = await page.locator("html").getAttribute("lang");
@@ -38,7 +40,10 @@ test.describe("WCAG 2.2 AA Accessibility & Keyboard Navigation E2E", () => {
     await expect(submitBtn).toBeFocused();
   });
 
-  test("3. Modal dialog dismisses on Escape key press", async ({ page, context }) => {
+  test("3. Modal dialog dismisses on Escape key press", async ({
+    page,
+    context,
+  }) => {
     await context.clearCookies();
     await page.goto("/login");
     await page.fill('input[name="email"]', "admin@bantuit.test");
@@ -63,7 +68,10 @@ test.describe("WCAG 2.2 AA Accessibility & Keyboard Navigation E2E", () => {
     await expect(dialog).toBeHidden({ timeout: 5000 });
   });
 
-  test("4. Tables enforce scope='col' on table header cells", async ({ page, context }) => {
+  test("4. Tables enforce scope='col' on table header cells", async ({
+    page,
+    context,
+  }) => {
     await context.clearCookies();
     await page.goto("/login");
     await page.fill('input[name="email"]', "admin@bantuit.test");
@@ -87,7 +95,9 @@ test.describe("WCAG 2.2 AA Accessibility & Keyboard Navigation E2E", () => {
     }
   });
 
-  test("5. Form validation errors communicate aria-invalid", async ({ page }) => {
+  test("5. Form validation errors communicate aria-invalid", async ({
+    page,
+  }) => {
     await page.goto("/login");
 
     // Submit without filling form
