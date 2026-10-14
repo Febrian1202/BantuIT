@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\AuditLog;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Sanctum;
 
 test('cors configuration restricts allowed origins to frontend URL and disallows wildcards with credentials', function () {
     $cors = config('cors');
@@ -39,4 +42,30 @@ test('production error response hides internal exception details, trace, file, a
 test('git does not track sensitive .env files', function () {
     $output = shell_exec('git ls-files .. | grep -E "(^|/)\.env$" || true');
     expect(trim((string) $output))->toBeEmpty('No .env file should be tracked by git.');
+});
+
+test('audit logs never store password or sensitive credentials in old_data or new_data', function () {
+    $admin = User::factory()->admin()->create();
+    $targetUser = User::factory()->employee()->create();
+
+    Sanctum::actingAs($admin);
+
+    $this->postJson("/api/users/{$targetUser->id}/reset-password")
+        ->assertStatus(200);
+
+    $logs = AuditLog::where('module', 'user')
+        ->where('module_id', $targetUser->id)
+        ->get();
+
+    expect($logs->isNotEmpty())->toBeTrue();
+
+    foreach ($logs as $log) {
+        $rawOld = json_encode($log->old_data ?? []);
+        $rawNew = json_encode($log->new_data ?? []);
+
+        expect($rawOld)->not->toContain('password');
+        expect($rawNew)->not->toContain('password');
+        expect($rawOld)->not->toContain('remember_token');
+        expect($rawNew)->not->toContain('remember_token');
+    }
 });
