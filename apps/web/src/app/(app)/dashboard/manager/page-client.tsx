@@ -1,0 +1,70 @@
+"use client";
+
+import { useCallback, useEffect, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ManagerDashboardView } from "@/components/dashboard/manager";
+import {
+  buildDashboardParams,
+  useManagerDashboard,
+} from "@/hooks/use-dashboards";
+import { useAuth } from "@/components/providers/auth-provider";
+
+export function ManagerDashboardPageClient() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { can, user, isLoading: isAuthLoading } = useAuth();
+
+  const activeParams = useMemo(() => {
+    return buildDashboardParams(searchParams);
+  }, [searchParams]);
+
+  const { data, isLoading: isDashboardLoading } = useManagerDashboard({
+    date_from: activeParams?.date_from,
+    date_to: activeParams?.date_to,
+  });
+
+  const handleDateChange = useCallback(
+    (range: { from: string; to: string } | null) => {
+      const newParams = new URLSearchParams(searchParams.toString());
+      if (range && range.from && range.to) {
+        newParams.set("date_from", range.from);
+        newParams.set("date_to", range.to);
+      } else {
+        newParams.delete("date_from");
+        newParams.delete("date_to");
+      }
+
+      const queryString = newParams.toString();
+      router.replace(
+        queryString
+          ? `/dashboard/manager?${queryString}`
+          : "/dashboard/manager",
+        {
+          scroll: false,
+        }
+      );
+    },
+    [router, searchParams]
+  );
+
+  useEffect(() => {
+    if (!isAuthLoading && !can("dashboard.manager")) {
+      router.replace("/403");
+    }
+  }, [isAuthLoading, can, router]);
+
+  if (isAuthLoading || !can("dashboard.manager")) {
+    return null;
+    // Kembalikan null ketika cek auth atau ketika redirect
+  }
+
+  return (
+    <ManagerDashboardView
+      data={data}
+      isLoading={isDashboardLoading}
+      range={{ from: activeParams?.date_from, to: activeParams?.date_to }}
+      onRangeChange={handleDateChange}
+      user={user}
+    />
+  );
+}
