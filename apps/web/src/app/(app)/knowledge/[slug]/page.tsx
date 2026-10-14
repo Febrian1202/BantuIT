@@ -9,7 +9,7 @@ import { laravelFetch } from "@/lib/server/api";
 import type { KnowledgeArticleDetail } from "@/types/articles";
 
 export const metadata = {
-  title: "Artikel | JARVIS OPS",
+  title: "Artikel | BantuIT",
 };
 
 interface ArticlePayload {

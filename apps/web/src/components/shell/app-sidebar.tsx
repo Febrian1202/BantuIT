@@ -98,7 +98,7 @@ export function AppSidebar() {
       <div className="border-border border-t p-3">
         <div className="bg-muted/50 rounded-lg p-2 text-center">
           <p className="text-muted-foreground text-[11px]">
-            JARVIS OPS{" "}
+            BantuIT{" "}
             {(() => {
               const rawVersion =
                 process.env.NEXT_PUBLIC_APP_VERSION || "v1.0.0";

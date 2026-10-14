@@ -22,7 +22,7 @@ export async function apiFetch<T>(
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-  const proxyUrl = `api/proxy${cleanEndpoint}`;
+  const proxyUrl = `/api/proxy${cleanEndpoint}`;
 
   const headers = new Headers(options.headers);
   if (!headers.has("Accept")) {

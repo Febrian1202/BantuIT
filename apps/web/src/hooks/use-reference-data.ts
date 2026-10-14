@@ -24,7 +24,7 @@ export function useReferenceData() {
   });
 
   const prioritiesQuery = useQuery({
-    queryKey: referenceKeys.ticketCategories(),
+    queryKey: referenceKeys.ticketPriorities(),
     queryFn: () => apiFetch<TicketPriority[]>("/ticket-priorities"),
     staleTime: STALE_TIME,
   });

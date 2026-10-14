@@ -142,7 +142,7 @@ class ReferenceDataSeeder extends Seeder
                 'children' => [
                     'Operating System' => 'Masalah sistem operasi Windows, macOS, atau Linux',
                     'Microsoft Office' => 'Office 365, Word, Excel, Teams, Outlook',
-                    'Internal Application' => 'JarvisOps dan aplikasi bisnis internal',
+                    'Internal Application' => 'BantuIT dan aplikasi bisnis internal',
                     'Installation Request' => 'Permintaan instalasi perangkat lunak baru dan lisensi',
                 ],
             ],

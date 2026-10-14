@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Computer } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -33,8 +32,10 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="border-border bg-card data-[state=open]:animate-sheet-in-left data-[state=closed]:animate-sheet-out-left fixed top-0 right-auto bottom-0 left-0 z-50 flex h-full w-72 max-w-none translate-x-0 translate-y-0 flex-col gap-0 rounded-none border-r p-0 shadow-xl">
         <DialogHeader className="border-border flex h-14 shrink-0 flex-row items-center space-y-0 border-b px-4 text-left">
-          <DialogTitle className="flex items-center pr-8">
-            <Computer size="sm" />
+          <DialogTitle className="flex items-center gap-2 pr-8">
+            <span className="text-foreground text-sm font-bold tracking-tight">
+              BantuIT
+            </span>
           </DialogTitle>
         </DialogHeader>
 
@@ -106,7 +107,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
         <div className="border-border shrink-0 border-t p-3">
           <div className="bg-muted/50 rounded-lg p-2 text-center">
             <p className="text-muted-foreground text-[11px]">
-              JARVIS OPS{" "}
+              BantuIT{" "}
               {(() => {
                 const rawVersion =
                   process.env.NEXT_PUBLIC_APP_VERSION || "v1.0.0";
