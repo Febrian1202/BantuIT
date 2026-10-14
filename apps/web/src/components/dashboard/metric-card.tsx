@@ -64,7 +64,7 @@ export function MetricCard({
         ) : (
           <div
             className={cn(
-              "text-2xl text-lg font-semibold tracking-tight sm:text-2xl",
+              "text-2xl font-semibold tracking-tight",
               isDanger ? "text-[#991b1b] dark:text-red-400" : "text-foreground"
             )}
           >
