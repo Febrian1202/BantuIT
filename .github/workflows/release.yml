@@ -82,6 +82,7 @@ jobs:
           mkdir -p dist-assets
           cp compose.prod.yaml dist-assets/
           cp compose.prod.octane.yaml dist-assets/
+          cp env.prod.example dist-assets/
           cp apps/api/.env.production.example dist-assets/api.env.production.example
           cp apps/web/.env.production.example dist-assets/web.env.production.example
           cp docker/mysql/init/* dist-assets/

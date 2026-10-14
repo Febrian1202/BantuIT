@@ -7,7 +7,10 @@ services:
     container_name: bantuit-prod-api
     restart: unless-stopped
     env_file:
-      - ./apps/api/.env.production
+      - path: .env
+        required: false
+      - path: ./apps/api/.env.production
+        required: false
     environment:
       SERVER_NAME: "http://:8000"
       DB_CONNECTION: mysql
@@ -33,7 +36,10 @@ services:
     restart: unless-stopped
     command: ["php", "artisan", "schedule:work"]
     env_file:
-      - ./apps/api/.env.production
+      - path: .env
+        required: false
+      - path: ./apps/api/.env.production
+        required: false
     environment:
       DB_CONNECTION: mysql
       DB_HOST: ${DB_HOST:-mariadb}
@@ -57,7 +63,10 @@ services:
     container_name: bantuit-prod-web
     restart: unless-stopped
     env_file:
-      - ./apps/web/.env.production
+      - path: .env
+        required: false
+      - path: ./apps/web/.env.production
+        required: false
     environment:
       PORT: 3000
       API_BASE_URL: ${API_BASE_URL:-http://api:8000/api}
