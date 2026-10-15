@@ -27,7 +27,9 @@ if [ "$1" = "frankenphp" ] || [ "$1" = "php" -a "$2" = "artisan" -a "$3" = "octa
     echo "Optimizing framework configurations..."
     php artisan config:cache
     php artisan route:cache
-    php artisan view:cache
+    if [ -d "resources/views" ] && [ "$(ls -A resources/views 2>/dev/null)" ]; then
+        php artisan view:cache || true
+    fi
 fi
 
 exec "$@"

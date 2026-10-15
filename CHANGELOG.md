@@ -5,6 +5,16 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.1] - 2026-10-15
+
+### Fixed
+- **Backend API Booting & Entrypoint:**
+  - Memperbaiki pengecekan direktori `resources/views` pada `docker-entrypoint.sh` agar tidak mengeksekusi `php artisan view:cache` jika direktori tidak ada atau kosong, mencegah crash startup di container produksi.
+  - Menambahkan direktori `resources/views` dengan file `.gitkeep` dan penanganan `mkdir -p` di `Dockerfile` untuk mencegah fatal error Symfony Finder.
+  - Menghubungkan stack Compose produksi ke jaringan eksternal `dokploy-network`.
+
+---
+
 ## [1.0.0] - 2026-10-15
 
 ### Added

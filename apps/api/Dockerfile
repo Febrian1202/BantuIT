@@ -39,6 +39,7 @@ RUN mkdir -p /app/storage/app/private \
     /app/storage/framework/sessions \
     /app/storage/framework/views \
     /app/storage/logs \
+    /app/resources/views \
     /app/bootstrap/cache && \
     chown -R www-data:www-data /app/storage /app/bootstrap/cache && \
     chmod -R 775 /app/storage /app/bootstrap/cache && \
