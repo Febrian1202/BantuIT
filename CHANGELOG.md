@@ -5,6 +5,21 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.5] - 2026-10-15
+
+### Added
+- **Kartu Pintasan Akun Demo (1-Click Fill) di Halaman Login:**
+  - Menambahkan komponen terpisah `DemoAccountCards` (`apps/web/src/components/auth/demo-account-cards.tsx`) yang diletakkan di bawah form login (`LoginPage`).
+  - Menyediakan 4 kartu akun demo yang mencakup seluruh peran pengguna di sistem:
+    - **Administrator:** `admin@bantuit.test` (Admin Sistem)
+    - **Manager:** `manager@bantuit.test` (IT Manager)
+    - **Technician:** `technician@bantuit.test` (Teknisi IT)
+    - **Employee:** `employee@bantuit.test` (Karyawan)
+  - Mengklik salah satu kartu akan mengisi otomatis nilai field email dan kata sandi (`Password123!`) pada form login dan menghapus pesan error yang aktif untuk presentasi dan demo yang cepat.
+  - Menambahkan test suite unit testing pada `apps/web/src/test/auth/demo-account-cards.test.tsx` dan `apps/web/src/test/auth/login-demo-accounts.test.tsx`.
+
+---
+
 ## [1.0.4] - 2026-10-15
 
 ### Changed

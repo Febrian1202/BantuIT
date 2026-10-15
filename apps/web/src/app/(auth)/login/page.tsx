@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthSplitShell } from "@/components/auth/auth-split-shell";
+import { DemoAccountCards } from "@/components/auth/demo-account-cards";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -40,6 +41,12 @@ export default function LoginPage() {
       password: "",
     },
   });
+
+  const handleFillDemoAccount = (email: string) => {
+    form.setValue("email", email, { shouldValidate: true });
+    form.setValue("password", "Password123!", { shouldValidate: true });
+    setGeneralError(null);
+  };
 
   async function onSubmit(values: LoginFormValues) {
     setGeneralError(null);
@@ -200,6 +207,11 @@ export default function LoginPage() {
                 <span>{generalError}</span>
               </div>
             )}
+
+            <DemoAccountCards
+              onSelect={handleFillDemoAccount}
+              disabled={loading}
+            />
           </form>
         </Form>
       </div>
