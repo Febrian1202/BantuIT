@@ -33,7 +33,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
       <DialogContent className="border-border bg-card data-[state=open]:animate-sheet-in-left data-[state=closed]:animate-sheet-out-left fixed top-0 right-auto bottom-0 left-0 z-50 flex h-full w-72 max-w-none translate-x-0 translate-y-0 flex-col gap-0 rounded-none border-r p-0 shadow-xl">
         <DialogHeader className="border-border flex h-14 shrink-0 flex-row items-center space-y-0 border-b px-4 text-left">
           <DialogTitle className="flex items-center gap-2 pr-8">
-            <span className="text-foreground text-sm font-bold tracking-tight">
+            <span className="text-foreground text-xl font-bold tracking-tight">
               BantuIT
             </span>
           </DialogTitle>

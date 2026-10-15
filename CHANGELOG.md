@@ -5,6 +5,20 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.4] - 2026-10-15
+
+### Changed
+- **Tipografi Brand Header Sidebar:**
+  - Memperbesar ukuran teks dan menebalkan tulisan "BantuIT" di sidebar navigasi desktop (`AppSidebar`) serta drawer navigasi mobile (`MobileNav`) menggunakan kelas `text-foreground text-xl font-bold tracking-tight`.
+
+### Fixed
+- **Alur Logout & Penghapusan Sesi:**
+  - Memperbaiki alur logout agar langsung mengarahkan pengguna ke halaman `/login` seketika melalui navigasi hard redirect (`window.location.href = "/login"`), membersihkan seluruh memori sesi TanStack Query dan state React secara total.
+  - Memastikan penghapusan cookie sesi `auth_token` di Next.js Route Handler (`/api/auth/logout`) dan session helper dilakukan dengan parameter `path: "/"`, `maxAge: 0`, dan tanggal kadaluarsa definitif.
+  - Menambahkan feedback status `Keluar...` dan pencegahan multiple-click (`e.preventDefault()`) pada menu logout di dropdown profil (`NavUser`).
+
+---
+
 ## [1.0.3] - 2026-10-15
 
 ### Fixed

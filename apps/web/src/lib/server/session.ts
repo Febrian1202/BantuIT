@@ -25,5 +25,9 @@ export async function getToken() {
 // Menghapus token dari cookie
 export async function deleteToken() {
   const store = await cookies();
+  store.set(AUTH_COOKIE_NAME, "", {
+    ...cookieOptions,
+    maxAge: 0,
+  });
   store.delete(AUTH_COOKIE_NAME);
 }

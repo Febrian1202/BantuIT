@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, LogOut } from "lucide-react";
@@ -17,7 +16,6 @@ import {
 } from "@/schemas/profile";
 
 export function ChangePasswordForm() {
-  const router = useRouter();
   const [successState, setSuccessState] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -65,11 +63,16 @@ export function ChangePasswordForm() {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
     } catch {
       // Abaikan kesalahan jaringan ketika logout
     } finally {
-      router.replace("/login");
+      // Hard redirect untuk membersihkan memory session secara total
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.href = "/login";
     }
   };
 

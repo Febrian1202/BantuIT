@@ -23,7 +23,7 @@ export function AppSidebar() {
       <div className="border-border flex h-14 items-center border-b px-5">
         <Link
           href="/"
-          className="transition-opacity hover:opacity-90 focus-visible:outline-hidden"
+          className="text-foreground text-xl font-bold tracking-tight transition-opacity hover:opacity-90 focus-visible:outline-hidden"
         >
           {/*<BrandLogo size="sm" />*/}
           BantuIT

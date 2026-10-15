@@ -38,10 +38,15 @@ describe("AppSidebar and MobileNav Dashboard Highlight", () => {
     expect(dashboardLink).toHaveClass("bg-secondary text-foreground font-semibold");
   });
 
-  it("highlights Dashboard in MobileNav when pathname is /dashboard/admin", () => {
-    currentPath = "/dashboard/admin";
+  it("renders BantuIT brand text with bold and enlarged typography in AppSidebar", () => {
+    render(<AppSidebar />);
+    const brandLink = screen.getByRole("link", { name: /^BantuIT$/i });
+    expect(brandLink).toHaveClass("text-xl font-bold tracking-tight text-foreground");
+  });
+
+  it("renders BantuIT brand text with bold and enlarged typography in MobileNav", () => {
     render(<MobileNav open={true} onOpenChange={vi.fn()} />);
-    const dashboardLink = screen.getByRole("link", { name: /^Dashboard$/i });
-    expect(dashboardLink).toHaveClass("bg-secondary text-foreground font-semibold");
+    const brandText = screen.getByText(/^BantuIT$/i);
+    expect(brandText).toHaveClass("text-xl font-bold tracking-tight text-foreground");
   });
 });

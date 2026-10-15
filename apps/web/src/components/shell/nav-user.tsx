@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import {
   DropdownMenu,
@@ -18,10 +19,18 @@ import Link from "next/link";
 
 export function NavUser() {
   const { user, logout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   if (!user) {
     return null;
   }
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    await logout();
+  };
 
   const initials = user.full_name
     ? user.full_name
@@ -80,11 +89,12 @@ export function NavUser() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          onClick={() => void logout()}
-          className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer"
+          disabled={isLoggingOut}
+          onClick={handleLogout}
+          className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer disabled:opacity-50"
         >
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Keluar</span>
+          <span>{isLoggingOut ? "Keluar..." : "Keluar"}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
