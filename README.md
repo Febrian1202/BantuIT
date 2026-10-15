@@ -2,7 +2,7 @@
 
 BantuIT adalah platform IT Service Management (ITSM) terstandarisasi yang dirancang untuk mengelola siklus hidup tiket insiden, permintaan layanan, inventaris aset TI, serta basis pengetahuan operasional secara terpusat.
 
-Platform ini dikembangkan sebagai **Capstone Project Rekayasa Perangkat Lunak** dengan mengadopsi standar arsitektur industri: pola monorepo, *Backend-for-Frontend* (BFF), *Service Layer Pattern*, *Deterministic SLA Engine*, pengujian otomatis bertingkat (*Test-Driven Development*), kepatuhan aksesibilitas WCAG 2.2 AA, dan kesiapan kontainerisasi produksi berkinerja tinggi.
+Platform ini dikembangkan sebagai **Capstone Project Web Developer Jarvis Camp** dengan mengadopsi standar arsitektur industri: pola monorepo, *Backend-for-Frontend* (BFF), *Service Layer Pattern*, *Deterministic SLA Engine*, pengujian otomatis bertingkat (*Test-Driven Development*), kepatuhan aksesibilitas WCAG 2.2 AA, dan kesiapan kontainerisasi produksi berkinerja tinggi.
 
 ---
 
@@ -271,4 +271,4 @@ Konfigurasi `compose.prod.yaml` dirancang khusus untuk deployment VPS modern men
 ## 9. Lisensi
 
 Proyek ini dirilis di bawah naungan lisensi terbuka [MIT License](LICENSE).
-Dikembangkan untuk memenuhi Capstone Project Rekayasa Sistem Perangkat Lunak.
+Dikembangkan untuk memenuhi Capstone Project Web Developer Jarvis Camp.
