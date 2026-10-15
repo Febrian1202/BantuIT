@@ -78,3 +78,8 @@ services:
 
 volumes:
   app-storage:
+
+networks:
+  default:
+    name: ${DOCKER_NETWORK:-dokploy-network}
+    external: true
