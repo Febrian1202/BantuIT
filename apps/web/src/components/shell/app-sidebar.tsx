@@ -40,7 +40,7 @@ export function AppSidebar() {
             {mainItems.map((item) => {
               const isActive =
                 item.href === "/"
-                  ? pathname === "/"
+                  ? pathname === "/" || pathname.startsWith("/dashboard")
                   : pathname.startsWith(item.href);
               const Icon = item.icon;
 
@@ -48,6 +48,7 @@ export function AppSidebar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     isActive
@@ -77,6 +78,7 @@ export function AppSidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    aria-current={isActive ? "page" : undefined}
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                       isActive

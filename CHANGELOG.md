@@ -5,6 +5,16 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.3] - 2026-10-15
+
+### Fixed
+- **Frontend App Shell Navigation:**
+  - Memperbaiki penandaan status aktif (`isActive`) pada menu sidebar desktop (`AppSidebar`) dan mobile drawer (`MobileNav`) untuk halaman Dashboard. Sebelumnya pengecekan hanya menguji `pathname === "/"`, sedangkan halaman dashboard pengguna terdistribusi ke rute berbasis peran (`/dashboard/admin`, `/dashboard/technician`, `/dashboard/manager`, `/dashboard/employee`).
+  - Menambahkan atribut aksesibilitas `aria-current="page"` pada link navigasi yang sedang aktif.
+  - Menambahkan automated unit test pada `apps/web/src/test/shell/sidebar-highlight.test.tsx` untuk menjamin highlight dashboard selalu aktif pada `/` dan `/dashboard/*`.
+
+---
+
 ## [1.0.2] - 2026-10-15
 
 ### Fixed

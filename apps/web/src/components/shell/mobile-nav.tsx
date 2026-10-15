@@ -48,7 +48,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
               {mainItems.map((item) => {
                 const isActive =
                   item.href === "/"
-                    ? pathname === "/"
+                    ? pathname === "/" || pathname.startsWith("/dashboard")
                     : pathname.startsWith(item.href);
                 const Icon = item.icon;
 
@@ -56,6 +56,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
                   <Link
                     key={item.href}
                     href={item.href}
+                    aria-current={isActive ? "page" : undefined}
                     onClick={() => onOpenChange(false)}
                     className={cn(
                       "flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
@@ -86,6 +87,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
                     <Link
                       key={item.href}
                       href={item.href}
+                      aria-current={isActive ? "page" : undefined}
                       onClick={() => onOpenChange(false)}
                       className={cn(
                         "flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
