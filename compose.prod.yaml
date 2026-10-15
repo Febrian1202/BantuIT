@@ -1,8 +1,5 @@
 services:
   api:
-    build:
-      context: ./apps/api
-      dockerfile: Dockerfile
     image: ${IMAGE_REGISTRY:-ghcr.io/febrian1202}/bantuit-api:${APP_VERSION:-latest}
     container_name: bantuit-prod-api
     restart: unless-stopped
@@ -56,9 +53,6 @@ services:
       disable: true
 
   web:
-    build:
-      context: ./apps/web
-      dockerfile: Dockerfile
     image: ${IMAGE_REGISTRY:-ghcr.io/febrian1202}/bantuit-web:${APP_VERSION:-latest}
     container_name: bantuit-prod-web
     restart: unless-stopped
