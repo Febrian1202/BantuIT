@@ -5,6 +5,22 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.6] - 2026-10-15
+
+### Added
+- **Halaman Pusat Notifikasi (`/notifications`):**
+  - Mengimplementasikan halaman penuh Pusat Notifikasi yang terintegrasi dengan tautan *"Lihat semua notifikasi"* di dropdown notifikasi Topbar.
+  - Mengikuti konvensi arsitektur Next.js App Router standar proyek dengan Server Component `page.tsx` (menyediakan metadata `Pusat Notifikasi | BantuIT` dan Suspense fallback) serta Client Component `page-client.tsx`.
+  - Fitur lengkap:
+    - Tab filter status notifikasi (`Semua`, `Belum Dibaca`, `Sudah Dibaca`) yang tersinkronisasi via query parameters URL.
+    - Tombol aksi *"Tandai Semua Dibaca"* untuk menandai seluruh notifikasi sekaligus.
+    - Aksi per notifikasi: tombol *"Buka Tiket"* yang mengarahkan ke halaman detail tiket bersangkutan dan otomatis menandai notifikasi telah dibaca, serta tombol aksi centang untuk menandai dibaca tanpa berpindah halaman.
+    - Ikon semantik berdasarkan tipe peristiwa notifikasi (`TICKET_SLA_BREACHED`, `TICKET_COMMENTED`, dan penugasan/perubahan status tiket).
+    - Status kosong (`EmptyState`) dan kontrol paginasi (`DataTablePagination`).
+  - Menambahkan test suite unit testing di `apps/web/src/test/notifications/notifications-page.test.tsx`.
+
+---
+
 ## [1.0.5] - 2026-10-15
 
 ### Added
