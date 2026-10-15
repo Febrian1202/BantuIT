@@ -5,6 +5,15 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.2] - 2026-10-15
+
+### Fixed
+- **Docker Compose Production:**
+  - Menambahkan `pull_policy: always` pada semua layanan di `compose.prod.yaml` agar Dokploy/Docker selalu menarik image container terbaru dari GHCR dan tidak menggunakan image cache lama di VPS.
+  - Menghapus pemanggilan `view:cache` sepenuhnya dari `apps/api/docker-entrypoint.sh` karena backend BantuIT adalah RESTful API murni tanpa view Blade.
+
+---
+
 ## [1.0.1] - 2026-10-15
 
 ### Fixed
