@@ -15,7 +15,7 @@ describe("DemoAccountCards Component", () => {
         screen.getByRole("button", { name: new RegExp(acc.role, "i") })
       ).toBeInTheDocument();
       expect(screen.getByText(acc.email)).toBeInTheDocument();
-      expect(screen.getByText(acc.label)).toBeInTheDocument();
+      expect(screen.getByText(new RegExp(acc.label, "i"))).toBeInTheDocument();
     }
   });
 

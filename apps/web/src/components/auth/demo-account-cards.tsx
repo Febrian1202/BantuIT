@@ -61,8 +61,8 @@ export function DemoAccountCards({
         </div>
       </div>
 
-      {/* Grid Kartu Akun Demo */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+      {/* List Kartu Akun Demo (1 baris per kartu) */}
+      <div className="flex flex-col gap-2">
         {DEMO_ACCOUNTS.map((acc) => {
           const Icon = acc.icon;
           return (
@@ -72,22 +72,29 @@ export function DemoAccountCards({
               disabled={disabled}
               onClick={() => onSelect(acc.email)}
               aria-label={`Pilih akun ${acc.role}: ${acc.email}`}
-              className="border-border bg-background/60 hover:bg-secondary/70 hover:border-primary/40 focus-visible:ring-ring group flex cursor-pointer flex-col items-start gap-1 rounded-lg border p-2.5 text-left transition-all focus-visible:ring-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+              className="border-border bg-background/50 hover:bg-secondary/70 hover:border-primary/40 focus-visible:ring-ring group flex cursor-pointer items-center justify-between rounded-lg border px-3 py-2 text-left transition-all focus-visible:ring-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
             >
-              <div className="flex w-full items-center justify-between">
-                <span className="text-foreground group-hover:text-primary flex items-center gap-1.5 text-xs font-semibold transition-colors">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <div className="bg-secondary flex size-7 shrink-0 items-center justify-center rounded-md">
                   <Icon
-                    className={cn("size-3.5 shrink-0", acc.colorClass)}
+                    className={cn("size-4 shrink-0", acc.colorClass)}
                     aria-hidden="true"
                   />
-                  {acc.role}
-                </span>
-                <span className="text-muted-foreground text-[10px] font-medium">
-                  {acc.label}
-                </span>
+                </div>
+                <div className="flex min-w-0 flex-col">
+                  <span className="text-foreground group-hover:text-primary truncate text-xs font-semibold transition-colors">
+                    {acc.role}
+                    <span className="text-muted-foreground ml-1.5 text-[11px] font-normal">
+                      ({acc.label})
+                    </span>
+                  </span>
+                  <span className="text-muted-foreground truncate font-mono text-[11px]">
+                    {acc.email}
+                  </span>
+                </div>
               </div>
-              <span className="text-muted-foreground group-hover:text-foreground w-full truncate font-mono text-[11px] transition-colors">
-                {acc.email}
+              <span className="text-muted-foreground group-hover:text-primary hidden shrink-0 text-[11px] font-medium opacity-0 transition-opacity group-hover:opacity-100 sm:inline-block">
+                Pilih →
               </span>
             </button>
           );

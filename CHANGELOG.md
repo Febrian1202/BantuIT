@@ -10,6 +10,7 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 ### Added
 - **Kartu Pintasan Akun Demo (1-Click Fill) di Halaman Login:**
   - Menambahkan komponen terpisah `DemoAccountCards` (`apps/web/src/components/auth/demo-account-cards.tsx`) yang diletakkan di bawah form login (`LoginPage`).
+  - Menggunakan tata letak 1 kartu per baris (single-column stack) dengan ikon role, deskripsi peran, dan email yang rapi serta nyaman di layar mobile maupun desktop.
   - Menyediakan 4 kartu akun demo yang mencakup seluruh peran pengguna di sistem:
     - **Administrator:** `admin@bantuit.test` (Admin Sistem)
     - **Manager:** `manager@bantuit.test` (IT Manager)
