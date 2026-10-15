@@ -1,8 +1,90 @@
-include:
-  - compose.prod.yaml
-
 services:
   api:
+    image: ${IMAGE_REGISTRY:-ghcr.io/febrian1202}/bantuit-api:${APP_VERSION:-latest}
+    pull_policy: always
+    container_name: bantuit-prod-api
+    restart: unless-stopped
     command: ["php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000", "--workers=4", "--max-requests=1000"]
+    env_file:
+      - path: .env
+        required: false
+      - path: ./apps/api/.env.production
+        required: false
     environment:
+      SERVER_NAME: "http://:8000"
       OCTANE_SERVER: frankenphp
+      DB_CONNECTION: mysql
+      DB_HOST: ${DB_HOST:-mariadb}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_DATABASE: ${DB_DATABASE:-BantuIT}
+      DB_USERNAME: ${DB_USERNAME:-bantuit}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - app-storage:/app/storage/app
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/up || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+
+  scheduler:
+    image: ${IMAGE_REGISTRY:-ghcr.io/febrian1202}/bantuit-api:${APP_VERSION:-latest}
+    pull_policy: always
+    container_name: bantuit-prod-scheduler
+    restart: unless-stopped
+    command: ["php", "artisan", "schedule:work"]
+    env_file:
+      - path: .env
+        required: false
+      - path: ./apps/api/.env.production
+        required: false
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: ${DB_HOST:-mariadb}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_DATABASE: ${DB_DATABASE:-BantuIT}
+      DB_USERNAME: ${DB_USERNAME:-bantuit}
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - app-storage:/app/storage/app
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      disable: true
+
+  web:
+    image: ${IMAGE_REGISTRY:-ghcr.io/febrian1202}/bantuit-web:${APP_VERSION:-latest}
+    pull_policy: always
+    container_name: bantuit-prod-web
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+      - path: ./apps/web/.env.production
+        required: false
+    environment:
+      PORT: 3000
+      API_BASE_URL: ${API_BASE_URL:-http://api:8000/api}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/login || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  app-storage:
+
+networks:
+  default:
+    name: ${DOCKER_NETWORK:-dokploy-network}
+    external: true
