@@ -5,6 +5,16 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.7] - 2026-10-16
+
+### Fixed
+- **Judul Halaman pada Topbar (`AppTopbar`):**
+  - Memperbaiki pemetaan judul modul pada fungsi `getPageTitle` di `apps/web/src/components/shell/app-topbar.tsx` agar rute `/tickets` (dan subrutenya seperti `/tickets/new` dan `/tickets/[id]`) menampilkan teks judul `"Daftar Tiket"` alih-alih jatuh ke fallback default `"BantuIT"`.
+  - Menyesuaikan nilai fallback default judul halaman menjadi format kapitalisasi brand standar `"BantuIT"`.
+  - Menambahkan test suite unit testing di `apps/web/src/test/shell/topbar.test.tsx` untuk memastikan konsistensi judul modul di Topbar untuk rute tiket dan modul lainnya.
+
+---
+
 ## [1.0.6] - 2026-10-15
 
 ### Added

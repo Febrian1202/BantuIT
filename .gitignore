@@ -163,3 +163,4 @@ apps/api/storage/app/private/*
 .opencode/
 .superpowers/
 docs/*
+apps/web/public/presentation/

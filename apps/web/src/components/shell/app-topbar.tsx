@@ -9,8 +9,9 @@ import { ThemeToggle } from "./theme-toggle";
 import { NavUser } from "./nav-user";
 import { MobileNav } from "./mobile-nav";
 
-function getPageTitle(pathname: string): string {
+export function getPageTitle(pathname: string): string {
   if (pathname.startsWith("/dashboard")) return "Dashboard";
+  if (pathname.startsWith("/tickets")) return "Daftar Tiket";
   if (pathname.startsWith("/my-assets")) return "Aset Saya";
   if (pathname.startsWith("/assets")) return "Inventaris Aset";
   if (pathname.startsWith("/knowledge")) return "Basis Pengetahuan";
@@ -24,7 +25,7 @@ function getPageTitle(pathname: string): string {
   if (pathname.startsWith("/admin/priorities")) return "Prioritas & SLA";
   if (pathname.startsWith("/admin/audit-logs")) return "Log Audit";
   if (pathname.startsWith("/403")) return "Akses Ditolak";
-  return "BANTU IT";
+  return "BantuIT";
 }
 
 export function AppTopbar() {
