@@ -10,13 +10,21 @@ import { ticketKeys } from "@/lib/query-key";
 import type { TicketDetail, TicketAction } from "@/types/tickets";
 import type { ApiResponse } from "@/types/api";
 
+export type TicketActionOrDelete = TicketAction | "delete";
+
 export type DialogType =
-  "assign" | "status" | "cancel" | "priority" | "edit" | "delete" | null;
+  | "assign"
+  | "status"
+  | "cancel"
+  | "priority"
+  | "edit"
+  | "delete"
+  | null;
 
 export interface UseTicketActionsReturn {
   activeDialog: DialogType;
-  activeAction: TicketAction | null;
-  openDialog: (action: TicketAction) => void;
+  activeAction: TicketActionOrDelete | null;
+  openDialog: (action: TicketActionOrDelete) => void;
   closeDialog: () => void;
   assignAction: UseMutationResult<
     ApiResponse<TicketDetail>,
@@ -45,7 +53,8 @@ export function useTicketActions(ticket: TicketDetail): UseTicketActionsReturn {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [activeDialog, setActiveDialog] = useState<DialogType>(null);
-  const [activeAction, setActiveAction] = useState<TicketAction | null>(null);
+  const [activeAction, setActiveAction] =
+    useState<TicketActionOrDelete | null>(null);
 
   const detailKey = ticketKeys.detail(ticket.id);
 
@@ -125,9 +134,12 @@ export function useTicketActions(ticket: TicketDetail): UseTicketActionsReturn {
     },
   }) as UseTicketActionsReturn["deleteAction"];
 
-  const openDialog = useCallback((action: TicketAction) => {
+  const openDialog = useCallback((action: TicketActionOrDelete) => {
     setActiveAction(action);
     switch (action) {
+      case "delete":
+        setActiveDialog("delete");
+        break;
       case "assign":
         setActiveDialog("assign");
         break;

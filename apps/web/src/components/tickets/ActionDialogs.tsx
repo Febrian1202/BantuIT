@@ -27,8 +27,8 @@ import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { apiFetch } from "@/lib/client/api";
 import { referenceKeys } from "@/lib/query-key";
 import { useReferenceData } from "@/hooks/use-reference-data";
-import type { DialogType } from "@/hooks/use-ticket-actions";
-import type { TicketDetail, TicketAction } from "@/types/tickets";
+import type { DialogType, TicketActionOrDelete } from "@/hooks/use-ticket-actions";
+import type { TicketDetail } from "@/types/tickets";
 import type { TechnicianOption } from "@/types/auth";
 
 const cancelSchema = z.object({
@@ -42,7 +42,7 @@ const statusSchema = z.object({
 interface ActionDialogsProps {
   ticket: TicketDetail;
   activeDialog: DialogType;
-  activeAction: TicketAction | null;
+  activeAction: TicketActionOrDelete | null;
   onClose: () => void;
   onAssign: (data: { technician_id: number; note?: string }) => void;
   onStatus: (data: { status_id: number; note?: string }) => void;
@@ -107,7 +107,9 @@ export function ActionDialogs({
     },
   });
 
-  const getStatusId = (action: TicketAction | null): number | undefined => {
+  const getStatusId = (
+    action: TicketActionOrDelete | null
+  ): number | undefined => {
     switch (action) {
       case "start":
         return 3;

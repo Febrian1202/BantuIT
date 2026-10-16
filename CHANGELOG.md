@@ -5,6 +5,17 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.8] - 2026-10-16
+
+### Fixed
+- **Aksi Hapus Tiket pada Detail Tiket (`useTicketActions`):**
+  - Memperbaiki penanganan aksi `"delete"` pada fungsi `openDialog` di `apps/web/src/hooks/use-ticket-actions.ts` dengan menambahkan `case "delete": setActiveDialog("delete"); break;`. Sebelumnya aksi `"delete"` jatuh ke percabangan `default` yang menyetel dialog ke `null`, mengakibatkan dialog konfirmasi (`ConfirmDialog`) tidak pernah terbuka dan request penghapusan ke API tidak terkirim.
+  - Memperbarui definisi tipe `TicketActionOrDelete` untuk mencakup aksi administratif penghapusan tiket pada `useTicketActions` dan `ActionDialogs`.
+  - Menghapus unsafe casting `action as TicketAction` pada `apps/web/src/app/(app)/tickets/[id]/page-client.tsx`.
+  - Menambahkan pengujian unit di `apps/web/src/test/Ticket/ticket-detail-banner.test.tsx` dan `apps/web/src/test/Ticket/use-ticket-actions.test.tsx` guna mengunci alur pembukaan dialog konfirmasi penghapusan tiket.
+
+---
+
 ## [1.0.7] - 2026-10-16
 
 ### Fixed

@@ -83,6 +83,15 @@ describe("TicketDetailBanner", () => {
     ).toBeInTheDocument();
   });
 
+  it("calls onAction with 'delete' when delete button is clicked", async () => {
+    mockCan.mockReturnValueOnce(true);
+    const onAction = vi.fn();
+    render(<TicketDetailBanner ticket={ticket} onAction={onAction} />);
+    const deleteBtn = screen.getByRole("button", { name: /hapus tiket/i });
+    deleteBtn.click();
+    expect(onAction).toHaveBeenCalledWith("delete");
+  });
+
   it("does not render an action twice", () => {
     render(<TicketDetailBanner ticket={ticket} onAction={vi.fn()} />);
     const startButtons = screen.getAllByRole("button", {

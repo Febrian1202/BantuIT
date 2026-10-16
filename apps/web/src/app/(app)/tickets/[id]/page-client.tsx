@@ -76,7 +76,7 @@ function TicketLoaded({ ticket }: { ticket: TicketDetail }) {
       {/* Banner */}
       <TicketDetailBanner
         ticket={ticket}
-        onAction={(action) => actions.openDialog(action as TicketAction)}
+        onAction={(action) => actions.openDialog(action)}
       />
 
       {/* Layout utama: kiri timeline, kanan sidebar */}
