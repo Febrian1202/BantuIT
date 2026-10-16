@@ -13,13 +13,7 @@ import type { ApiResponse } from "@/types/api";
 export type TicketActionOrDelete = TicketAction | "delete";
 
 export type DialogType =
-  | "assign"
-  | "status"
-  | "cancel"
-  | "priority"
-  | "edit"
-  | "delete"
-  | null;
+  "assign" | "status" | "cancel" | "priority" | "edit" | "delete" | null;
 
 export interface UseTicketActionsReturn {
   activeDialog: DialogType;
@@ -53,8 +47,9 @@ export function useTicketActions(ticket: TicketDetail): UseTicketActionsReturn {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [activeDialog, setActiveDialog] = useState<DialogType>(null);
-  const [activeAction, setActiveAction] =
-    useState<TicketActionOrDelete | null>(null);
+  const [activeAction, setActiveAction] = useState<TicketActionOrDelete | null>(
+    null
+  );
 
   const detailKey = ticketKeys.detail(ticket.id);
 

@@ -27,7 +27,10 @@ import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { apiFetch } from "@/lib/client/api";
 import { referenceKeys } from "@/lib/query-key";
 import { useReferenceData } from "@/hooks/use-reference-data";
-import type { DialogType, TicketActionOrDelete } from "@/hooks/use-ticket-actions";
+import type {
+  DialogType,
+  TicketActionOrDelete,
+} from "@/hooks/use-ticket-actions";
 import type { TicketDetail } from "@/types/tickets";
 import type { TechnicianOption } from "@/types/auth";
 
