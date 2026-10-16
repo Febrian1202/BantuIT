@@ -117,7 +117,7 @@ class TicketAttachmentServices
                 AuditAction::Delete,
                 AuditModule::Ticket,
                 $attachment->ticket_id,
-                "File {$attachment->originale_filename} dihapus dari ticket #{$attachment->ticket->ticket_number}.",
+                "File {$attachment->original_filename} dihapus dari ticket #{$attachment->ticket->ticket_number}.",
             );
         });
     }

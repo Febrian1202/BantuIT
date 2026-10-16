@@ -175,7 +175,7 @@ class TicketService
                 AuditAction::Create,
                 AuditModule::Ticket,
                 $ticket->id,
-                "Ticket #{$ticket->ticket_numner} dibuat.",
+                "Ticket #{$ticket->ticket_number} dibuat.",
             );
 
             return $ticket->load([

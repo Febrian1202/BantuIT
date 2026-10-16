@@ -43,7 +43,9 @@ test(
             ->and($log->module_id)
             ->toBe($ticket->id)
             ->and($log->user_id)
-            ->toBe($reporter->id);
+            ->toBe($reporter->id)
+            ->and($log->description)
+            ->toBe("File {$attachment->original_filename} dihapus dari ticket #{$ticket->ticket_number}.");
     },
 );
 

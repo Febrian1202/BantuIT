@@ -161,10 +161,10 @@ test(
         expect($ticket->histories()->count())->toBe(1);
         expect($ticket->histories()->first()->field_changed)->toBe('status_id');
         expect($ticket->histories()->first()->new_value)->toBe('OPEN');
-        expect(
-            AuditLog::where('module', 'ticket')
-                ->where('action', 'create')
-                ->count(),
-        )->toBe(1);
+        $auditLog = AuditLog::where('module', 'ticket')
+            ->where('action', 'create')
+            ->first();
+        expect($auditLog)->not->toBeNull();
+        expect($auditLog->description)->toBe("Ticket #{$ticket->ticket_number} dibuat.");
     },
 );

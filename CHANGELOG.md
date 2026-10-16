@@ -5,6 +5,18 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.9] - 2026-10-16
+
+### Fixed
+- **Deskripsi Audit Log Pembuatan Tiket (`TicketService`):**
+  - Memperbaiki kesalahan ketik (typo) pemanggilan properti `$ticket->ticket_numner` menjadi `$ticket->ticket_number` pada `apps/api/app/Services/Ticket/TicketService.php`. Sebelumnya, kesalahan ketik ini menyebabkan nomor tiket bernilai kosong (`null`) pada log audit sehingga pesan deskripsi tercatat sebagai `"Ticket # dibuat."`. Setelah perbaikan, nomor tiket terinterpolasi dengan benar menjadi `"Ticket #TCK-XXXX dibuat."`.
+  - Menambahkan pengujian regresi eksplisit pada `apps/api/tests/Feature/Ticket/CreateTicketTest.php` untuk memverifikasi pencatatan deskripsi audit log saat tiket baru dibuat.
+- **Deskripsi Audit Log Penghapusan Lampiran Tiket (`TicketAttachmentServices`):**
+  - Memperbaiki kesalahan ketik (typo) properti `$attachment->originale_filename` menjadi `$attachment->original_filename` pada `apps/api/app/Services/Ticket/TicketAttachmentServices.php` saat mencatat log audit aksi penghapusan berkas lampiran tiket.
+  - Memperbarui pengujian regresi pada `apps/api/tests/Feature/Attachment/AttachmentDeleteTest.php` untuk memvalidasi teks deskripsi penghapusan berkas lampiran tiket.
+
+---
+
 ## [1.0.8] - 2026-10-16
 
 ### Fixed
