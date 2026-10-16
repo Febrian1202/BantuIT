@@ -51,7 +51,7 @@ test('assignable users mendukung pencarian', function () {
         ->employee()
         ->create(['full_name' => 'Budi Santoso']);
 
-    $tech = User::factory()->technician()->create();
+    $tech = User::factory()->technician()->create(['full_name' => 'Zulfa Teknisi']);
     Sanctum::actingAs($tech);
 
     $response = $this->getJson('/api/users/assignable?search=andi');
