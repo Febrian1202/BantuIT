@@ -514,19 +514,19 @@ export function UserFormDialog({
                             }
                             aria-invalid={!!errors.profile?.hire_date}
                             className={cn(
-                              "border-input h-11 min-h-11 w-full justify-start rounded-lg bg-transparent px-3 text-left font-normal shadow-xs sm:h-9 sm:min-h-0 sm:text-sm",
+                              "border-input h-11 min-h-11 w-full justify-start overflow-hidden rounded-lg bg-transparent px-3 text-left font-normal shadow-xs sm:h-9 sm:min-h-0 sm:text-sm",
                               !field.value && "text-muted-foreground",
                               errors.profile?.hire_date &&
                                 "border-destructive ring-destructive/20"
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4 shrink-0 opacity-70" />
-                            <span>
+                            <span className="min-w-0 flex-1 truncate text-left">
                               {field.value && selectedDate
                                 ? format(selectedDate, "d MMM yyyy", {
                                     locale: localeId,
                                   })
-                                : "Pilih tanggal bergabung…"}
+                                : "Pilih tanggal…"}
                             </span>
                           </Button>
                         </PopoverTrigger>

@@ -5,6 +5,27 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.11] - 2026-10-17
+
+### Added
+- **Dialog Cepat Ubah Status Aset (`ChangeStatusDialog`):**
+  - Membuat komponen `apps/web/src/components/assets/ChangeStatusDialog.tsx` untuk mengubah status operasional aset (`available`, `maintenance`, `retired`, `lost`) beserta catatan perubahan langsung dari halaman detail aset tanpa perlu membuka formulir edit penuh.
+  - Menyertakan banner peringatan kontekstual jika aset masih memiliki pemegang aktif (`assigned`), mengarahkan teknisi untuk melepaskan penugasan terlebih dahulu.
+  - Mengirimkan request `PUT /api/assets/{id}` yang secara otomatis mencatat entri riwayat `AssetHistory` bertipe `StatusChanged` (*"Status diubah dari {status_lama} menjadi {status_baru}."*) serta `audit_logs` di backend.
+  - Menambahkan test suite `apps/web/src/test/Asset/asset-status-dialog.test.tsx` (3 pengujian).
+- **Tombol Ubah Aset & Ubah Status pada Detail Aset (`page-client.tsx`):**
+  - Menambahkan tombol aksi `Ubah Status` (ikon `SlidersHorizontal`) dan tautan tombol `Ubah Aset` (ikon `Pencil`, mengarah ke `/assets/[id]/edit`) pada baris aksi detail aset bagi pengguna dengan izin `asset.update`.
+  - Memperketat visibilitas tombol `Tugaskan Aset` agar hanya muncul jika status aset `available`.
+  - Menambahkan test suite `apps/web/src/test/Asset/asset-detail-actions.test.tsx` (2 pengujian).
+
+### Fixed
+- **Perbaikan Placeholder Tanggal Bergabung pada Dialog Pengguna (`UserFormDialog`):**
+  - Memperbaiki masalah teks placeholder yang meluap (*offside*) keluar dari batas input tombol pada layout 2-kolom modal pengguna dengan menambahkan `overflow-hidden` pada tombol dan `min-w-0 flex-1 truncate text-left` pada elemen label teks.
+  - Meringkas teks placeholder dari `"Pilih tanggal bergabung…"` menjadi `"Pilih tanggal…"` dengan tetap mempertahankan atribut aksesibilitas `aria-label="Pilih tanggal bergabung"`.
+  - Memperbarui pengujian pada `apps/web/src/test/admin/user-form-dialog.test.tsx`.
+
+---
+
 ## [1.0.10] - 2026-10-17
 
 ### Added

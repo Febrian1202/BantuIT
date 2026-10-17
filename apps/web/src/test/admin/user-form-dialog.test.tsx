@@ -42,7 +42,7 @@ describe("UserFormDialog", () => {
       name: /pilih tanggal bergabung/i,
     });
     expect(dateButton).toBeInTheDocument();
-    expect(screen.getByText(/pilih tanggal bergabung…/i)).toBeInTheDocument();
+    expect(screen.getByText(/pilih tanggal…/i)).toBeInTheDocument();
 
     // Raw <input type="date"> must not exist in DOM
     expect(document.querySelector('input[type="date"]')).toBeNull();

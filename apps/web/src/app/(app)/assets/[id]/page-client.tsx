@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, UserPlus, UserMinus } from "lucide-react";
+import {
+  ArrowLeft,
+  UserPlus,
+  UserMinus,
+  Pencil,
+  SlidersHorizontal,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,18 +16,20 @@ import { AssetDetailCard } from "@/components/assets/AssetDetailCard";
 import { AssetHistoryTimeline } from "@/components/assets/AssetHistoryTimeline";
 import { AssignDialog } from "@/components/assets/AssignDialog";
 import { ReleaseDialog } from "@/components/assets/ReleaseDialog";
+import { ChangeStatusDialog } from "@/components/assets/ChangeStatusDialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { useAsset, useAssetHistory } from "@/hooks/use-assets";
 import { apiFetch, ApiClientError } from "@/lib/client/api";
 import { assetKeys } from "@/lib/query-key";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useAuth } from "@/components/providers/auth-provider";
-import type { AssetDetail } from "@/types/assets";
+import type { AssetDetail, AssetStatus } from "@/types/assets";
 
 function AssetLoaded({ asset }: { asset: AssetDetail }) {
   const { can } = useAuth();
   const [assignOpen, setAssignOpen] = useState(false);
   const [releaseOpen, setReleaseOpen] = useState(false);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
 
   const { data: historyResponse, isLoading: historyLoading } = useAssetHistory(
     asset.id
@@ -57,8 +65,32 @@ function AssetLoaded({ asset }: { asset: AssetDetail }) {
     },
   });
 
+  const changeStatusMutation = useApiMutation({
+    mutationFn: (data: { status: AssetStatus; notes?: string }) =>
+      apiFetch<AssetDetail>(`/assets/${asset.id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          asset_tag: asset.asset_tag,
+          name: asset.name,
+          category: asset.category,
+          brand: asset.brand,
+          model: asset.model,
+          serial_number: asset.serial_number,
+          purchase_date: asset.purchase_date,
+          status: data.status,
+          notes: data.notes || asset.notes || null,
+        }),
+      }),
+    onSuccessMessage: "Status aset berhasil diperbarui.",
+    invalidateKeys: [detailKey, listKeys],
+    onSuccess: () => {
+      setStatusDialogOpen(false);
+    },
+  });
+
   const canAssign = can("asset.assign");
   const canRelease = can("asset.release");
+  const canEdit = can("asset.update");
   const isAssigned = !!asset.current_assignment;
 
   return (
@@ -80,7 +112,7 @@ function AssetLoaded({ asset }: { asset: AssetDetail }) {
 
       {/* Baris aksi */}
       <div className="flex flex-wrap items-center gap-2">
-        {canAssign && !isAssigned && (
+        {canAssign && !isAssigned && asset.status === "available" && (
           <Button
             size="sm"
             className="gap-1.5"
@@ -100,6 +132,25 @@ function AssetLoaded({ asset }: { asset: AssetDetail }) {
             <UserMinus className="h-4 w-4" />
             Lepaskan Penugasan
           </Button>
+        )}
+        {canEdit && (
+          <>
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-1.5"
+              onClick={() => setStatusDialogOpen(true)}
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              Ubah Status
+            </Button>
+            <Button size="sm" variant="outline" asChild className="gap-1.5">
+              <Link href={`/assets/${asset.id}/edit`}>
+                <Pencil className="h-4 w-4" />
+                Ubah Aset
+              </Link>
+            </Button>
+          </>
         )}
       </div>
 
@@ -132,6 +183,13 @@ function AssetLoaded({ asset }: { asset: AssetDetail }) {
         asset={asset}
         isSubmitting={releaseMutation.isPending}
         onSubmit={(data) => releaseMutation.mutate(data)}
+      />
+      <ChangeStatusDialog
+        open={statusDialogOpen}
+        onOpenChange={setStatusDialogOpen}
+        asset={asset}
+        isSubmitting={changeStatusMutation.isPending}
+        onSubmit={(data) => changeStatusMutation.mutate(data)}
       />
     </div>
   );
