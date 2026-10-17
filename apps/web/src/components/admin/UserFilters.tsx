@@ -15,7 +15,7 @@ import { SearchInput } from "@/components/shared/search-input";
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet";
 import type { FilterField } from "@/components/shared/filter-bar";
 import { useUserReferences } from "@/hooks/use-users";
-import { userStatusLabels } from "@/lib/labels";
+import { getRoleLabel, userStatusLabels } from "@/lib/labels";
 
 export function UserFilters() {
   const router = useRouter();
@@ -55,7 +55,7 @@ export function UserFilters() {
       label: "Role",
       value: roleId,
       options: roles.map((role) => ({
-        label: role.name,
+        label: getRoleLabel(role.name),
         value: String(role.id),
       })),
     },
@@ -137,7 +137,7 @@ export function UserFilters() {
                 value={String(role.id)}
                 className="text-xs"
               >
-                {role.name}
+                {getRoleLabel(role.name)}
               </SelectItem>
             ))}
           </SelectContent>

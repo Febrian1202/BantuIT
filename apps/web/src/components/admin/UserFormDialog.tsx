@@ -3,10 +3,18 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff } from "lucide-react";
+import { format, parseISO } from "date-fns";
+import { id as localeId } from "date-fns/locale";
+import { Calendar as CalendarIcon, Eye, EyeOff, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +36,8 @@ import { setFormErrors } from "@/lib/client/error-mapper";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { useUserDetail } from "@/hooks/use-users";
 import { createUserSchema, updateUserSchema } from "@/schemas/user";
-import { userStatusLabels } from "@/lib/labels";
+import { getRoleLabel, userStatusLabels } from "@/lib/labels";
+import { cn } from "@/lib/utils";
 import type {
   DepartmentReference,
   RoleReference,
@@ -200,7 +209,7 @@ export function UserFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="max-h-[92vh] w-[95vw] overflow-y-auto p-4 sm:max-h-[85vh] sm:max-w-lg sm:p-6">
+      <DialogContent className="max-h-[92vh] w-[95vw] scrollbar-thin overflow-y-auto p-4 sm:max-h-[85vh] sm:max-w-lg sm:p-6">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? "Edit Pengguna" : "Tambah Pengguna"}
@@ -349,7 +358,7 @@ export function UserFormDialog({
                     <SelectContent>
                       {roles.map((role) => (
                         <SelectItem key={role.id} value={String(role.id)}>
-                          {role.name}
+                          {getRoleLabel(role.name)}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -483,12 +492,78 @@ export function UserFormDialog({
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="profile.hire_date">Tanggal Bergabung</Label>
-                <Input
-                  id="profile.hire_date"
-                  type="date"
-                  {...register("profile.hire_date")}
-                  aria-invalid={!!errors.profile?.hire_date}
-                  className="h-11 min-h-11 text-sm sm:h-9 sm:min-h-0"
+                <Controller
+                  control={control}
+                  name="profile.hire_date"
+                  render={({ field }) => {
+                    const selectedDate =
+                      field.value && !isNaN(Date.parse(field.value))
+                        ? parseISO(field.value)
+                        : undefined;
+                    return (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            id="profile.hire_date"
+                            type="button"
+                            variant="outline"
+                            aria-label={
+                              field.value && selectedDate
+                                ? `Tanggal bergabung: ${format(selectedDate, "d MMM yyyy", { locale: localeId })}`
+                                : "Pilih tanggal bergabung"
+                            }
+                            aria-invalid={!!errors.profile?.hire_date}
+                            className={cn(
+                              "border-input h-11 min-h-11 w-full justify-start rounded-lg bg-transparent px-3 text-left font-normal shadow-xs sm:h-9 sm:min-h-0 sm:text-sm",
+                              !field.value && "text-muted-foreground",
+                              errors.profile?.hire_date &&
+                                "border-destructive ring-destructive/20"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4 shrink-0 opacity-70" />
+                            <span>
+                              {field.value && selectedDate
+                                ? format(selectedDate, "d MMM yyyy", {
+                                    locale: localeId,
+                                  })
+                                : "Pilih tanggal bergabung…"}
+                            </span>
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={(date) => {
+                              if (date) {
+                                field.onChange(format(date, "yyyy-MM-dd"));
+                              } else {
+                                field.onChange("");
+                              }
+                            }}
+                            defaultMonth={selectedDate ?? new Date()}
+                            captionLayout="dropdown"
+                            startMonth={new Date(1970, 0)}
+                            endMonth={new Date(2050, 11)}
+                          />
+                          {field.value && (
+                            <div className="border-border flex items-center justify-end border-t p-2">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="text-muted-foreground hover:text-foreground h-7 px-2 text-xs"
+                                onClick={() => field.onChange("")}
+                              >
+                                <X className="mr-1 h-3 w-3" />
+                                Hapus Tanggal
+                              </Button>
+                            </div>
+                          )}
+                        </PopoverContent>
+                      </Popover>
+                    );
+                  }}
                 />
                 {errors.profile?.hire_date && (
                   <p className="text-destructive text-xs">

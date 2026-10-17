@@ -11,15 +11,18 @@ import {
 } from "@/components/ui/dialog";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useAppVersion } from "@/hooks/use-app-version";
 
 interface MobileNavProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  appVersion?: string;
 }
 
-export function MobileNav({ open, onOpenChange }: MobileNavProps) {
+export function MobileNav({ open, onOpenChange, appVersion }: MobileNavProps) {
   const pathname = usePathname();
   const { user } = useAuth();
+  const version = useAppVersion(appVersion);
 
   const permissions = user?.permissions ?? [];
   const role = user?.role?.name;
@@ -109,14 +112,7 @@ export function MobileNav({ open, onOpenChange }: MobileNavProps) {
         <div className="border-border shrink-0 border-t p-3">
           <div className="bg-muted/50 rounded-lg p-2 text-center">
             <p className="text-muted-foreground text-[11px]">
-              BantuIT{" "}
-              {(() => {
-                const rawVersion =
-                  process.env.NEXT_PUBLIC_APP_VERSION || "v1.0.0";
-                return rawVersion.startsWith("v")
-                  ? rawVersion
-                  : `v${rawVersion}`;
-              })()}
+              BantuIT {version}
             </p>
           </div>
         </div>

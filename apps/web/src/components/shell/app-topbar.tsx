@@ -28,7 +28,11 @@ export function getPageTitle(pathname: string): string {
   return "BantuIT";
 }
 
-export function AppTopbar() {
+interface AppTopbarProps {
+  appVersion?: string;
+}
+
+export function AppTopbar({ appVersion }: AppTopbarProps = {}) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const pathname = usePathname();
   const pageTitle = getPageTitle(pathname);
@@ -61,7 +65,11 @@ export function AppTopbar() {
         </div>
       </header>
 
-      <MobileNav open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
+      <MobileNav
+        open={mobileNavOpen}
+        onOpenChange={setMobileNavOpen}
+        appVersion={appVersion}
+      />
     </>
   );
 }

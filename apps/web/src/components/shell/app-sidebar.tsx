@@ -5,10 +5,16 @@ import { useAuth } from "../providers/auth-provider";
 import { filterNavItems } from "@/lib/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useAppVersion } from "@/hooks/use-app-version";
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  appVersion?: string;
+}
+
+export function AppSidebar({ appVersion }: AppSidebarProps = {}) {
   const pathname = usePathname();
   const { user } = useAuth();
+  const version = useAppVersion(appVersion);
 
   const permissions = user?.permissions ?? [];
   const role = user?.role?.name;
@@ -99,14 +105,7 @@ export function AppSidebar() {
       {/* Sidebar Footer */}
       <div className="border-border border-t p-3">
         <div className="bg-muted/50 rounded-lg p-2 text-center">
-          <p className="text-muted-foreground text-[11px]">
-            BantuIT{" "}
-            {(() => {
-              const rawVersion =
-                process.env.NEXT_PUBLIC_APP_VERSION || "v1.0.0";
-              return rawVersion.startsWith("v") ? rawVersion : `v${rawVersion}`;
-            })()}
-          </p>
+          <p className="text-muted-foreground text-[11px]">BantuIT {version}</p>
         </div>
       </div>
     </aside>

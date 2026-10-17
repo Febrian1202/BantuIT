@@ -45,8 +45,9 @@ export function getPriorityLabel(priority: string): string {
 }
 
 export function getRoleLabel(role: RoleName | string): string {
-  switch (role) {
+  switch (role?.toLowerCase()) {
     case "administrator":
+    case "admin":
       return "Administrator";
     case "manager":
       return "Manager";

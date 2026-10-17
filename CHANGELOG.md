@@ -5,6 +5,32 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.10] - 2026-10-17
+
+### Added
+- **Dynamic Application Versioning (`/api/version` & `useAppVersion`):**
+  - Membuat route handler dinamis `apps/web/src/app/api/version/route.ts` (`force-dynamic`, `no-store`) untuk mengekspos versi aplikasi runtime container (`NEXT_PUBLIC_APP_VERSION` atau `APP_VERSION`) ke antarmuka klien.
+  - Menambahkan utilitas `formatAppVersion()` pada `apps/web/src/lib/version.ts` dan hook klien `useAppVersion()` pada `apps/web/src/hooks/use-app-version.ts` untuk menyinkronkan label versi footer tanpa layout shift.
+  - Meneruskan prop `appVersion` dari Server Component `apps/web/src/app/(app)/layout.tsx` ke komponen `AppSidebar`, `AppTopbar`, dan `MobileNav`.
+  - Menambahkan dukungan argumen build `ARG NEXT_PUBLIC_APP_VERSION` dan `ARG APP_VERSION` pada `apps/web/Dockerfile`, serta menyalurkan tag rilis via workflow `.github/workflows/release.yml`.
+  - Mengonfigurasi variabel `NEXT_PUBLIC_APP_VERSION` dan `APP_VERSION` pada container service `web` di `compose.prod.yaml` dan `compose.prod.octane.yaml`.
+  - Menambahkan test suite `apps/web/src/test/shell/app-version.test.tsx` (7 pengujian).
+
+### Changed
+- **Penyelarasan Bahasa Label Role Pengguna:**
+  - Memperbarui fungsi `getRoleLabel()` pada `apps/web/src/lib/labels.ts` agar mendukung penanganan case-insensitive untuk role pengguna (`Administrator`, `Manager`, `Teknisi`, `Karyawan`).
+  - Mengubah opsi pemilihan role pada dropdown form pengguna (`apps/web/src/components/admin/UserFormDialog.tsx`) dan dropdown filter pengguna (`apps/web/src/components/admin/UserFilters.tsx`) sehingga menampilkan nama peran dalam bahasa Indonesia baku.
+
+### Fixed
+- **Integrasi Shadcn/UI Date Picker pada Tanggal Bergabung:**
+  - Mengganti elemen native `<input type="date">` pada modal pembuatan dan pengubahan pengguna (`UserFormDialog`) dengan komponen shadcn/ui `Popover` dan `Calendar` (mode single, terformat lokal Indonesia, dilengkapi tombol bersihkan tanggal).
+  - Menambahkan test suite `apps/web/src/test/admin/user-form-dialog.test.tsx` (3 pengujian).
+- **Styling Scrollbar Modal Dialog:**
+  - Menambahkan token desain `--scrollbar-thumb` dan `--scrollbar-thumb-hover` untuk mode terang dan gelap pada `apps/web/src/app/globals.css`.
+  - Menambahkan utilitas `@utility scrollbar-thin` dan menerapkannya pada `DialogContent` `UserFormDialog` agar scrollbar modal tampil tipis (6px) dan sesuai dengan skema warna desain sistem.
+
+---
+
 ## [1.0.9] - 2026-10-16
 
 ### Fixed

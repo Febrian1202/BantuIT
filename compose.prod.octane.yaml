@@ -69,6 +69,8 @@ services:
     environment:
       PORT: 3000
       API_BASE_URL: ${API_BASE_URL:-http://api:8000/api}
+      NEXT_PUBLIC_APP_VERSION: ${NEXT_PUBLIC_APP_VERSION:-${APP_VERSION:-}}
+      APP_VERSION: ${APP_VERSION:-${NEXT_PUBLIC_APP_VERSION:-}}
     ports:
       - "${WEB_PORT:-3000}:3000"
     depends_on:
