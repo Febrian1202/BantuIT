@@ -5,6 +5,16 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.12] - 2026-10-17
+
+### Changed
+- **Penyederhanaan Tampilan Kartu Akun Demo (`DemoAccountCards`):**
+  - Menghapus ikon pada masing-masing kartu peran di komponen `apps/web/src/components/auth/demo-account-cards.tsx` sehingga tampilan kartu menjadi lebih bersih, minimalis, dan berfokus pada informasi teks (Role, Label, dan Email).
+  - Menghapus impor ikon `lucide-react` dan properti `icon` serta `colorClass` dari interface `DemoAccount`.
+  - Menambahkan pengujian di `apps/web/src/test/auth/demo-account-cards.test.tsx` untuk memastikan tidak ada elemen ikon SVG yang dirender pada kartu demo.
+
+---
+
 ## [1.0.11] - 2026-10-17
 
 ### Added

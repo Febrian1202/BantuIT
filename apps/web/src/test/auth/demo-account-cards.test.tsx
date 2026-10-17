@@ -42,4 +42,10 @@ describe("DemoAccountCards Component", () => {
     fireEvent.click(buttons[0]);
     expect(onSelectMock).not.toHaveBeenCalled();
   });
+
+  it("does not render any icons or svg elements in the demo cards", () => {
+    const onSelectMock = vi.fn();
+    const { container } = render(<DemoAccountCards onSelect={onSelectMock} />);
+    expect(container.querySelector("svg")).toBeNull();
+  });
 });
