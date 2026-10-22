@@ -1,0 +1,117 @@
+# AGENTS.md — JARVIS OPS
+
+IT Service Management monorepo. **Design, implementation, and mobile responsive phases are complete (Current Release — Tag `v1.1.3`).** `docs/` is dense and authoritative (~6.3k lines, Indonesian); the codebase has grown to 18 models, 24 migrations, 727 passing backend tests (3300+ assertions), full ticket lifecycle with authorization & workflows (Tag `v0.3.0`), background SLA breach scheduler (4a), notification API (4b), audit log API with scoping & timezone filters (Tag `v0.4.0`), asset management, knowledge base, file attachments, 4 dashboard APIs for employee, technician, manager, and admin (Tag `v0.6.0`), complete Frontend Foundation, App Shell, 16 baseline UI + 9 shared components, 401 passing frontend unit/component tests, 30s background-safe polling notifications, 33 app routes, role-based visual analytics dashboards with Recharts, WCAG 2.2 AA accessibility audit, automated Playwright E2E testing (Tag `v0.9.0`), multi-stage production Docker stack, GitHub Actions CI, Octane audit, memory-safe streamed CSV export, Definition of Technical Success & DoD verification (Tag `v1.0.0`), Mobile Responsive Layout & Touch Ergonomics dengan Card View adapter, Bottom Sheet filter, sticky mobile action bar, touch hardening, dan Playwright Mobile Projects Pixel 7 & iPhone 14 (Tag `v1.1.0`), perbaikan mobile UX (`v1.1.1`), runtime Octane readiness (`v1.1.2`), serta pembaruan brand logo resmi, penyesuaian font Plus Jakarta Sans, dan skrip submission aman (`v1.1.3`). Sudah termasuk halaman: ticket list, detail, create; asset management; knowledge base; admin users, master data, audit logs; profile; dashboard analytics untuk 4 role; export CSV.
+
+## Repo layout
+
+```
+apps/api/    Laravel 13.29 + Sanctum 4 (PHP ^8.3, local runtime is 8.5)
+apps/web/    Next.js 16.3 + React 19 + Tailwind v4 (App Router, src/app)
+docs/        approved design docs — the spec
+PRODUCT.md   product truth for the impeccable design skill
+```
+
+One `.git` at the root (`origin` = github.com/Febrian1202/JarvisOps, branch `main`). Root manifest `compose.yaml`, `Makefile`, and `docker/` dev environment are active.
+
+## Docs are the spec — read before coding
+
+These docs contain locked decisions, not drafts. Do not re-litigate them.
+
+| Before you touch | Read |
+| --- | --- |
+| anything | `docs/adr/DECISIONS.md` — D-01..D-24, closes ~50 decisions that would otherwise be made silently and inconsistently |
+| migrations / models | `docs/architecture/ERD.md`, `docs/schema.sql` (18 tables), DECISIONS §A (esp. D-14 column+index checklist, D-15 pinned seeder IDs) |
+| controllers / routes | `docs/api/API-CONTRACT.md` (envelope, §13 server-set fields), DECISIONS §C |
+| application / service-layer pattern | `docs/architecture/BACKEND-ARCHITECTURE.md` (thin controllers, DTO layer, service layer, request pipeline, folder structure) — derived doc, no new decisions |
+| frontend / UI architecture | `docs/architecture/FRONTEND-ARCHITECTURE.md` (BFF proxy, httpOnly cookie, folder structure, components, state) — derived doc, no new decisions |
+| ticket status logic | `docs/product/STATUS-TRANSITION.md` |
+| policies / gates | `docs/product/PERMISSION-MATRIX.md` (incl. when to return 404 instead of 403), DECISIONS §B |
+| what to build next | `docs/product/ROADMAP.md` (10 phases; §2 = locked technical decisions) |
+
+**Authority order when docs conflict** (DECISIONS §2): `DECISIONS.md` > `STATUS-TRANSITION.md` / `PERMISSION-MATRIX.md` > `API-CONTRACT.md` > `ERD.md` / `schema.sql` > `ROADMAP.md` > `PRD.md`. PRD is last because it was written first.
+
+For code: migrations are the schema source of truth. `docs/schema.sql` is a report attachment, synced in Phase 10 — not executable. `docs/api/openapi.yaml` only covers 8 paths / 20 operations, so it is a partial export — `API-CONTRACT.md` and `PERMISSION-MATRIX.md` (65 route rows) are the real inventory.
+
+`docs/design/wireframe.pen` is an encrypted design file: access it only through the `pencil` MCP tools. Never `read`/`grep` it.
+
+## Hard conventions that differ from framework defaults
+
+- **Every API response uses one envelope**: `{ success, message, data, meta? }` / `{ success, message, errors }`. Never return a bare Eloquent Resource or a raw 422 body. No `links` in `meta`. `204` is never used — always return a body.
+- **Frontend never calls Laravel directly.** Next.js Route Handlers act as a BFF; the Sanctum token lives in an httpOnly cookie and is attached server-side. A client component hitting `http://localhost:8000` is a bug.
+- **Authorization is core Laravel Gate/Policy only.** One role per user via `users.role_id`. Admin passes `Gate::before` with two hard exceptions (D-16). Do not add `spatie/laravel-permission`.
+- **SLA is snapshotted onto each ticket** (`sla_duration_minutes`, `sla_deadline`) at creation — never joined live from the priority table. Flat 24/7 calendar (D-01), exactly 5 statuses with no pause (D-02). Breach state is also recomputed defensively at query time, not trusted from the scheduler.
+- Every create returns **201** (D-22). Status/assign transitions accept optional `expected_status_id` and return **409** on mismatch (D-21).
+- All durations are integer **minutes**; timestamps ISO 8601 UTC (server and DB are UTC, frontend converts to Asia/Jakarta); fields `snake_case`; routes `kebab-case` plural.
+- **Message language is split** (D-24): API envelope in English, validation errors (custom `messages()`) in Indonesian, in-app notification bodies and audit descriptions in Indonesian.
+- Attachments go to a private disk, served only through a controller that runs the parent ticket's policy. 5 MB max; JPG/JPEG/PNG/PDF only; validate MIME **and** extension server-side.
+- Notifications are DB rows + 30s frontend polling. No WebSocket, no broadcasting, no email/SMTP.
+- The SLA scheduler is its own process (`php artisan schedule:work`, separate container in prod) — FrankenPHP classic mode only serves HTTP, so without it SLA checks never run.
+- Frontend stack is pre-chosen (ROADMAP §2): shadcn/ui, TanStack Query, Recharts, react-hook-form, zod. Don't introduce alternatives.
+- Docs and user-facing prose are **Indonesian**. Match it when editing `docs/`, `README.md`, or `PRODUCT.md`.
+- Branch strategy (ROADMAP Phase 0): work on `feat/<phase>-<topic>`, merge to `main` via PR even when solo.
+- **Git Tags & Changelog:** Setiap kali membuat atau merilis Git tag baru (misal `vX.Y.Z`), **wajib** memperbarui `CHANGELOG.md` terlebih dahulu dengan rincian perubahan (`Added`, `Changed`, `Fixed`, dsb.) sebelum menyematkan tag dan melakukan push.
+
+## Backend commands (`apps/api`)
+
+```bash
+php artisan test --filter=SomeTest       # narrowest run; prefer this
+vendor/bin/pest --filter=SomeTest        # Pest runner directly
+vendor/bin/pint --dirty --format agent   # required after editing any PHP
+composer dev                             # php artisan dev (concurrent dev processes)
+```
+
+`laravel/pao` is installed, so `pint` and tests emit single-line JSON instead of the usual TAP-ish output. That is expected, not a misconfiguration.
+
+Pest 5 is installed with `pest-plugin-laravel` and PHPUnit 13.3. Tests run against **SQLite in-memory** (`phpunit.xml`) while `apps/api/.env` points at **MySQL** (`DB_DATABASE=JarvisOps`, jarvisops/secret in Docker, root/root local).
+
+Health endpoint: `/api/health` (`app/Http/Controllers/HealthController.php`), not the `/up` from bootstrap. API exceptions already render as JSON for `api/*`.
+
+## Frontend commands (`apps/web`)
+
+```bash
+npm run dev        # next dev
+npm run build      # next build (production build)
+npm run lint       # eslint
+npm run typecheck  # tsc --noEmit
+npm run test       # vitest run (unit & component tests)
+```
+
+`apps/web/.env.example` exists and contains the internal BFF URL.
+
+## Instruction files and tooling
+
+- `apps/api/AGENTS.md` is **generated by Laravel Boost** and `apps/web/AGENTS.md` is **regenerated by `next dev`**. Don't hand-edit expecting it to survive; commit the regenerated block rather than reverting it.
+- `apps/api/CLAUDE.md` is the stale pre-Boost bootstrap stub telling you to install Boost. Boost 2.7 is already installed — ignore it.
+- Boost's `.ai/rules` mechanism is referenced by `apps/api/AGENTS.md` but the directory does not exist. Skip that step until it does.
+- `apps/api/opencode.json` registers the `laravel-boost` MCP server, and config resolution walks up from cwd — so Boost tools (`database-schema`, `search-docs`, `record-rule`) are **unavailable in a root-level session**. Start opencode in `apps/api` for backend work.
+- Skills live in `.opencode/skills/`: `laravel-best-practices`, `testing-best-practices`, `tailwindcss-development`, `infer-conventions`, `impeccable`. `.opencode/` is gitignored, so these are local-only.
+ - UI work goes through the `impeccable` skill. Its product truth is the tracked root `PRODUCT.md`; its settings are `.impeccable/config.json` (`buildPath: comp` — new surfaces start from a generated comp). The visual spec is root `DESIGN.md` (warm cream theme); it is implemented via the Tailwind v4 theme in `apps/web`, see `docs/architecture/FRONTEND-ARCHITECTURE.md` §3.
+ - **Frontend work (Phases 8+) must load the same skills used by the phase-8 sessions:** `impeccable`, `next-best-practices`, `vercel-react-best-practices`, `shadcn`, `frontend-design`, `tailwindcss-development`, `test-driven-development`. Invoke them via the `skill` tool before writing any frontend code (see `docs/tasks/phase-8/README.md` and `docs/tasks/phase-9/README.md`).
+
+## Current state, concretely
+
+- `apps/api`: 23 migrations, 18 models, 37 API routes (53 endpoint operations), full ticket lifecycle CRUD + transitions + comments + history + query + references, background SLA breach scheduler (`tickets:check-sla`), full notification API (`/api/notifications`), full audit log API (`/api/audit-logs`), full asset management API (`/api/assets`, `/api/my-assets`, `/api/assets/{id}/assign`, `/api/assets/{id}/release`, `/api/assets/{id}/history`), full knowledge base API (`/api/articles`, `/api/articles/{slug}`, `/api/articles/{id}/publish`, `/api/articles/{id}/unpublish`, `/api/knowledge-categories`), full dashboard APIs (`/api/dashboard/employee`, `/api/dashboard/technician`, `/api/dashboard/manager`, `/api/dashboard/admin`), 649 total tests (2687 assertions). Auth (login/logout/profile with 66 abilities & must_change_password), policies (TicketPolicy, AssetPolicy, ArticlePolicy, AttachmentPolicy, TicketCommentPolicy, NotificationPolicy), SLA service, AuditLogger, NotificationService, AuditLogQueryService, AssetService, AssetAssignmentService, AssetQueryService, ArticleService, ArticleQueryService, EmployeeDashboardService, TechnicianDashboardService, ManagerDashboardService, AdminDashboardService, enums, transition matrix, and available actions are all implemented and passing.
+- `apps/web`: Next.js 16.3 + React 19 + Tailwind CSS v4, Plus Jakarta Sans, warm-neutral theme (`#f7f4ed`), Route Groups `(auth)` dan `(app)`, responsive App Shell (desktop Sidebar + mobile Drawer), Topbar dengan 30s background-safe polling notifikasi, Quick-Action Notification Popover, AuthProvider & QueryProvider, production Login form (RHF + Zod), alur ganti password paksa (`/ganti-password`), 16 baseline UI components + 9 shared components (`DataTable`, `FilterBar`, `SearchInput`, `StatusBadge`, `PriorityBadge`, `SlaIndicator`, `RelativeTime`, `FileUpload`, `ConfirmDialog`, `EmptyState`), 33 app routes, dan 318 passing unit/component tests di Vitest, Playwright automated E2E testing suite, audit kepatuhan aksesibilitas WCAG 2.2 AA. Sudah termasuk halaman: ticket list, detail, create; asset management; knowledge base; admin users, master data, audit logs; profile; dashboard analytics untuk 4 role.
+- Phase 0 (Repo, Docker, Toolchain, Pest 5 migration) — **complete**
+- Phase 2 (Backend Foundation & Walking Skeleton: auth, login, middleware, health, web dashboard) — **complete**
+- Phase 3 (Ticket Core & Workflow: foundation, CRUD, query & references, workflow & transitions, comments & history, golden path — Tag `v0.3.0`) — **complete**
+- Phase 4a (SLA Scheduler & Breach Detection) — **complete**
+- Phase 4b (Notification API & Event Delivery) — **complete**
+- Phase 4c (Audit Log API — Tag `v0.4.0`) — **complete**
+- Phase 5a (Foundation, Spec Amendment, Policy, Enum, Index, Disk) — **complete**
+- Phase 5b (Asset Management) — **complete**
+- Phase 5c (Knowledge Base) — **complete**
+- Phase 5d (File Attachment) — **complete**
+- Phase 5e (User & Master Data Administration) — **complete**
+- Phase 6a (Dashboard Foundation & Query Kernel) — **complete**
+- Phase 6b (Employee & Technician Dashboards) — **complete**
+- Phase 6c (Manager Dashboard) — **complete**
+- Phase 6d (Admin Dashboard & Finalization — Tag `v0.6.0`) — **complete**
+- Phase 7 (Frontend Foundation, App Shell, & Shared Components — Tag `v0.7.0`) — **complete**
+- Phase 8 (Full Functional Frontend Features) — **complete (Tag `v0.8.0`)**
+- Phase 9 (Dashboard UI & Visual Analytics) — **complete (Tag `v0.9.0`)**
+- Phase 10 (Quality, Deployment, Demo) — **complete (Tag `v1.0.0`)**
+- Phase 11 (Mobile Responsive Layout & Touch Ergonomics) — **complete (Tag `v1.1.0`)**
+- Patch v1.1.1 (Mobile UX & Date Picker Calendar) — **complete (Tag `v1.1.1`)**
+- Patch v1.1.2 (Production Runtime & Octane Container Readiness) — **complete (Tag `v1.1.2`)**
+- Patch v1.1.3 (Brand Logo, Typography Sync & Submission Security) — **complete (Tag `v1.1.3`)**
