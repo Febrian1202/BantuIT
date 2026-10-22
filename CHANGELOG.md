@@ -5,6 +5,18 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.14] - 2026-10-22
+
+### Security
+- **Mitigasi Kerentanan Kritis Node.js Security Releases Oktober 2026 (CVE-2026-111497, CVE-2026-105481, CVE-2026-105482, CVE-2026-105483):**
+  - Memperbarui runtime container Node.js frontend & BFF (`apps/web`) ke rilis aman terbaru: **Node.js v22.23.4** (upstream `node:22-alpine`).
+  - Menutup risiko RCE via Brotli decoder out-of-bounds write (CVE-2026-111497) pada penanganan SSR streaming dan kompresi aset Next.js.
+  - Mencegah potensi desinkronisasi response antrean request pada persistent keep-alive socket (CVE-2026-105481) pada Next.js Route Handler BFF saat meneruskan request ke backend Laravel API.
+  - Memperbarui mekanisme validasi TLS hostname dan resolusi DNS NUL truncation (CVE-2026-105482, CVE-2026-105483, CVE-2026-106069, CVE-2026-106072).
+  - Menambahkan opsi `pull: true` pada task build image Web di workflow CI/CD `.github/workflows/release.yml` guna memastikan base image `node:22-alpine` selalu ditarik versi terbarunya saat build rilis GHCR.
+
+---
+
 ## [1.0.13] - 2026-10-22
 
 ### Security
