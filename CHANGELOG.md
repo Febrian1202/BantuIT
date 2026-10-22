@@ -5,6 +5,19 @@ Format ini mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/)
 
 ---
 
+## [1.0.13] - 2026-10-22
+
+### Security
+- **Mitigasi Kerentanan Kritis Core PHP (CVE-2026-109618 & CVE-2026-109619 - PHP2Shell):**
+  - Memperbarui runtime container PHP ke build resmi yang telah dipatch: **PHP 8.4.27** (upstream `dunglas/frankenphp:1-php8.4`).
+  - Menambahkan konfigurasi keamanan PHP (`apps/api/docker/security.ini`) pada `docker/api/Dockerfile.dev` dan `apps/api/Dockerfile`:
+    - Membatasi alokasi payload `upload_max_filesize = 10M`, `post_max_size = 12M`, dan `memory_limit = 256M` untuk mencegah serangan Out-of-Memory (OOM request abort) pada CVE-2026-109618.
+    - Menonaktifkan fingerprinting versi PHP pada header response HTTP melalui `expose_php = Off`.
+  - Mengoptimalkan daur ulang persistent worker Laravel Octane pada `compose.prod.octane.yaml` dengan menurunkan `--max-requests` dari `1000` menjadi `500` sebagai pertahanan berlapis terhadap potensi state leak antar-request worker (CVE-2026-109619).
+  - Menambahkan opsi `pull: true` pada workflow rilis `.github/workflows/release.yml` untuk menjamin image rilis CI/CD selalu menarik base image patched upstream terbaru.
+
+---
+
 ## [1.0.12] - 2026-10-17
 
 ### Changed

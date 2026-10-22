@@ -11,4 +11,6 @@ RUN install-php-extensions \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+COPY apps/api/docker/security.ini $PHP_INI_DIR/conf.d/security.ini
+
 WORKDIR /app

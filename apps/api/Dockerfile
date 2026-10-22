@@ -25,6 +25,7 @@ WORKDIR /app
 
 # Salin konfigurasi PHP production
 RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY docker/security.ini $PHP_INI_DIR/conf.d/security.ini
 
 # Salin vendor dari stage 1
 COPY --from=vendor /app/vendor /app/vendor
