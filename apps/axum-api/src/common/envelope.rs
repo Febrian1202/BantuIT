@@ -7,6 +7,10 @@ use axum::{
 };
 use serde::Serialize;
 
+use crate::common::AppError;
+
+pub type ApiResult<T> = Result<(StatusCode, Json<ApiResponse<T>>), AppError>;
+
 #[derive(Serialize)]
 pub struct ApiResponse<T: Serialize> {
     pub success: bool,
@@ -71,6 +75,24 @@ impl<T: Serialize> ApiResponse<T> {
                 message: message.into(),
                 data: Some(data),
                 meta: Some(meta),
+                errors: None,
+            }),
+        )
+    }
+
+    pub fn with_status_code(
+        data: T,
+        message: impl Into<String>,
+        status: StatusCode,
+        success: bool,
+    ) -> (StatusCode, Json<Self>) {
+        (
+            status,
+            Json(Self {
+                success,
+                message: message.into(),
+                data: Some(data),
+                meta: None,
                 errors: None,
             }),
         )

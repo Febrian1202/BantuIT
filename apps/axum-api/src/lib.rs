@@ -1,5 +1,5 @@
 pub mod common;
-pub mod extractors;
+pub mod domain;
 pub mod infrastructure;
-pub mod middleware;
+pub mod interface;
 pub mod telemetry;

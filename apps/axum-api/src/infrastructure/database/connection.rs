@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use sqlx::{PgPool, postgres::PgPoolOptions};
+use sqlx::{PgPool, migrate::MigrateError, postgres::PgPoolOptions};
 use tracing::info;
 
 use crate::infrastructure::AppConfig;
@@ -25,7 +25,7 @@ pub async fn create_pool(config: &AppConfig) -> Result<PgPool, sqlx::Error> {
 /**
  * Helper untuk menjalankan database migrations
  */
-pub async fn run_migrations(pool: &PgPool) -> Result<(), sqlx::migrate::MigrateError> {
+pub async fn run_migrations(pool: &PgPool) -> Result<(), MigrateError> {
     info!("Menjalankan migration database...");
     sqlx::migrate!("./migrations").run(pool).await?;
     info!("Migrasi database berhasil dijalankan...");
