@@ -1,0 +1,63 @@
+[package]
+name = "axum-api"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# HTTP Server, Routing dan Middleware
+axum = { version = "0.8.9", features = ["macros", "multipart"] }
+tokio = { version = "1.54.1", features = ["full"] }
+tower = { version = "0.5.3", features = ["util", "timeout"] }
+tower-http = { version = "0.7.1", features = [
+    "cors",
+    "trace",
+    "compression-gzip",
+    "limit",
+] }
+
+# Database Driver dan Connection Pooling
+sqlx = { version = "0.9.0", features = [
+    "runtime-tokio",
+    "tls-rustls",
+    "postgres",
+    "macros",
+    "chrono",
+    "uuid",
+    "json",
+    "migrate",
+] }
+
+# Serialisasi, Deserialisasi, dan Validasi
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+validator = { version = "0.21.0", features = ["derive"] }
+
+# Observability dan Logging Terstruktur
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = [
+    "env-filter",
+    "json",
+    "chrono",
+] }
+tracing-appender = "0.2.5"
+
+# Keamanan, Hashing dan Kriptografi
+argon2 = "0.6.0"
+sha2 = "0.11.1"
+rand = "0.10.3"
+subtle = "2.6.1"
+hex = "0.4.3"
+
+# Tipe Data, Waktu dan Utilitas
+chrono = { version = "0.4.45", features = ["serde"] }
+uuid = { version = "1.29.0", features = ["v4", "v7", "serde"] }
+thiserror = "2.0.21"
+anyhow = "1.0.104"
+async-trait = "0.1.92"
+dotenvy = "0.15.7"
+csv = "1.4.0"
+tokio-stream = "0.1.19"
+
+[dev-dependencies]
+fake = { version = "5.1.0", features = ["chrono", "uuid"] }
+reqwest = { version = "0.13.5", features = ["json"] }

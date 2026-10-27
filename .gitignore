@@ -159,6 +159,9 @@ apps/api/storage/app/private/*
 # Playwright mcp results
 .playwright-mcp/
 
+# Cargo Target
+target/
+
 .impeccable/
 .opencode/
 .superpowers/

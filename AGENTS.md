@@ -27,6 +27,7 @@ These docs contain locked decisions, not drafts. Do not re-litigate them.
 | ticket status logic | `docs/product/STATUS-TRANSITION.md` |
 | policies / gates | `docs/product/PERMISSION-MATRIX.md` (incl. when to return 404 instead of 403), DECISIONS §B |
 | what to build next | `docs/product/ROADMAP.md` (10 phases; §2 = locked technical decisions) |
+| Rust rewrite / migration | `docs/RUST-AXUM-IMPLEMENTATION-GUIDE.md` — full rewrite spec, Axum, SQLx, PostgreSQL, structured logging, 1:1 API parity |
 
 **Authority order when docs conflict** (DECISIONS §2): `DECISIONS.md` > `STATUS-TRANSITION.md` / `PERMISSION-MATRIX.md` > `API-CONTRACT.md` > `ERD.md` / `schema.sql` > `ROADMAP.md` > `PRD.md`. PRD is last because it was written first.
 
@@ -115,3 +116,4 @@ npm run test       # vitest run (unit & component tests)
 - Patch v1.1.1 (Mobile UX & Date Picker Calendar) — **complete (Tag `v1.1.1`)**
 - Patch v1.1.2 (Production Runtime & Octane Container Readiness) — **complete (Tag `v1.1.2`)**
 - Patch v1.1.3 (Brand Logo, Typography Sync & Submission Security) — **complete (Tag `v1.1.3`)**
+- Rust API Rewrite (Rust + Axum + SQLx + PostgreSQL + Structured Logging Guide) — **spec & architecture guide complete (`docs/RUST-AXUM-IMPLEMENTATION-GUIDE.md`)**

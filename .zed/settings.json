@@ -1,0 +1,20 @@
+{
+  "languages": {
+    "SQL": {
+      "language_servers": ["postgres-language-server"],
+    },
+  },
+  "lsp": {
+    "postgres-language-server": {
+      "settings": {
+        "db": {
+          "host": "127.0.0.1",
+          "port": 5432,
+          "username": "postgres",
+          "password": "root",
+          "database": "bantuit",
+        },
+      },
+    },
+  },
+}

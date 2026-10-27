@@ -1,4 +1,23 @@
 services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: bantuit_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: bantuit
+    ports:
+      - "${FORWARD_PG_PORT:-5432}:5432" # Ubah ke 5433:5432 jika port 5432 dipakai Postgres bawaan sistem
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bantuit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   mysql:
     image: mysql:8.4
     container_name: bantuit_mysql
@@ -98,3 +117,4 @@ services:
 volumes:
   mysql-data:
   web-node-modules:
+  postgres-data:
