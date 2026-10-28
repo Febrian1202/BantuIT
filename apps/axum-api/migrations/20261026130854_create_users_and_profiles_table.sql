@@ -19,7 +19,7 @@ CREATE TABLE users (
 CREATE TABLE employee_profiles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    employee_coode VARCHAR(50) NOT NULL UNIQUE,
+    employee_code VARCHAR(50) NOT NULL UNIQUE,
     phone VARCHAR(20) NULL,
     position VARCHAR(100) NULL,
     hire_date DATE NULL,

@@ -3,6 +3,14 @@ name = "bantuit-api"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+name = "bantuit"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bantuit_server"
+path = "src/main.rs"
+
 [dependencies]
 # HTTP Server, Routing dan Middleware
 axum = { version = "0.8.9", features = ["macros", "multipart"] }

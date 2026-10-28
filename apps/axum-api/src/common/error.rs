@@ -28,6 +28,9 @@ pub enum AppError {
     #[error("Password change required.")]
     PasswordChangeRequired,
 
+    #[error("Value error: {0}.")]
+    ValueError(String),
+
     #[error("Database error: {0}")]
     Database(#[from] sqlx::Error),
 
@@ -45,6 +48,7 @@ impl IntoResponse for AppError {
             AppError::NotFound => (StatusCode::NOT_FOUND, default_message, None),
             AppError::StateConflict(msg) => (StatusCode::CONFLICT, msg, None),
             AppError::PasswordChangeRequired => (StatusCode::FORBIDDEN, default_message, None),
+            AppError::ValueError(_msg) => (StatusCode::BAD_REQUEST, default_message, None),
             AppError::ValidationError(errs) => (
                 StatusCode::UNPROCESSABLE_ENTITY,
                 default_message,

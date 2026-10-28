@@ -6,9 +6,11 @@ CREATE TABLE assets (
     asset_tag VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(150) NOT NULL ,
     category VARCHAR(50) NOT NULL,
-    serial_number VARCHAR(100) NOT NULL UNIQUE,
-    status VARCHAR(30) NOT NULL DEFAULT 'available',
+    brand VARCHAR(50) NULL,
+    model VARCHAR(50) NULL,
+    serial_number VARCHAR(100) NULL UNIQUE,
     purchase_date DATE NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'available',
     notes TEXT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -30,11 +32,8 @@ CREATE TABLE asset_assignments (
 CREATE TABLE asset_histories (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     asset_id UUID NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
     action VARCHAR(50) NOT NULL,
+    description TEXT NULL,
     action_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    notes TEXT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMPTZ NULL
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

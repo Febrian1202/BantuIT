@@ -1,6 +1,6 @@
 use std::{error::Error, time::Instant};
 
-use bantuit_api::{
+use bantuit::{
     infrastructure::{
         AppConfig,
         database::connection::{create_pool, run_migrations},
