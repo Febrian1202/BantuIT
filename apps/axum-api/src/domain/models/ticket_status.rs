@@ -1,10 +1,12 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
+use crate::domain::enums::TicketStatusName;
+
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct TicketStatus {
     pub id: i32,
-    pub name: String,
+    pub name: TicketStatusName,
     pub description: Option<String>,
     pub is_closed: bool,
     pub is_final: bool,

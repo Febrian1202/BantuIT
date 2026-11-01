@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, sqlx::Type)]
+#[derive(
+    Debug, Clone, Copy, Serialize, Deserialize, Eq, PartialEq, sqlx::Type, strum::IntoStaticStr,
+)]
+#[strum(serialize_all = "snake_case")]
 #[serde(rename_all = "snake_case")]
 #[sqlx(rename_all = "snake_case", type_name = "varchar")]
 pub enum AuditAction {

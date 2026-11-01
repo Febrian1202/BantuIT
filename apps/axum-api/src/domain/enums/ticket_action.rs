@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Serialize, Deserialize, strum::IntoStaticStr)]
+#[strum(serialize_all = "snake_case")]
 #[serde(rename_all = "snake_case")]
 pub enum TicketAction {
     Assign,

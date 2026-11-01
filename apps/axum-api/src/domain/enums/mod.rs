@@ -1,3 +1,4 @@
+pub mod ability;
 pub mod article_status;
 pub mod asset_history_action;
 pub mod asset_status;
@@ -10,6 +11,7 @@ pub mod ticket_actor;
 pub mod ticket_status_name;
 pub mod user_status;
 
+pub use ability::Ability;
 pub use article_status::ArticleStatus;
 pub use asset_history_action::AssetHistoryAction;
 pub use asset_status::AssetStatus;

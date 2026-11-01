@@ -2,6 +2,9 @@ use std::env;
 
 use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
 
+/**
+ * Setup telemetry/observatory
+ */
 pub fn init_tracing() {
     let env_filter = EnvFilter::try_from_default_env()
         .unwrap_or_else(|_| "bantuit_api=debug,tower_http=info,sqlx=warn".into());

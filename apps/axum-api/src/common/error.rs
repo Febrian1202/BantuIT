@@ -28,6 +28,9 @@ pub enum AppError {
     #[error("Password change required.")]
     PasswordChangeRequired,
 
+    #[error("Request doesn't valid: {0}")]
+    BadRequest(String),
+
     #[error("Value error: {0}.")]
     ValueError(String),
 
@@ -36,6 +39,20 @@ pub enum AppError {
 
     #[error("Internal server error: {0}")]
     Internal(#[from] anyhow::Error),
+}
+
+impl AppError {
+    pub fn state_conflict(msg: impl Into<String>) -> Self {
+        Self::StateConflict(msg.into())
+    }
+
+    pub fn bad_request(msg: impl Into<String>) -> Self {
+        Self::BadRequest(msg.into())
+    }
+
+    pub fn value_error(msg: impl Into<String>) -> Self {
+        Self::ValueError(msg.into())
+    }
 }
 
 impl IntoResponse for AppError {
@@ -48,7 +65,8 @@ impl IntoResponse for AppError {
             AppError::NotFound => (StatusCode::NOT_FOUND, default_message, None),
             AppError::StateConflict(msg) => (StatusCode::CONFLICT, msg, None),
             AppError::PasswordChangeRequired => (StatusCode::FORBIDDEN, default_message, None),
-            AppError::ValueError(_msg) => (StatusCode::BAD_REQUEST, default_message, None),
+            AppError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg.to_string(), None),
+            AppError::ValueError(msg) => (StatusCode::BAD_REQUEST, msg, None),
             AppError::ValidationError(errs) => (
                 StatusCode::UNPROCESSABLE_ENTITY,
                 default_message,
