@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use sqlx::{PgPool, migrate::MigrateError, postgres::PgPoolOptions};
+use sqlx::{Error, PgPool, migrate::MigrateError, postgres::PgPoolOptions};
 use tracing::info;
 
 use crate::infrastructure::AppConfig;
@@ -8,7 +8,7 @@ use crate::infrastructure::AppConfig;
 /**
  * Untuk membuat Database Connection Pooling
  */
-pub async fn create_pool(config: &AppConfig) -> Result<PgPool, sqlx::Error> {
+pub async fn create_pool(config: &AppConfig) -> Result<PgPool, Error> {
     info!("Menghubungkan ke database PostgreSQL...");
     let pool = PgPoolOptions::new()
         .max_connections(config.db.db_max_connections)

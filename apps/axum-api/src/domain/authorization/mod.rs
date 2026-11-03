@@ -1,5 +1,7 @@
 pub mod ability_matrix;
 pub mod actor_resolver;
+pub mod gate;
+pub mod policies;
 pub mod transition_matrix;
 
 pub use ability_matrix::AbilityMatrix;
