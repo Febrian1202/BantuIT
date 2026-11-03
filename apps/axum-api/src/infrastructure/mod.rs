@@ -1,4 +1,5 @@
 pub mod config;
 pub mod database;
+pub mod repositories;
 
 pub use config::AppConfig;

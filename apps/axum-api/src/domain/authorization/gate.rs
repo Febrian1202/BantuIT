@@ -33,8 +33,8 @@ impl Gate {
         target_user_id: Uuid,
         ability: Ability,
     ) -> Result<(), AppError> {
-        if ability == Ability::UserDeactivate
-            || ability == Ability::UserDelete && user.id == target_user_id
+        if (ability == Ability::UserDeactivate || ability == Ability::UserDelete)
+            && user.id == target_user_id
         {
             return Err(AppError::Forbidden);
         }

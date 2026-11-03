@@ -162,6 +162,8 @@ apps/api/storage/app/private/*
 # Cargo Target
 target/
 
+.sqls.yml
+
 .impeccable/
 .opencode/
 .superpowers/
