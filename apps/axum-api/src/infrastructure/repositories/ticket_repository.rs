@@ -1,5 +1,6 @@
 use async_trait::async_trait;
 use sqlx::PgPool;
+use uuid::Uuid;
 
 use crate::{
     common::AppError,
@@ -19,7 +20,7 @@ impl TicketRepository {
 
 #[async_trait]
 impl TicketRepo for TicketRepository {
-    async fn find_by_id(&self, id: uuid::Uuid) -> Result<Option<Ticket>, AppError> {
+    async fn find_by_id(&self, id: Uuid) -> Result<Option<Ticket>, AppError> {
         let ticket = sqlx::query_file_as!(Ticket, "src/sql/ticket/get_ticket_by_id.sql", id)
             .fetch_optional(&self.pool)
             .await
