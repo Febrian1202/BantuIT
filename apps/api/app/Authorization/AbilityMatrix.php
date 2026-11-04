@@ -22,25 +22,25 @@ class AbilityMatrix
      */
     private const ROLE_ABILITIES = [
         // Autentikasi & profil
-        "auth.login" => [
+        'auth.login' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
             RoleName::Employee,
         ],
-        "auth.logout" => [
+        'auth.logout' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
             RoleName::Employee,
         ],
-        "profile.view-own" => [
+        'profile.view-own' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
             RoleName::Employee,
         ],
-        "profile.change-password" => [
+        'profile.change-password' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
@@ -48,75 +48,75 @@ class AbilityMatrix
         ],
 
         // Dashboard
-        "dashboard.employee" => [
+        'dashboard.employee' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
             RoleName::Employee,
         ],
-        "dashboard.technician" => [
+        'dashboard.technician' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
         ],
-        "dashboard.manager" => [RoleName::Admin, RoleName::Manager],
-        "dashboard.admin" => [RoleName::Admin],
-        "analytics.technician-performance" => [
+        'dashboard.manager' => [RoleName::Admin, RoleName::Manager],
+        'dashboard.admin' => [RoleName::Admin],
+        'analytics.technician-performance' => [
             RoleName::Admin,
             RoleName::Manager,
         ],
 
         // Administrasi
-        "user.viewAny" => [RoleName::Admin],
-        "user.view" => [RoleName::Admin],
-        "user.create" => [RoleName::Admin],
-        "user.update" => [RoleName::Admin],
-        "user.delete" => [RoleName::Admin],
-        "user.activate" => [RoleName::Admin],
-        "user.deactivate" => [RoleName::Admin],
-        "user.reset-password" => [RoleName::Admin],
-        "user.lookup" => [
+        'user.viewAny' => [RoleName::Admin],
+        'user.view' => [RoleName::Admin],
+        'user.create' => [RoleName::Admin],
+        'user.update' => [RoleName::Admin],
+        'user.delete' => [RoleName::Admin],
+        'user.activate' => [RoleName::Admin],
+        'user.deactivate' => [RoleName::Admin],
+        'user.reset-password' => [RoleName::Admin],
+        'user.lookup' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
         ],
-        "technician.list" => [RoleName::Admin, RoleName::Manager],
-        "department.viewAny" => [
-            RoleName::Admin,
-            RoleName::Manager,
-            RoleName::Technician,
-            RoleName::Employee,
-        ],
-        "department.manage" => [RoleName::Admin],
-        "ticket-category.viewAny" => [
+        'technician.list' => [RoleName::Admin, RoleName::Manager],
+        'department.viewAny' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
             RoleName::Employee,
         ],
-        "ticket-category.manage" => [RoleName::Admin],
-        "ticket-priority.viewAny" => [
+        'department.manage' => [RoleName::Admin],
+        'ticket-category.viewAny' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
             RoleName::Employee,
         ],
-        "ticket-priority.manage" => [RoleName::Admin],
-        "ticket-status.viewAny" => [
+        'ticket-category.manage' => [RoleName::Admin],
+        'ticket-priority.viewAny' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
             RoleName::Employee,
         ],
-        "knowledge-category.viewAny" => [
+        'ticket-priority.manage' => [RoleName::Admin],
+        'ticket-status.viewAny' => [
             RoleName::Admin,
             RoleName::Manager,
             RoleName::Technician,
             RoleName::Employee,
         ],
-        "knowledge-category.manage" => [RoleName::Admin],
-        "audit-log.viewAny" => [RoleName::Admin, RoleName::Manager],
-        "audit-log.view" => [RoleName::Admin, RoleName::Manager],
+        'knowledge-category.viewAny' => [
+            RoleName::Admin,
+            RoleName::Manager,
+            RoleName::Technician,
+            RoleName::Employee,
+        ],
+        'knowledge-category.manage' => [RoleName::Admin],
+        'audit-log.viewAny' => [RoleName::Admin, RoleName::Manager],
+        'audit-log.view' => [RoleName::Admin, RoleName::Manager],
     ];
 
     /**
@@ -128,47 +128,47 @@ class AbilityMatrix
      */
     private const POLICY_ABILITIES = [
         // Ticket — TicketPolicy
-        "ticket.viewAny",
-        "ticket.view",
-        "ticket.create",
-        "ticket.update",
-        "ticket.delete",
-        "ticket.assign",
-        "ticket.unassign",
-        "ticket.changeStatus",
-        "ticket.selfAssign",
-        "ticket.changePriority",
-        "ticket.comment",
-        "ticket.viewHistory",
-        "ticket.attach",
+        'ticket.viewAny',
+        'ticket.view',
+        'ticket.create',
+        'ticket.update',
+        'ticket.delete',
+        'ticket.assign',
+        'ticket.unassign',
+        'ticket.changeStatus',
+        'ticket.selfAssign',
+        'ticket.changePriority',
+        'ticket.comment',
+        'ticket.viewHistory',
+        'ticket.attach',
         // Attachment — AttachmentPolicy
-        "attachment.view",
-        "attachment.download",
-        "attachment.create",
-        "attachment.delete",
+        'attachment.view',
+        'attachment.download',
+        'attachment.create',
+        'attachment.delete',
         // Asset — AssetPolicy
-        "asset.viewAny",
-        "asset.view",
-        "asset.viewOwn",
-        "asset.viewAssignable",
-        "asset.create",
-        "asset.update",
-        "asset.delete",
-        "asset.assign",
-        "asset.release",
-        "asset.viewHistory",
+        'asset.viewAny',
+        'asset.view',
+        'asset.viewOwn',
+        'asset.viewAssignable',
+        'asset.create',
+        'asset.update',
+        'asset.delete',
+        'asset.assign',
+        'asset.release',
+        'asset.viewHistory',
         // Knowledge base — ArticlePolicy
-        "article.viewAny",
-        "article.view",
-        "article.create",
-        "article.update",
-        "article.publish",
-        "article.unpublish",
-        "article.delete",
+        'article.viewAny',
+        'article.view',
+        'article.create',
+        'article.update',
+        'article.publish',
+        'article.unpublish',
+        'article.delete',
         // Notification — NotificationPolicy
-        "notification.viewAny",
-        "notification.markAsRead",
-        "notification.markAllAsRead",
+        'notification.viewAny',
+        'notification.markAsRead',
+        'notification.markAllAsRead',
     ];
 
     /**
@@ -178,11 +178,11 @@ class AbilityMatrix
      * @var list<string>
      */
     private const ADMIN_GATE_EXCEPTIONS = [
-        "notification.viewAny",
-        "notification.markAsRead",
-        "notification.markAllAsRead",
-        "user.deactivate",
-        "user.delete",
+        'notification.viewAny',
+        'notification.markAsRead',
+        'notification.markAllAsRead',
+        'user.deactivate',
+        'user.delete',
     ];
 
     /**
