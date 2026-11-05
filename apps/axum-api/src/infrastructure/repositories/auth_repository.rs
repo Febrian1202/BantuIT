@@ -37,7 +37,7 @@ impl AuthRepo for AuthRepository {
     }
 
     async fn clean_personal_access_token(&self, hashed_token: String) -> Result<(), AppError> {
-        let _ = sqlx::query_file!(
+        sqlx::query_file!(
             "src/sql/token/clean_personal_access_token.sql",
             hashed_token
         )
@@ -46,7 +46,7 @@ impl AuthRepo for AuthRepository {
         .map_err(|e| {
             tracing::error!("Gagal clean_personal_access_token: {}", e);
             AppError::Database(e)
-        });
+        })?;
 
         Ok(())
     }

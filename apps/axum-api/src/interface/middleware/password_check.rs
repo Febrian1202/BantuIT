@@ -7,7 +7,7 @@ pub async fn ensure_password_checked(
     mut request: Request,
     next: Next,
 ) -> Result<Response, AppError> {
-    if user.must_change_password {
+    if user.0.must_change_password {
         return Err(AppError::PasswordChangeRequired);
     }
 

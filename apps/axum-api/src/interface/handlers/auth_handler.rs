@@ -21,10 +21,13 @@ pub async fn login(
     ))
 }
 
-pub async fn logout(State(state): State<AppState>, user: AuthUser) -> ApiResult<LogoutResponse> {
-    state.auth_service.logout(user.token_hash).await?;
+pub async fn logout(
+    State(state): State<AppState>,
+    AuthUser(_, token_hash): AuthUser,
+) -> ApiResult<LogoutResponse> {
+    state.auth_service.logout(token_hash).await?;
 
     let response = LogoutResponse;
 
-    Ok(ApiResponse::success(response, "Logout successful"))
+    Ok(ApiResponse::success(response, "Logout successful."))
 }
