@@ -1,8 +1,22 @@
+use std::ops::Deref;
+
 use axum::{extract::FromRequestParts, http::request::Parts};
 
 use crate::{common::AppError, domain::models::User, interface::AppState};
 
-pub struct AuthUser(pub User);
+#[derive(Clone)]
+pub struct AuthUser {
+    pub user: User,
+    pub token_hash: String,
+}
+
+impl Deref for AuthUser {
+    type Target = User;
+
+    fn deref(&self) -> &Self::Target {
+        &self.user
+    }
+}
 
 impl FromRequestParts<AppState> for AuthUser {
     type Rejection = AppError;
@@ -23,8 +37,8 @@ impl FromRequestParts<AppState> for AuthUser {
             .strip_prefix("Bearer ")
             .ok_or(AppError::Unauthorized)?;
 
-        let auth_user = state.auth_service.verify_token(plain_token).await?;
+        let (user, token_hash) = state.auth_service.verify_token(plain_token).await?;
 
-        Ok(AuthUser(auth_user))
+        Ok(AuthUser { user, token_hash })
     }
 }

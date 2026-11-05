@@ -1,9 +1,12 @@
 use axum::extract::State;
 
 use crate::{
-    application::dtos::{LoginRequest, LoginResponse},
+    application::dtos::{LoginRequest, LoginResponse, LogoutResponse},
     common::{ApiResponse, ApiResult},
-    interface::{AppState, extractors::validated_json::ValidatedJson},
+    interface::{
+        AppState,
+        extractors::{auth_user::AuthUser, validated_json::ValidatedJson},
+    },
 };
 
 pub async fn login(
@@ -16,4 +19,12 @@ pub async fn login(
         response,
         "Login successful.".to_string(),
     ))
+}
+
+pub async fn logout(State(state): State<AppState>, user: AuthUser) -> ApiResult<LogoutResponse> {
+    state.auth_service.logout(user.token_hash).await?;
+
+    let response = LogoutResponse;
+
+    Ok(ApiResponse::success(response, "Logout successful"))
 }

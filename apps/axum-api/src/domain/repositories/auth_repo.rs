@@ -12,6 +12,8 @@ use crate::{
 pub trait AuthRepo: Send + Sync {
     async fn find_user_by_email(&self, email: &str) -> Result<Option<User>, AppError>;
 
+    async fn clean_personal_access_token(&self, hashed_token: String) -> Result<(), AppError>;
+
     async fn create_token_and_update_last_login(
         &self,
         user_id: Uuid,
@@ -35,6 +37,8 @@ pub trait AuthRepo: Send + Sync {
         &self,
         user_id: Uuid,
     ) -> Result<Option<EmployeeProfile>, AppError>;
+
+    async fn set_last_login_at(&self, user_id: Uuid, time: DateTime<Utc>) -> Result<(), AppError>;
 }
 
 pub type DynAuthRepo = Arc<dyn AuthRepo>;

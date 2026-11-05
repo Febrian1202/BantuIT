@@ -51,3 +51,6 @@ pub struct ProfileData {
     pub position: String,
     pub phone: String,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LogoutResponse;

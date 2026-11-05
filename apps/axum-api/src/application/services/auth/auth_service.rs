@@ -79,10 +79,24 @@ impl AuthService {
             user: user_data,
         };
 
+        let repo = self.auth_repo.clone();
+        let now = Utc::now();
+        tokio::spawn(async move {
+            let _ = repo.set_last_login_at(user.id, now).await;
+        });
+
         Ok(response)
     }
 
-    pub async fn verify_token(&self, plain_token: &str) -> Result<User, AppError> {
+    pub async fn logout(&self, hashed_token: String) -> Result<(), AppError> {
+        self.auth_repo
+            .clean_personal_access_token(hashed_token)
+            .await?;
+
+        Ok(())
+    }
+
+    pub async fn verify_token(&self, plain_token: &str) -> Result<(User, String), AppError> {
         let mut hasher = Sha256::new();
         hasher.update(plain_token.as_bytes());
         let hashed_token = hex::encode(hasher.finalize());
@@ -95,15 +109,15 @@ impl AuthService {
             .await?;
 
         let repo = self.auth_repo.clone();
+        let token = hashed_token.clone();
         tokio::spawn(async move {
-            if let Err(e) = repo.touch_token(&hashed_token).await {
-                tracing::warn!("Gagal memperbarui last_used_at: {:?}", e);
-            };
+            let _ = repo.touch_token(&token).await;
         });
 
-        Ok(user)
+        Ok((user, hashed_token))
     }
 
+    /// Helper untuk throw validation error
     fn validation_error(field: &str, message: &str) -> AppError {
         let mut errors = HashMap::new();
         errors.insert(field.to_string(), vec![message.to_string()]);
