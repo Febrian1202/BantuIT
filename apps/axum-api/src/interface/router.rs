@@ -1,6 +1,6 @@
 use axum::{
     Router,
-    routing::{get, post},
+    routing::{get, post, put},
 };
 
 use crate::interface::{
@@ -8,6 +8,7 @@ use crate::interface::{
     handlers::{
         auth_handler::{login, logout},
         health_handler::health_check,
+        profile_handler::update_password,
     },
     middleware::logging::create_trace_layer,
 };
@@ -17,7 +18,9 @@ pub fn create_router(state: AppState) -> Router {
         .route("/health", get(health_check))
         .route("/login", post(login));
 
-    let auth_basic_route = Router::new().route("/logout", post(logout));
+    let auth_basic_route = Router::new()
+        .route("/logout", post(logout))
+        .route("/me/password", put(update_password));
 
     Router::new()
         .nest("/api", public_routes.merge(auth_basic_route))

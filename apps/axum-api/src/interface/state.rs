@@ -4,11 +4,12 @@ use sqlx::PgPool;
 
 use crate::{
     application::services::{
-        auth::auth_service::AuthService, ticket::ticket_service::TicketService,
+        auth::{ProfileService, auth_service::AuthService},
+        ticket::ticket_service::TicketService,
     },
     infrastructure::{
         AppConfig,
-        repositories::{AuthRepository, TicketRepository},
+        repositories::{AuthRepository, ProfileRepository, TicketRepository},
     },
 };
 
@@ -19,6 +20,7 @@ pub struct AppState {
     pub started_at: Instant,
     pub ticket_service: TicketService,
     pub auth_service: AuthService,
+    pub profile_service: ProfileService,
 }
 
 impl AppState {
@@ -33,12 +35,18 @@ impl AppState {
         let auth_repo = Arc::new(pg_auth_repo);
         let auth_service = AuthService::new(auth_repo);
 
+        // Setup ProfileRepo dan ProfileService
+        let pg_profile_repo = ProfileRepository::new(pool.clone());
+        let profile_repo = Arc::new(pg_profile_repo);
+        let profile_service = ProfileService::new(profile_repo);
+
         Self {
             config,
             pool,
             started_at,
             ticket_service,
             auth_service,
+            profile_service,
         }
     }
 }
