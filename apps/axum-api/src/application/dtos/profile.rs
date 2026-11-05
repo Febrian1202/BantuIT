@@ -13,7 +13,7 @@ pub struct UpdatePasswordRequest {
         custom(function = "validate_password_complexity"),
         must_match(
             other = "password_confirmation",
-            message = "Konfirmasi password baru tidak sesuai"
+            message = "Konfirmasi password baru tidak sesuai."
         )
     )]
     pub password: String,
