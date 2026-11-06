@@ -85,7 +85,10 @@ impl RateLimiterRegistry {
     }
 
     pub fn is_testing_or_local(&self) -> bool {
-        matches!(self.app_env.as_str(), "local" | "test" | "testing")
+        matches!(
+            self.app_env.as_str(),
+            "local" | "test" | "testing" | "development"
+        )
     }
 }
 
