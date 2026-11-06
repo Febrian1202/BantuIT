@@ -1,4 +1,4 @@
-use std::{error::Error, time::Instant};
+use std::{error::Error, net::SocketAddr, time::Instant};
 
 use bantuit::{
     infrastructure::{
@@ -59,9 +59,12 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         display_host, config.port
     );
 
-    axum::serve(listener, app)
-        .with_graceful_shutdown(shutdown_signal())
-        .await?;
+    axum::serve(
+        listener,
+        app.into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .with_graceful_shutdown(shutdown_signal())
+    .await?;
 
     info!("Server Axum berhasil dihentikan secara aman (gracefull shutdown complete");
     Ok(())

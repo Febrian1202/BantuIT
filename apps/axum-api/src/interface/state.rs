@@ -11,6 +11,7 @@ use crate::{
         AppConfig,
         repositories::{AuthRepository, ProfileRepository, TicketRepository},
     },
+    interface::middleware::rate_limiter::RateLimiterRegistry,
 };
 
 #[derive(Clone)]
@@ -21,6 +22,7 @@ pub struct AppState {
     pub ticket_service: TicketService,
     pub auth_service: AuthService,
     pub profile_service: ProfileService,
+    pub rate_limit: RateLimiterRegistry,
 }
 
 impl AppState {
@@ -40,6 +42,9 @@ impl AppState {
         let profile_repo = Arc::new(pg_profile_repo);
         let profile_service = ProfileService::new(profile_repo);
 
+        // Setup rate-limit
+        let rate_limit = RateLimiterRegistry::new(config.env.clone());
+
         Self {
             config,
             pool,
@@ -47,6 +52,7 @@ impl AppState {
             ticket_service,
             auth_service,
             profile_service,
+            rate_limit,
         }
     }
 }

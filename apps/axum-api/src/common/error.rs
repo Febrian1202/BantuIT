@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use axum::{
-    http::StatusCode,
+    http::{HeaderValue, StatusCode, header},
     response::{IntoResponse, Response},
 };
 use thiserror::Error;
@@ -31,6 +31,9 @@ pub enum AppError {
     #[error("Request doesn't valid: {0}")]
     BadRequest(String),
 
+    #[error("Too many requests.")]
+    TooManyRequests(u64),
+
     #[error("Value error: {0}.")]
     ValueError(String),
 
@@ -59,6 +62,11 @@ impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let default_message = self.to_string();
 
+        let retry_after = match &self {
+            AppError::TooManyRequests(secs) => Some(*secs),
+            _ => None,
+        };
+
         let (status, message, errors) = match self {
             AppError::Unauthorized => (StatusCode::UNAUTHORIZED, default_message, None),
             AppError::Forbidden => (StatusCode::FORBIDDEN, "Forbidden.".to_string(), None),
@@ -71,6 +79,11 @@ impl IntoResponse for AppError {
                 StatusCode::UNPROCESSABLE_ENTITY,
                 default_message,
                 Some(errs),
+            ),
+            AppError::TooManyRequests(secs) => (
+                StatusCode::TOO_MANY_REQUESTS,
+                format!("Too many requests. Please retry in {secs} seconds"),
+                None,
             ),
             AppError::Database(err) => {
                 tracing::error!("Database query execution error: {:?}", err);
@@ -90,6 +103,14 @@ impl IntoResponse for AppError {
             }
         };
 
-        ApiResponse::error(status, message, errors)
+        let mut response = ApiResponse::error(status, message, errors);
+
+        if let Some(secs) = retry_after {
+            response
+                .headers_mut()
+                .insert(header::RETRY_AFTER, HeaderValue::from(secs));
+        }
+
+        response
     }
 }
