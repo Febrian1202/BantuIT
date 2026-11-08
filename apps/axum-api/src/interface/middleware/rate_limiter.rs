@@ -95,7 +95,7 @@ impl RateLimiterRegistry {
 // -- Helper resolusi key
 fn extract_client_api(headers: &HeaderMap, info: Option<&ConnectInfo<SocketAddr>>) -> String {
     if let Some(forwarded) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok()) {
-        if let Some(ip) = forwarded.split(',').next().map(str::trim) {
+        if let Some(ip) = forwarded.split(',').next_back().map(str::trim) {
             if ip.parse::<IpAddr>().is_ok() {
                 return ip.to_string();
             }
