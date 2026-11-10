@@ -35,12 +35,12 @@ impl AppState {
         // Setup AuthRepo dan AuthService
         let pg_auth_repo = AuthRepository::new(pool.clone());
         let auth_repo = Arc::new(pg_auth_repo);
-        let auth_service = AuthService::new(auth_repo);
+        let auth_service = AuthService::new(auth_repo.clone());
 
         // Setup ProfileRepo dan ProfileService
         let pg_profile_repo = ProfileRepository::new(pool.clone());
         let profile_repo = Arc::new(pg_profile_repo);
-        let profile_service = ProfileService::new(profile_repo);
+        let profile_service = ProfileService::new(profile_repo, auth_repo.clone());
 
         // Setup rate-limit
         let rate_limit = RateLimiterRegistry::new(config.env.clone());

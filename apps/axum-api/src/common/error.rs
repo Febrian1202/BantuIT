@@ -85,14 +85,21 @@ impl IntoResponse for AppError {
                 format!("Too many requests. Please retry in {secs} seconds"),
                 None,
             ),
-            AppError::Database(err) => {
-                tracing::error!("Database query execution error: {:?}", err);
-                (
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    "Server error.".to_string(),
+            AppError::Database(err) => match err {
+                sqlx::Error::RowNotFound => (
+                    StatusCode::NOT_FOUND,
+                    "Resource not found.".to_string(),
                     None,
-                )
-            }
+                ),
+                _ => {
+                    tracing::error!("Database query execution error: {:?}", err);
+                    (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        "Server error.".to_string(),
+                        None,
+                    )
+                }
+            },
             AppError::Internal(err) => {
                 tracing::error!("Unhandled internal error: {:?}", err);
                 (

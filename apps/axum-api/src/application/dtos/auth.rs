@@ -48,8 +48,8 @@ pub struct DepartmentData {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileData {
     pub employee_code: String,
-    pub position: String,
-    pub phone: String,
+    pub position: Option<String>,
+    pub phone: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

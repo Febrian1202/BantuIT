@@ -153,6 +153,305 @@ impl AbilityMatrix {
         ),
     ];
 
+    pub const POLICY_ABILITES: &'static [(Ability, &'static [RoleName])] = &[
+        // Ticket (13 Abilities)
+        (
+            Ability::TicketViewAny,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::TicketView,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::TicketCreate,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::TicketUpdate,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (Ability::TicketDelete, &[RoleName::Administrator]),
+        (
+            Ability::TicketAssign,
+            &[RoleName::Administrator, RoleName::Manager],
+        ),
+        (
+            Ability::TicketUnassign,
+            &[RoleName::Administrator, RoleName::Manager],
+        ),
+        (
+            Ability::TicketChangeStatus,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::TicketSelfAssign,
+            &[RoleName::Administrator, RoleName::Technician],
+        ),
+        (
+            Ability::TicketChangePriority,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::TicketComment,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::TicketViewHistory,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::TicketAttach,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        // Attachment 4 (Abilities)
+        (
+            Ability::AttachmentView,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::AttachmentCreate,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::AttachmentDownload,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::AttachmentDelete,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        // Asset (10 Abilities)
+        (
+            Ability::AssetViewAny,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::AssetView,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::AssetViewOwn,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::AssetViewAssignable,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::AssetCreate,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::AssetUpdate,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::AssetDelete,
+            &[RoleName::Administrator, RoleName::Manager],
+        ),
+        (
+            Ability::AssetAssign,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::AssetRelease,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::AssetViewHistory,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        // Article (7 Abilities)
+        (
+            Ability::ArticleViewAny,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::ArticleView,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::ArticleCreate,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::ArticleUpdate,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::ArticlePublish,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::ArticleUnpublish,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        (
+            Ability::ArticleDelete,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+            ],
+        ),
+        // Notification (3 Abilites)
+        (
+            Ability::NotificationViewAny,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::NotificationMarkAsRead,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+        (
+            Ability::NotificationMarkAllAsRead,
+            &[
+                RoleName::Administrator,
+                RoleName::Manager,
+                RoleName::Technician,
+                RoleName::Employee,
+            ],
+        ),
+    ];
+
     pub const ADMIN_GATE_EXCEPTIONS: &'static [Ability] = &[
         Ability::NotificationViewAny,
         Ability::NotificationMarkAsRead,
@@ -174,7 +473,17 @@ impl AbilityMatrix {
     /// Daftar seluruh permissions string untuk response profile pengguna (GET /api/me)
     pub fn permission_for(role: RoleName) -> Vec<&'static str> {
         let mut permissions: Vec<&'static str> = Vec::new();
+
+        // Gate / Role Abilites
         for (ability, roles) in Self::ROLE_ABILITES {
+            if roles.contains(&role) {
+                let s: &'static str = (*ability).into();
+                permissions.push(s);
+            }
+        }
+
+        // Policy Abilities
+        for (ability, roles) in Self::POLICY_ABILITES {
             if roles.contains(&role) {
                 let s: &'static str = (*ability).into();
                 permissions.push(s);

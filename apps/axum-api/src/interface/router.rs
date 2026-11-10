@@ -9,10 +9,11 @@ use crate::interface::{
     handlers::{
         auth_handler::{login, logout},
         health_handler::health_check,
-        profile_handler::update_password,
+        profile_handler::{show, update, update_password},
     },
     middleware::{
         logging::create_trace_layer,
+        password_check::ensure_password_checked,
         rate_limiter::{rate_limit_api, rate_limit_login},
     },
 };
@@ -23,12 +24,20 @@ pub fn create_router(state: AppState) -> Router {
         post(login).route_layer(from_fn_with_state(state.clone(), rate_limit_login)),
     );
 
-    let auth_basic_route = Router::new()
+    let auth_basic_routes = Router::new()
         .route("/logout", post(logout))
         .route("/me/password", put(update_password));
 
+    let protected_routes = Router::new()
+        .route("/me", get(show))
+        .route("/me", put(update))
+        .layer(from_fn_with_state(state.clone(), ensure_password_checked));
+
     Router::new()
-        .nest("/api", public_routes.merge(auth_basic_route))
+        .nest(
+            "/api",
+            public_routes.merge(auth_basic_routes.merge(protected_routes)),
+        )
         .layer(from_fn_with_state(state.clone(), rate_limit_api))
         .layer(create_trace_layer())
         .with_state(state)

@@ -2,7 +2,14 @@ use async_trait::async_trait;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::{common::AppError, domain::repositories::ProfileRepo};
+use crate::{
+    common::AppError,
+    domain::{
+        enums::{RoleName, UserStatus},
+        models::{EmployeeProfile, User},
+        repositories::ProfileRepo,
+    },
+};
 
 pub struct ProfileRepository {
     pool: PgPool,
@@ -51,5 +58,49 @@ impl ProfileRepo for ProfileRepository {
         tx.commit().await?;
 
         Ok(())
+    }
+
+    async fn update_profile(
+        &self,
+        user_id: Uuid,
+        updated_full_name: String,
+        updated_phone: Option<String>,
+    ) -> Result<(User, EmployeeProfile), AppError> {
+        let mut tx = self.pool.begin().await?;
+
+        let updated_user = sqlx::query_file_as!(
+            User,
+            "./src/sql/profile/update_user_full_name.sql",
+            updated_full_name,
+            user_id
+        )
+        .fetch_optional(&mut *tx)
+        .await?
+        .ok_or(AppError::NotFound)?;
+
+        let updated_profile = if let Some(phone) = updated_phone {
+            sqlx::query_file_as!(
+                EmployeeProfile,
+                "./src/sql/profile/update_phone_number.sql",
+                phone,
+                user_id
+            )
+            .fetch_optional(&mut *tx)
+            .await?
+            .ok_or(AppError::NotFound)?
+        } else {
+            sqlx::query_file_as!(
+                EmployeeProfile,
+                "./src/sql/auth/get_profile_by_user_id.sql",
+                user_id
+            )
+            .fetch_optional(&mut *tx)
+            .await?
+            .ok_or(AppError::NotFound)?
+        };
+
+        tx.commit().await?;
+
+        Ok((updated_user, updated_profile))
     }
 }
