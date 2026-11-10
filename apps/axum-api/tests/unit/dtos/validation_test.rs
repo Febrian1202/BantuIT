@@ -1,4 +1,4 @@
-use bantuit::application::dtos::{LoginRequest, UpdatePasswordRequest};
+use bantuit::application::dtos::{LoginRequest, UpdatePasswordRequest, UpdateProfileRequest};
 use validator::Validate;
 
 #[test]
@@ -82,4 +82,43 @@ fn test_update_password_request_fails_on_confirmation_mismatch() {
         password_confirmation: "DifferentPassword123".to_string(),
     };
     assert!(mismatch_req.validate().is_err());
+}
+
+#[test]
+fn test_update_profile_request_validation_success() {
+    let req = UpdateProfileRequest {
+        full_name: "Budi Santoso".to_string(),
+        phone: Some("08123456789".to_string()),
+    };
+    assert!(req.validate().is_ok());
+
+    let req_no_phone = UpdateProfileRequest {
+        full_name: "Budi Santoso".to_string(),
+        phone: None,
+    };
+    assert!(req_no_phone.validate().is_ok());
+}
+
+#[test]
+fn test_update_profile_request_fails_on_empty_or_excessive_name() {
+    let empty_name = UpdateProfileRequest {
+        full_name: "".to_string(),
+        phone: Some("08123456789".to_string()),
+    };
+    assert!(empty_name.validate().is_err());
+
+    let long_name = UpdateProfileRequest {
+        full_name: "A".repeat(256),
+        phone: Some("08123456789".to_string()),
+    };
+    assert!(long_name.validate().is_err());
+}
+
+#[test]
+fn test_update_profile_request_fails_on_excessive_phone_length() {
+    let long_phone = UpdateProfileRequest {
+        full_name: "Budi Santoso".to_string(),
+        phone: Some("0812345678901234567890".to_string()), // > 20 karakter
+    };
+    assert!(long_phone.validate().is_err());
 }

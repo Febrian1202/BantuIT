@@ -2,7 +2,10 @@ use std::sync::{Arc, Mutex};
 
 use async_trait::async_trait;
 use bantuit::{
-    application::{dtos::UpdatePasswordRequest, services::auth::ProfileService},
+    application::{
+        dtos::{UpdatePasswordRequest, UpdateProfileRequest},
+        services::auth::ProfileService,
+    },
     common::{AppError, Crypto},
     domain::{
         enums::{RoleName, UserStatus},
@@ -31,6 +34,30 @@ impl ProfileRepo for MockProfileRepo {
         let mut lock = self.updated_password.lock().unwrap();
         *lock = Some(new_password);
         Ok(())
+    }
+
+    async fn update_profile(
+        &self,
+        _user_id: Uuid,
+        updated_full_name: String,
+        updated_phone: Option<String>,
+    ) -> Result<(User, EmployeeProfile), AppError> {
+        let mut user = create_mock_user(RoleName::Employee);
+        user.full_name = updated_full_name;
+
+        let profile = EmployeeProfile {
+            id: Uuid::new_v4(),
+            user_id: user.id,
+            employee_code: "EMP-0001".to_string(),
+            phone: updated_phone,
+            position: Some("Staff".to_string()),
+            hire_date: None,
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+            deleted_at: None,
+        };
+
+        Ok((user, profile))
     }
 }
 
@@ -169,7 +196,45 @@ async fn test_profile_service_show_with_empty_relations() {
 
     assert!(me.department.is_none());
     assert!(me.profile.is_none());
-    assert!(me.permissions.contains(&"ticket.create".to_string()));
+    assert!(
+        me.permissions
+            .as_ref()
+            .unwrap()
+            .contains(&"ticket.create".to_string())
+    );
+}
+
+#[tokio::test]
+async fn test_profile_service_update_profile_success() {
+    let user = create_mock_user(RoleName::Employee);
+
+    let auth_repo = Arc::new(MockAuthRepo {
+        department: None,
+        profile: None,
+    });
+    let profile_repo = Arc::new(MockProfileRepo {
+        updated_password: Mutex::new(None),
+    });
+
+    let service = ProfileService::new(profile_repo, auth_repo);
+
+    let request = UpdateProfileRequest {
+        full_name: "Budi Santoso Baru".to_string(),
+        phone: Some("08987654321".to_string()),
+    };
+
+    let response = service
+        .update(user, request)
+        .await
+        .expect("update profil harus berhasil");
+
+    assert_eq!(response.full_name, "Budi Santoso Baru");
+    assert_eq!(
+        response.profile.as_ref().unwrap().phone.as_deref(),
+        Some("08987654321")
+    );
+    // Pada response update profil, permissions sengaja None (tidak disertakan)
+    assert!(response.permissions.is_none());
 }
 
 #[tokio::test]

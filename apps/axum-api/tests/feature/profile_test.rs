@@ -99,6 +99,134 @@ async fn test_get_me_blocked_if_user_must_change_password() {
 }
 
 #[tokio::test]
+async fn test_update_profile_success_and_persists_changes() {
+    let (state, app) = setup_test_app().await;
+
+    let (user, token, _) =
+        insert_test_user(&state.pool, RoleName::Employee, false, UserStatus::Active).await;
+
+    let payload = serde_json::json!({
+        "full_name": "Budi Santoso Diperbarui",
+        "phone": "081234567890",
+    });
+
+    let request = Request::builder()
+        .uri("/api/me")
+        .method("PUT")
+        .header(header::AUTHORIZATION, format!("Bearer {token}"))
+        .header(header::CONTENT_TYPE, "application/json")
+        .body(Body::from(payload.to_string()))
+        .unwrap();
+
+    let response = app.clone().oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json = response_json(response).await;
+    assert_eq!(json["success"], true);
+    assert_eq!(json["message"], "Profile updated successfully.");
+
+    let data = &json["data"];
+    assert_eq!(data["id"], user.id.to_string());
+    assert_eq!(data["full_name"], "Budi Santoso Diperbarui");
+    assert_eq!(data["profile"]["phone"], "081234567890");
+
+    // Pada update profil, permissions diabaikan (skip_serializing_if)
+    assert!(data.get("permissions").is_none() || data["permissions"].is_null());
+
+    // Verifikasi lewat GET /api/me bahwa perubahan tersimpan di database
+    let get_request = Request::builder()
+        .uri("/api/me")
+        .method("GET")
+        .header(header::AUTHORIZATION, format!("Bearer {token}"))
+        .body(Body::empty())
+        .unwrap();
+
+    let get_response = app.oneshot(get_request).await.unwrap();
+    assert_eq!(get_response.status(), StatusCode::OK);
+
+    let get_json = response_json(get_response).await;
+    assert_eq!(get_json["data"]["full_name"], "Budi Santoso Diperbarui");
+    assert_eq!(get_json["data"]["profile"]["phone"], "081234567890");
+}
+
+#[tokio::test]
+async fn test_update_profile_without_phone_preserves_existing_phone() {
+    let (state, app) = setup_test_app().await;
+
+    let (_user, token, _) =
+        insert_test_user(&state.pool, RoleName::Employee, false, UserStatus::Active).await;
+
+    let payload = serde_json::json!({
+        "full_name": "Nama Baru Tanpa Ganti Phone",
+        "phone": null,
+    });
+
+    let request = Request::builder()
+        .uri("/api/me")
+        .method("PUT")
+        .header(header::AUTHORIZATION, format!("Bearer {token}"))
+        .header(header::CONTENT_TYPE, "application/json")
+        .body(Body::from(payload.to_string()))
+        .unwrap();
+
+    let response = app.oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json = response_json(response).await;
+    assert_eq!(json["success"], true);
+    assert_eq!(json["data"]["full_name"], "Nama Baru Tanpa Ganti Phone");
+    // Phone lama ("08123456789" dari seeder) tetap dipertahankan
+    assert_eq!(json["data"]["profile"]["phone"], "08123456789");
+}
+
+#[tokio::test]
+async fn test_update_profile_fails_on_empty_name() {
+    let (state, app) = setup_test_app().await;
+
+    let (_user, token, _) =
+        insert_test_user(&state.pool, RoleName::Employee, false, UserStatus::Active).await;
+
+    let payload = serde_json::json!({
+        "full_name": "",
+        "phone": "08123456789",
+    });
+
+    let request = Request::builder()
+        .uri("/api/me")
+        .method("PUT")
+        .header(header::AUTHORIZATION, format!("Bearer {token}"))
+        .header(header::CONTENT_TYPE, "application/json")
+        .body(Body::from(payload.to_string()))
+        .unwrap();
+
+    let response = app.oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
+
+    let json = response_json(response).await;
+    assert_eq!(json["success"], false);
+    assert!(json["errors"]["full_name"].is_array());
+}
+
+#[tokio::test]
+async fn test_update_profile_unauthenticated_returns_401() {
+    let (_state, app) = setup_test_app().await;
+
+    let payload = serde_json::json!({
+        "full_name": "Unauthorized User",
+    });
+
+    let request = Request::builder()
+        .uri("/api/me")
+        .method("PUT")
+        .header(header::CONTENT_TYPE, "application/json")
+        .body(Body::from(payload.to_string()))
+        .unwrap();
+
+    let response = app.oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
 async fn test_update_password_success_and_verifies_login_with_new_password() {
     let (state, app) = setup_test_app().await;
 
