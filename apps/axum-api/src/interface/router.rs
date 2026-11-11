@@ -7,9 +7,12 @@ use axum::{
 use crate::interface::{
     AppState,
     handlers::{
-        auth_handler::{login, logout},
+        admin::ticket_category_handler::index,
+        auth::{
+            auth_handler::{login, logout},
+            profile_handler::{show, update, update_password},
+        },
         health_handler::health_check,
-        profile_handler::{show, update, update_password},
     },
     middleware::{
         logging::create_trace_layer,
@@ -29,16 +32,22 @@ pub fn create_router(state: AppState) -> Router {
         .route("/me/password", put(update_password));
 
     let protected_routes = Router::new()
-        .route("/me", get(show))
-        .route("/me", put(update))
+        .route("/me", get(show).put(update))
+        .merge(ticket_category_routes())
         .layer(from_fn_with_state(state.clone(), ensure_password_checked));
 
+    let api_routes = Router::new()
+        .merge(public_routes)
+        .merge(auth_basic_routes)
+        .merge(protected_routes);
+
     Router::new()
-        .nest(
-            "/api",
-            public_routes.merge(auth_basic_routes.merge(protected_routes)),
-        )
+        .nest("/api", api_routes)
         .layer(from_fn_with_state(state.clone(), rate_limit_api))
         .layer(create_trace_layer())
         .with_state(state)
+}
+
+fn ticket_category_routes() -> Router<AppState> {
+    Router::new().route("/ticket-categories", get(index))
 }

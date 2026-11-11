@@ -6,7 +6,7 @@ use sha2::{Digest, Sha256};
 use crate::{
     application::dtos::{DepartmentData, LoginRequest, LoginResponse, RoleData, UserData},
     common::{AppError, Crypto},
-    domain::{enums::UserStatus, models::User, repositories::DynAuthRepo},
+    domain::{enums::UserStatus, models::User, repositories::auth::DynAuthRepo},
 };
 
 #[derive(Clone)]

@@ -1,6 +1,7 @@
 {
     "agents": [
-        "opencode"
+        "opencode",
+        "antigravity"
     ],
     "mcp": true,
     "nightwatch": false,

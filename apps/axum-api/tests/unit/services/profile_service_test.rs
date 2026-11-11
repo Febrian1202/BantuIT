@@ -10,7 +10,7 @@ use bantuit::{
     domain::{
         enums::{RoleName, UserStatus},
         models::{Department, EmployeeProfile, User},
-        repositories::{AuthRepo, ProfileRepo},
+        repositories::auth::{AuthRepo, ProfileRepo},
     },
     interface::extractors::auth_user::AuthUser,
 };

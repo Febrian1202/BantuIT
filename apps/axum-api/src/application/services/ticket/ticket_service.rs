@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::{
     common::AppError,
-    domain::{models::Ticket, repositories::DynTicketRepo},
+    domain::{models::Ticket, repositories::ticket::DynTicketRepo},
 };
 
 #[derive(Clone)]
@@ -16,6 +16,6 @@ impl TicketService {
     }
 
     pub async fn get_by_id(&self, id: Uuid) -> Result<Ticket, AppError> {
-        self.repo.find_by_id(id).await?.ok_or(AppError::NotFound)
+        self.repo.find_by_id(id).await
     }
 }

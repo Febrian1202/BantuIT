@@ -162,6 +162,10 @@ apps/api/storage/app/private/*
 # Cargo Target
 target/
 
+.agents/
+
+skills-lock.json
+
 .sqls.yml
 
 .impeccable/

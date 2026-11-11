@@ -5,11 +5,14 @@ use sqlx::PgPool;
 use crate::{
     application::services::{
         auth::{ProfileService, auth_service::AuthService},
-        ticket::ticket_service::TicketService,
+        ticket::{TicketCategoryService, ticket_service::TicketService},
     },
     infrastructure::{
         AppConfig,
-        repositories::{AuthRepository, ProfileRepository, TicketRepository},
+        repositories::{
+            auth::{AuthRepository, ProfileRepository},
+            ticket::{TicketCategoryRepository, TicketRepository},
+        },
     },
     interface::middleware::rate_limiter::RateLimiterRegistry,
 };
@@ -22,6 +25,7 @@ pub struct AppState {
     pub ticket_service: TicketService,
     pub auth_service: AuthService,
     pub profile_service: ProfileService,
+    pub ticket_category_service: TicketCategoryService,
     pub rate_limit: RateLimiterRegistry,
 }
 
@@ -42,6 +46,11 @@ impl AppState {
         let profile_repo = Arc::new(pg_profile_repo);
         let profile_service = ProfileService::new(profile_repo, auth_repo.clone());
 
+        // Setup TicketCategoryRepo dan TicketCategoryService
+        let pg_category_repo = TicketCategoryRepository::new(pool.clone());
+        let category_repo = Arc::new(pg_category_repo);
+        let ticket_category_service = TicketCategoryService::new(category_repo);
+
         // Setup rate-limit
         let rate_limit = RateLimiterRegistry::new(config.env.clone());
 
@@ -53,6 +62,7 @@ impl AppState {
             auth_service,
             profile_service,
             rate_limit,
+            ticket_category_service,
         }
     }
 }

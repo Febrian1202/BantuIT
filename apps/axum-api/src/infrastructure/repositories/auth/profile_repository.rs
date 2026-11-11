@@ -7,7 +7,7 @@ use crate::{
     domain::{
         enums::{RoleName, UserStatus},
         models::{EmployeeProfile, User},
-        repositories::ProfileRepo,
+        repositories::auth::ProfileRepo,
     },
 };
 

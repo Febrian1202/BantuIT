@@ -9,7 +9,7 @@ use crate::{
     domain::{
         authorization::AbilityMatrix,
         models::User,
-        repositories::{DynAuthRepo, DynProfileRepo},
+        repositories::auth::{DynAuthRepo, DynProfileRepo},
     },
     interface::extractors::auth_user::AuthUser,
 };

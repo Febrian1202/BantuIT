@@ -11,9 +11,7 @@ pub struct AppConfig {
 }
 
 impl AppConfig {
-    /**
-     * Memuat konfigurasi Aplikasi dari .env, atau pake default value
-     */
+    /// Memuat konfigurasi Aplikasi dari .env, atau pake default value
     pub fn from_env() -> Result<Self, Box<dyn Error + Send + Sync>> {
         let host = env::var("APP_HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
         let port = env::var("APP_PORT").map_or(Ok(8000), |v| v.parse::<u16>())?;
@@ -28,16 +26,12 @@ impl AppConfig {
         })
     }
 
-    /**
-     * Helper untuk display alamat server
-     */
+    /// Helper untuk display alamat server
     pub fn server_address(&self) -> String {
         format!("{}:{}", self.host, self.port)
     }
 
-    /**
-     * Helper untuk mengetahui sedang mode production atau bukan
-     */
+    /// Helper untuk mengetahui sedang mode production atau bukan
     pub fn is_production(&self) -> bool {
         self.env == "production"
     }

@@ -7,7 +7,7 @@ use async_trait::async_trait;
 
 #[async_trait]
 pub trait TicketRepo: Send + Sync {
-    async fn find_by_id(&self, id: Uuid) -> Result<Option<Ticket>, AppError>;
+    async fn find_by_id(&self, id: Uuid) -> Result<Ticket, AppError>;
 }
 
 pub type DynTicketRepo = Arc<dyn TicketRepo>;

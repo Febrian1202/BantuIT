@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use crate::{
     common::AppError,
-    domain::{models::Ticket, repositories::TicketRepo},
+    domain::{models::Ticket, repositories::ticket::TicketRepo},
 };
 
 #[derive(Clone)]
@@ -20,14 +20,11 @@ impl TicketRepository {
 
 #[async_trait]
 impl TicketRepo for TicketRepository {
-    async fn find_by_id(&self, id: Uuid) -> Result<Option<Ticket>, AppError> {
+    async fn find_by_id(&self, id: Uuid) -> Result<Ticket, AppError> {
         let ticket = sqlx::query_file_as!(Ticket, "src/sql/ticket/get_ticket_by_id.sql", id)
             .fetch_optional(&self.pool)
-            .await
-            .map_err(|e| {
-                tracing::error!("Database error pada saat find_by_id tiket: {:?}", e);
-                AppError::Database(e)
-            })?;
+            .await?
+            .ok_or(AppError::NotFound)?;
 
         Ok(ticket)
     }
