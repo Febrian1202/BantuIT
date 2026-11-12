@@ -7,13 +7,13 @@ use crate::{
     interface::{AppState, extractors::auth_user::AuthUser},
 };
 
-pub async fn index(
+pub async fn get_categories(
     State(state): State<AppState>,
     AuthUser(user, _): AuthUser,
 ) -> ApiResult<Vec<TicketCategoryResponse>> {
     Gate::check(&user, Ability::TicketCategoryViewAny)?;
 
-    let response = state.ticket_category_service.index().await?;
+    let response = state.ticket_category_service.get_categories().await?;
 
     Ok(ApiResponse::success(
         response,

@@ -37,11 +37,7 @@ impl ProfileRepo for ProfileRepository {
             user_id
         )
         .execute(&mut *tx)
-        .await
-        .map_err(|e| {
-            tracing::error!("Gagal update_user_password: {}", e);
-            AppError::Database(e)
-        })?;
+        .await?;
 
         sqlx::query_file!(
             "./src/sql/profile/revoke_token_other_user_id.sql",
@@ -49,11 +45,7 @@ impl ProfileRepo for ProfileRepository {
             current_token_hash
         )
         .execute(&mut *tx)
-        .await
-        .map_err(|e| {
-            tracing::error!("Gagal revoke_token_other_user_id: {}", e);
-            AppError::Database(e)
-        })?;
+        .await?;
 
         tx.commit().await?;
 
@@ -91,7 +83,7 @@ impl ProfileRepo for ProfileRepository {
         } else {
             sqlx::query_file_as!(
                 EmployeeProfile,
-                "./src/sql/auth/get_profile_by_user_id.sql",
+                "./src/sql/profile//get_profile_by_user_id.sql",
                 user_id
             )
             .fetch_optional(&mut *tx)
@@ -102,5 +94,20 @@ impl ProfileRepo for ProfileRepository {
         tx.commit().await?;
 
         Ok((updated_user, updated_profile))
+    }
+
+    async fn get_profile_by_user_id(
+        &self,
+        user_id: Uuid,
+    ) -> Result<Option<EmployeeProfile>, AppError> {
+        let profile = sqlx::query_file_as!(
+            EmployeeProfile,
+            "./src/sql/profile/get_profile_by_user_id.sql",
+            user_id,
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+
+        Ok(profile)
     }
 }

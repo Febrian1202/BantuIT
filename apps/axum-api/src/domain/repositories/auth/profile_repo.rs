@@ -23,6 +23,11 @@ pub trait ProfileRepo: Send + Sync {
         updated_full_name: String,
         updated_phone: Option<String>,
     ) -> Result<(User, EmployeeProfile), AppError>;
+
+    async fn get_profile_by_user_id(
+        &self,
+        user_id: Uuid,
+    ) -> Result<Option<EmployeeProfile>, AppError>;
 }
 
 pub type DynProfileRepo = Arc<dyn ProfileRepo>;

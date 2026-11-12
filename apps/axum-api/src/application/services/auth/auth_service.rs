@@ -6,18 +6,26 @@ use sha2::{Digest, Sha256};
 use crate::{
     application::dtos::{DepartmentData, LoginRequest, LoginResponse, RoleData, UserData},
     common::{AppError, Crypto},
-    domain::{enums::UserStatus, models::User, repositories::auth::DynAuthRepo},
+    domain::{
+        enums::UserStatus,
+        models::User,
+        repositories::{auth::DynAuthRepo, department::DynDepartmentRepo},
+    },
 };
 
 #[derive(Clone)]
 pub struct AuthService {
     auth_repo: DynAuthRepo,
+    department_repo: DynDepartmentRepo,
 }
 
 impl AuthService {
     /// Constructor untuk AuthService
-    pub fn new(auth_repo: DynAuthRepo) -> Self {
-        Self { auth_repo }
+    pub fn new(auth_repo: DynAuthRepo, department_repo: DynDepartmentRepo) -> Self {
+        Self {
+            auth_repo,
+            department_repo,
+        }
     }
 
     pub async fn login(&self, data: LoginRequest) -> Result<LoginResponse, AppError> {
@@ -49,7 +57,7 @@ impl AuthService {
 
         let department = match user.department_id {
             Some(id) => self
-                .auth_repo
+                .department_repo
                 .get_department_by_department_id(id)
                 .await?
                 .map(|d| DepartmentData {

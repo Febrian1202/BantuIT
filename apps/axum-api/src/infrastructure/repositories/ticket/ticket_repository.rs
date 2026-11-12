@@ -21,7 +21,7 @@ impl TicketRepository {
 #[async_trait]
 impl TicketRepo for TicketRepository {
     async fn find_by_id(&self, id: Uuid) -> Result<Ticket, AppError> {
-        let ticket = sqlx::query_file_as!(Ticket, "src/sql/ticket/get_ticket_by_id.sql", id)
+        let ticket = sqlx::query_file_as!(Ticket, "./src/sql/ticket/get_ticket_by_id.sql", id)
             .fetch_optional(&self.pool)
             .await?
             .ok_or(AppError::NotFound)?;

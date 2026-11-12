@@ -1,8 +1,8 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::types::Json;
+use sqlx::{FromRow, types::Json};
 
-#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct TicketCategory {
     pub id: i32,
     pub name: String,
@@ -23,7 +23,7 @@ pub struct ParentCategory {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
 pub struct TicketCategoryWithParent {
     pub id: i32,
     pub name: String,

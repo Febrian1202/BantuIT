@@ -1,13 +1,7 @@
-use std::{
-    net::{IpAddr, SocketAddr},
-    num::NonZeroU32,
-    sync::Arc,
-    time::Duration,
-};
+use std::{net::SocketAddr, num::NonZeroU32, sync::Arc, time::Duration};
 
 use axum::{
     extract::{ConnectInfo, Request, State},
-    http::HeaderMap,
     middleware::Next,
     response::Response,
 };
@@ -18,7 +12,7 @@ use governor::{
 };
 
 use crate::{
-    common::AppError,
+    common::{AppError, Client},
     domain::enums::RateLimitTier,
     interface::{AppState, extractors::auth_user::AuthUser},
 };
@@ -92,42 +86,23 @@ impl RateLimiterRegistry {
     }
 }
 
-// -- Helper resolusi key
-fn extract_client_api(headers: &HeaderMap, info: Option<&ConnectInfo<SocketAddr>>) -> String {
-    if let Some(forwarded) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok())
-        && let Some(ip) = forwarded.split(',').next_back().map(str::trim)
-        && ip.parse::<IpAddr>().is_ok()
-    {
-        return ip.to_string();
-    }
-
-    if let Some(ip) = headers.get("x-real-ip").and_then(|v| v.to_str().ok())
-        && ip.parse::<IpAddr>().is_ok()
-    {
-        return ip.to_string();
-    }
-
-    info.map(|ConnectInfo(addr)| addr.ip().to_string())
-        .unwrap_or_else(|| "127.0.0.1".to_string())
-}
-
 fn resolve_key(req: &Request, tier: RateLimitTier) -> String {
     if tier == RateLimitTier::Login {
-        let ip = extract_client_api(
+        let ip = Client::extract_client_api_or_default(
             req.headers(),
             req.extensions().get::<ConnectInfo<SocketAddr>>(),
         );
         return format!("ip:{}", ip);
     }
     if let Some(auth) = req.extensions().get::<AuthUser>() {
-        return format!("usr: {}", auth.0.id);
+        return format!("usr:{}", auth.0.id);
     }
 
-    let ip = extract_client_api(
+    let ip = Client::extract_client_api_or_default(
         req.headers(),
         req.extensions().get::<ConnectInfo<SocketAddr>>(),
     );
-    format!("ip: {}", ip)
+    format!("ip:{}", ip)
 }
 
 // Inti middleware

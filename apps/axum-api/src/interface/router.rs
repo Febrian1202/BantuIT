@@ -7,7 +7,7 @@ use axum::{
 use crate::interface::{
     AppState,
     handlers::{
-        admin::ticket_category_handler::index,
+        admin::get_categories,
         auth::{
             auth_handler::{login, logout},
             profile_handler::{show, update, update_password},
@@ -49,5 +49,5 @@ pub fn create_router(state: AppState) -> Router {
 }
 
 fn ticket_category_routes() -> Router<AppState> {
-    Router::new().route("/ticket-categories", get(index))
+    Router::new().route("/ticket-categories", get(get_categories))
 }

@@ -9,7 +9,10 @@ use crate::{
     domain::{
         authorization::AbilityMatrix,
         models::User,
-        repositories::auth::{DynAuthRepo, DynProfileRepo},
+        repositories::{
+            auth::{DynAuthRepo, DynProfileRepo},
+            department::DynDepartmentRepo,
+        },
     },
     interface::extractors::auth_user::AuthUser,
 };
@@ -18,13 +21,19 @@ use crate::{
 pub struct ProfileService {
     pub profile_repo: DynProfileRepo,
     pub auth_repo: DynAuthRepo,
+    pub department_repo: DynDepartmentRepo,
 }
 
 impl ProfileService {
-    pub fn new(profile_repo: DynProfileRepo, auth_repo: DynAuthRepo) -> Self {
+    pub fn new(
+        profile_repo: DynProfileRepo,
+        auth_repo: DynAuthRepo,
+        department_repo: DynDepartmentRepo,
+    ) -> Self {
         Self {
             profile_repo,
             auth_repo,
+            department_repo,
         }
     }
 
@@ -59,7 +68,7 @@ impl ProfileService {
 
         let department = match user.department_id {
             Some(id) => self
-                .auth_repo
+                .department_repo
                 .get_department_by_department_id(id)
                 .await?
                 .map(|d| DepartmentData {
@@ -70,7 +79,7 @@ impl ProfileService {
         };
 
         let profile = self
-            .auth_repo
+            .profile_repo
             .get_profile_by_user_id(user.id)
             .await?
             .map(|d| ProfileData {
@@ -111,7 +120,7 @@ impl ProfileService {
 
         let department = match updated_user.department_id {
             Some(id) => self
-                .auth_repo
+                .department_repo
                 .get_department_by_department_id(id)
                 .await?
                 .map(|d| DepartmentData {

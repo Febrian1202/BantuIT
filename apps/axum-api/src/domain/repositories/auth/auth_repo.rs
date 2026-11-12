@@ -3,10 +3,7 @@ use chrono::{DateTime, Utc};
 use std::sync::Arc;
 use uuid::Uuid;
 
-use crate::{
-    common::AppError,
-    domain::models::{Department, EmployeeProfile, User},
-};
+use crate::{common::AppError, domain::models::User};
 
 #[async_trait]
 pub trait AuthRepo: Send + Sync {
@@ -27,16 +24,6 @@ pub trait AuthRepo: Send + Sync {
     ) -> Result<User, AppError>;
 
     async fn touch_token(&self, hashed_token: &str) -> Result<(), AppError>;
-
-    async fn get_department_by_department_id(
-        &self,
-        department_id: i32,
-    ) -> Result<Option<Department>, AppError>;
-
-    async fn get_profile_by_user_id(
-        &self,
-        user_id: Uuid,
-    ) -> Result<Option<EmployeeProfile>, AppError>;
 
     async fn set_last_login_at(&self, user_id: Uuid, time: DateTime<Utc>) -> Result<(), AppError>;
 }
