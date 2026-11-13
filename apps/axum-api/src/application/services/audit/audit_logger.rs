@@ -10,7 +10,16 @@ use crate::{
         models::AuditLog,
         repositories::audit::DynAuditLogRepo,
     },
+    interface::extractors::ClientInfo,
 };
+
+#[derive(Debug, Default)]
+pub struct AuditEntry {
+    pub module_id: String,
+    pub description: Option<String>,
+    pub old_data: Option<Value>,
+    pub new_data: Option<Value>,
+}
 
 #[derive(Clone)]
 pub struct AuditLogger {
@@ -30,24 +39,20 @@ impl AuditLogger {
         user_id: Uuid,
         action: AuditAction,
         module: AuditModule,
-        module_id: Uuid,
-        description: Option<String>,
-        old_data: Option<Value>,
-        new_data: Option<Value>,
-        ip_address: Option<String>,
-        user_agent: Option<String>,
+        entry: AuditEntry,
+        client: ClientInfo,
     ) -> Result<AuditLog, AppError> {
         let audit = AuditLog {
             id: Uuid::now_v7(),
             user_id,
             action,
             module,
-            module_id,
-            description,
-            old_data: old_data.map(Self::redact),
-            new_data: new_data.map(Self::redact),
-            ip_address,
-            user_agent,
+            module_id: entry.module_id,
+            description: entry.description,
+            old_data: entry.old_data.map(Self::redact),
+            new_data: entry.new_data.map(Self::redact),
+            ip_address: client.ip_address,
+            user_agent: client.user_agent,
             created_at: Utc::now(),
         };
 

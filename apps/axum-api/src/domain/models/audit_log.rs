@@ -11,7 +11,7 @@ pub struct AuditLog {
     pub user_id: Uuid,
     pub action: AuditAction,
     pub module: AuditModule,
-    pub module_id: Uuid,
+    pub module_id: String,
     pub description: Option<String>,
     pub old_data: Option<Value>,
     pub new_data: Option<Value>,

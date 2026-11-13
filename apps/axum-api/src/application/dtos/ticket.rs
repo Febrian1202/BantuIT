@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use validator::{Validate, ValidationError};
 
 use crate::domain::models::TicketCategoryWithParent;
 
@@ -46,4 +47,33 @@ impl From<TicketCategoryWithParent> for TicketCategoryResponse {
             updated_at: model.updated_at,
         }
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Validate)]
+pub struct CreateTicketCategoryRequest {
+    #[validate(custom(function = "validate_name_category"))]
+    pub name: String,
+
+    #[validate(length(max = 500, message = "Deskripsi tidak boleh lebih dari 500 karakter."))]
+    pub description: Option<String>,
+
+    pub parent_id: Option<i32>,
+}
+
+fn validate_name_category(name: &str) -> Result<(), ValidationError> {
+    let len = name.chars().count();
+
+    if name.trim().is_empty() {
+        let mut err = ValidationError::new("name");
+        err.message = Some("Nama kategori wajib diisi.".into());
+        return Err(err);
+    }
+
+    if len > 100 {
+        let mut err = ValidationError::new("name");
+        err.message = Some("Nama kategori tidak boleh lebih dari 100 karakter.".into());
+        return Err(err);
+    }
+
+    Ok(())
 }

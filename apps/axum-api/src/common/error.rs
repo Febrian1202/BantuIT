@@ -56,6 +56,13 @@ impl AppError {
     pub fn value_error(msg: impl Into<String>) -> Self {
         Self::ValueError(msg.into())
     }
+
+    /// Helper untuk membuat validation_error
+    pub fn validation_error(field: &str, message: &str) -> Self {
+        let mut errors = HashMap::new();
+        errors.insert(field.to_string(), vec![message.to_string()]);
+        AppError::ValidationError(errors)
+    }
 }
 
 impl IntoResponse for AppError {

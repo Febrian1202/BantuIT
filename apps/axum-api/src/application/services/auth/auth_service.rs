@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use chrono::{Duration, Utc};
 use sha2::{Digest, Sha256};
 
@@ -34,19 +32,22 @@ impl AuthService {
             .find_user_by_email(&data.email)
             .await?
             .ok_or_else(|| {
-                Self::validation_error("email", "These credentials do not match our records.")
+                AppError::validation_error("email", "These credentials do not match our records.")
             })?;
 
         let password_valid = Crypto::verify_password(&data.password, &user.password);
         if !password_valid {
-            return Err(Self::validation_error(
+            return Err(AppError::validation_error(
                 "email",
                 "These credentials do not match our records.",
             ));
         }
 
         if user.status != UserStatus::Active {
-            return Err(Self::validation_error("email", "This account is inactive."));
+            return Err(AppError::validation_error(
+                "email",
+                "This account is inactive.",
+            ));
         }
 
         let (plain_token, hashed_token) = Crypto::generate_token();
@@ -123,12 +124,5 @@ impl AuthService {
         });
 
         Ok((user, hashed_token))
-    }
-
-    /// Helper untuk throw validation error
-    fn validation_error(field: &str, message: &str) -> AppError {
-        let mut errors = HashMap::new();
-        errors.insert(field.to_string(), vec![message.to_string()]);
-        AppError::ValidationError(errors)
     }
 }

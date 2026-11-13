@@ -4,6 +4,7 @@ use sqlx::PgPool;
 
 use crate::{
     application::services::{
+        audit::AuditLogger,
         auth::{ProfileService, auth_service::AuthService},
         ticket::{TicketCategoryService, ticket_service::TicketService},
     },
@@ -45,6 +46,7 @@ impl AppState {
         // Setup AuditLogRepo
         let pg_audit_log_repo = AuditLogRepository::new(pool.clone());
         let audit_log_repo = Arc::new(pg_audit_log_repo);
+        let audit_logger = AuditLogger::new(audit_log_repo);
 
         // Setup AuthRepo dan AuthService
         let pg_auth_repo = AuthRepository::new(pool.clone());
@@ -54,14 +56,13 @@ impl AppState {
         // Setup ProfileRepo dan ProfileService
         let pg_profile_repo = ProfileRepository::new(pool.clone());
         let profile_repo = Arc::new(pg_profile_repo);
-        let profile_service =
-            ProfileService::new(profile_repo, auth_repo.clone(), department_repo.clone());
+        let profile_service = ProfileService::new(profile_repo, auth_repo, department_repo);
 
         // Setup TicketCategoryRepo dan TicketCategoryService
         let pg_category_repo = TicketCategoryRepository::new(pool.clone());
         let category_repo = Arc::new(pg_category_repo);
         let ticket_category_service =
-            TicketCategoryService::new(category_repo, audit_log_repo.clone());
+            TicketCategoryService::new(pool.clone(), category_repo, audit_logger);
 
         // Setup rate-limit
         let rate_limit = RateLimiterRegistry::new(config.env.clone());

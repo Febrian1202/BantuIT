@@ -41,7 +41,7 @@ impl AuditLogRepo for AuditLogRepository {
             log.user_agent,
             log.created_at
         )
-        .fetch_one(&mut *conn)
+        .fetch_one(conn)
         .await?;
 
         Ok(inserted)
