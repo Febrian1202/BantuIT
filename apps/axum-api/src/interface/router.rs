@@ -8,17 +8,10 @@ use crate::interface::{
     AppState,
     handlers::{
         admin::{create_category, delete_category, get_categories, show_category, update_category},
-        auth::{
-            auth_handler::{login, logout},
-            profile_handler::{show, update, update_password},
-        },
-        health_handler::health_check,
+        auth::{login, logout, show, update, update_password},
+        health_check,
     },
-    middleware::{
-        logging::create_trace_layer,
-        password_check::ensure_password_checked,
-        rate_limiter::{rate_limit_api, rate_limit_login},
-    },
+    middleware::{create_trace_layer, ensure_password_checked, rate_limit_api, rate_limit_login},
 };
 
 pub fn create_router(state: AppState) -> Router {

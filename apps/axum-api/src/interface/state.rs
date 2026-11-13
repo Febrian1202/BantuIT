@@ -5,16 +5,16 @@ use sqlx::PgPool;
 use crate::{
     application::services::{
         audit::AuditLogger,
-        auth::{ProfileService, auth_service::AuthService},
-        ticket::{TicketCategoryService, ticket_service::TicketService},
+        auth::{AuthService, ProfileService},
+        ticket::{TicketCategoryService, TicketPriorityService, TicketService},
     },
     infrastructure::{
         AppConfig,
         repositories::{
-            audit::audit_log::AuditLogRepository,
+            audit::AuditLogRepository,
             auth::{AuthRepository, ProfileRepository},
-            department::department_repository::DepartmentRepository,
-            ticket::{TicketCategoryRepository, TicketRepository},
+            department::DepartmentRepository,
+            ticket::{TicketCategoryRepository, TicketPriorityRepository, TicketRepository},
         },
     },
     interface::middleware::rate_limiter::RateLimiterRegistry,
@@ -29,6 +29,7 @@ pub struct AppState {
     pub auth_service: AuthService,
     pub profile_service: ProfileService,
     pub ticket_category_service: TicketCategoryService,
+    pub ticket_priority_service: TicketPriorityService,
     pub rate_limit: RateLimiterRegistry,
 }
 
@@ -42,6 +43,11 @@ impl AppState {
         // Setup DepartmentRepo
         let pg_department_repo = DepartmentRepository::new(pool.clone());
         let department_repo = Arc::new(pg_department_repo);
+
+        // Setup TicketPriorityRepo
+        let pg_priority_repo = TicketPriorityRepository::new(pool.clone());
+        let priority_repo = Arc::new(pg_priority_repo);
+        let ticket_priority_service = TicketPriorityService::new(priority_repo);
 
         // Setup AuditLogRepo
         let pg_audit_log_repo = AuditLogRepository::new(pool.clone());
@@ -76,6 +82,7 @@ impl AppState {
             profile_service,
             rate_limit,
             ticket_category_service,
+            ticket_priority_service,
         }
     }
 }

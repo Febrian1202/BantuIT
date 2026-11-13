@@ -16,14 +16,12 @@ pub trait ProfileRepo: Send + Sync {
         current_token_hash: &str,
         new_password: String,
     ) -> Result<(), AppError>;
-
     async fn update_profile(
         &self,
         user_id: Uuid,
         updated_full_name: String,
         updated_phone: Option<String>,
     ) -> Result<(User, EmployeeProfile), AppError>;
-
     async fn get_profile_by_user_id(
         &self,
         user_id: Uuid,
