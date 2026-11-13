@@ -4,7 +4,7 @@ use sqlx::{PgConnection, PgPool, types::Json};
 use crate::{
     common::AppError,
     domain::{
-        models::{ParentCategory, TicketCategoryWithParent},
+        models::{CategoryReferences, ParentCategory, TicketCategoryWithParent},
         repositories::ticket::TicketCategoryRepo,
     },
 };
@@ -78,5 +78,59 @@ impl TicketCategoryRepo for TicketCategoryRepository {
         .await?;
 
         Ok(category)
+    }
+
+    async fn is_category_name_exists_except(&self, id: i32, name: &str) -> Result<bool, AppError> {
+        let exists = sqlx::query_file_scalar!(
+            "./src/sql/ticket/is_category_name_exists_except.sql",
+            name,
+            id
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(exists)
+    }
+
+    async fn update_category_by_id(
+        &self,
+        conn: &mut PgConnection,
+        id: i32,
+        name: String,
+        desc: Option<String>,
+        parent_id: Option<i32>,
+    ) -> Result<TicketCategoryWithParent, AppError> {
+        let updated_category = sqlx::query_file_as!(
+            TicketCategoryWithParent,
+            "./src/sql/ticket/update_category_by_id.sql",
+            name,
+            desc,
+            parent_id,
+            id
+        )
+        .fetch_one(conn)
+        .await?;
+
+        Ok(updated_category)
+    }
+
+    async fn get_reference_counts(&self, id: i32) -> Result<CategoryReferences, AppError> {
+        let refs = sqlx::query_file_as!(
+            CategoryReferences,
+            "./src/sql/ticket/check_category_references.sql",
+            id
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(refs)
+    }
+
+    async fn soft_delete(&self, conn: &mut PgConnection, id: i32) -> Result<(), AppError> {
+        sqlx::query_file!("./src/sql/ticket/soft_delete_by_id.sql", id)
+            .execute(conn)
+            .await?;
+
+        Ok(())
     }
 }

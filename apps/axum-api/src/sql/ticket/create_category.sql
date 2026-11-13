@@ -4,12 +4,12 @@ WITH inserted AS(
     RETURNING id, name, description, parent_id, created_at, updated_at, deleted_at
 )
 SELECT
-    c.id,
-    c.name,
+    c.id AS "id!",
+    c.name AS "name!",
     c.description,
     c.parent_id,
-    c.created_at,
-    c.updated_at,
+    c.created_at AS "created_at!",
+    c.updated_at AS "updated_at!",
     c.deleted_at,
     CASE
         WHEN p.id IS NOT NULL THEN json_build_object(

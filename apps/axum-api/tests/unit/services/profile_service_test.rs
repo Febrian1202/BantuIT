@@ -10,7 +10,10 @@ use bantuit::{
     domain::{
         enums::{RoleName, UserStatus},
         models::{Department, EmployeeProfile, User},
-        repositories::auth::{AuthRepo, ProfileRepo},
+        repositories::{
+            auth::{AuthRepo, ProfileRepo},
+            department::DepartmentRepo,
+        },
     },
     interface::extractors::auth_user::AuthUser,
 };
@@ -21,6 +24,7 @@ use crate::common::create_mock_user;
 
 struct MockProfileRepo {
     pub updated_password: Mutex<Option<String>>,
+    pub profile: Option<EmployeeProfile>,
 }
 
 #[async_trait]
@@ -59,12 +63,30 @@ impl ProfileRepo for MockProfileRepo {
 
         Ok((user, profile))
     }
+
+    async fn get_profile_by_user_id(
+        &self,
+        _user_id: Uuid,
+    ) -> Result<Option<EmployeeProfile>, AppError> {
+        Ok(self.profile.clone())
+    }
 }
 
-struct MockAuthRepo {
+struct MockDepartmentRepo {
     pub department: Option<Department>,
-    pub profile: Option<EmployeeProfile>,
 }
+
+#[async_trait]
+impl DepartmentRepo for MockDepartmentRepo {
+    async fn get_department_by_department_id(
+        &self,
+        _department_id: i32,
+    ) -> Result<Option<Department>, AppError> {
+        Ok(self.department.clone())
+    }
+}
+
+struct MockAuthRepo;
 
 #[async_trait]
 impl AuthRepo for MockAuthRepo {
@@ -94,20 +116,6 @@ impl AuthRepo for MockAuthRepo {
 
     async fn touch_token(&self, _hashed_token: &str) -> Result<(), AppError> {
         Ok(())
-    }
-
-    async fn get_department_by_department_id(
-        &self,
-        _department_id: i32,
-    ) -> Result<Option<Department>, AppError> {
-        Ok(self.department.clone())
-    }
-
-    async fn get_profile_by_user_id(
-        &self,
-        _user_id: Uuid,
-    ) -> Result<Option<EmployeeProfile>, AppError> {
-        Ok(self.profile.clone())
     }
 
     async fn set_last_login_at(
@@ -145,15 +153,16 @@ async fn test_profile_service_show_with_full_relations() {
         deleted_at: None,
     };
 
-    let auth_repo = Arc::new(MockAuthRepo {
-        department: Some(department),
-        profile: Some(profile),
-    });
+    let auth_repo = Arc::new(MockAuthRepo);
     let profile_repo = Arc::new(MockProfileRepo {
         updated_password: Mutex::new(None),
+        profile: Some(profile),
+    });
+    let department_repo = Arc::new(MockDepartmentRepo {
+        department: Some(department),
     });
 
-    let service = ProfileService::new(profile_repo, auth_repo);
+    let service = ProfileService::new(profile_repo, auth_repo, department_repo);
     let me = service
         .show(user.clone())
         .await
@@ -180,15 +189,14 @@ async fn test_profile_service_show_with_empty_relations() {
     let mut user = create_mock_user(RoleName::Employee);
     user.department_id = None;
 
-    let auth_repo = Arc::new(MockAuthRepo {
-        department: None,
-        profile: None,
-    });
+    let auth_repo = Arc::new(MockAuthRepo);
     let profile_repo = Arc::new(MockProfileRepo {
         updated_password: Mutex::new(None),
+        profile: None,
     });
+    let department_repo = Arc::new(MockDepartmentRepo { department: None });
 
-    let service = ProfileService::new(profile_repo, auth_repo);
+    let service = ProfileService::new(profile_repo, auth_repo, department_repo);
     let me = service
         .show(user.clone())
         .await
@@ -208,15 +216,14 @@ async fn test_profile_service_show_with_empty_relations() {
 async fn test_profile_service_update_profile_success() {
     let user = create_mock_user(RoleName::Employee);
 
-    let auth_repo = Arc::new(MockAuthRepo {
-        department: None,
-        profile: None,
-    });
+    let auth_repo = Arc::new(MockAuthRepo);
     let profile_repo = Arc::new(MockProfileRepo {
         updated_password: Mutex::new(None),
+        profile: None,
     });
+    let department_repo = Arc::new(MockDepartmentRepo { department: None });
 
-    let service = ProfileService::new(profile_repo, auth_repo);
+    let service = ProfileService::new(profile_repo, auth_repo, department_repo);
 
     let request = UpdateProfileRequest {
         full_name: "Budi Santoso Baru".to_string(),
@@ -243,15 +250,14 @@ async fn test_profile_service_update_password_fails_on_incorrect_current_passwor
     let raw_current = "PasswordLama123";
     user.password = Crypto::hash_password(raw_current).unwrap();
 
-    let auth_repo = Arc::new(MockAuthRepo {
-        department: None,
-        profile: None,
-    });
+    let auth_repo = Arc::new(MockAuthRepo);
     let profile_repo = Arc::new(MockProfileRepo {
         updated_password: Mutex::new(None),
+        profile: None,
     });
+    let department_repo = Arc::new(MockDepartmentRepo { department: None });
 
-    let service = ProfileService::new(profile_repo, auth_repo);
+    let service = ProfileService::new(profile_repo, auth_repo, department_repo);
 
     let request = UpdatePasswordRequest {
         current_password: "PasswordSalahTotal".to_string(),
@@ -272,15 +278,14 @@ async fn test_profile_service_update_password_success() {
     let raw_current = "PasswordLama123";
     user.password = Crypto::hash_password(raw_current).unwrap();
 
-    let auth_repo = Arc::new(MockAuthRepo {
-        department: None,
-        profile: None,
-    });
+    let auth_repo = Arc::new(MockAuthRepo);
     let profile_repo = Arc::new(MockProfileRepo {
         updated_password: Mutex::new(None),
+        profile: None,
     });
+    let department_repo = Arc::new(MockDepartmentRepo { department: None });
 
-    let service = ProfileService::new(profile_repo.clone(), auth_repo);
+    let service = ProfileService::new(profile_repo.clone(), auth_repo, department_repo);
 
     let request = UpdatePasswordRequest {
         current_password: raw_current.to_string(),

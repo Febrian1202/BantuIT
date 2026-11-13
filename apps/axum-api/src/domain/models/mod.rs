@@ -29,7 +29,9 @@ pub use notification::Notification;
 pub use role::Role;
 pub use ticket::Ticket;
 pub use ticket_attachment::TicketAttachment;
-pub use ticket_category::{ParentCategory, TicketCategory, TicketCategoryWithParent};
+pub use ticket_category::{
+    CategoryReferences, ParentCategory, TicketCategory, TicketCategoryWithParent,
+};
 pub use ticket_comment::TicketComment;
 pub use ticket_history::TicketHistory;
 pub use ticket_priority::TicketPriority;

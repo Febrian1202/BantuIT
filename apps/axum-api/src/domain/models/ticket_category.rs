@@ -34,3 +34,8 @@ pub struct TicketCategoryWithParent {
     pub deleted_at: Option<DateTime<Utc>>,
     pub parent: Option<Json<ParentCategory>>,
 }
+
+pub struct CategoryReferences {
+    pub ticket_count: i64,
+    pub child_count: i64,
+}

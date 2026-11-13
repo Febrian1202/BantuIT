@@ -77,3 +77,17 @@ fn validate_name_category(name: &str) -> Result<(), ValidationError> {
 
     Ok(())
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, Validate)]
+pub struct UpdateTicketCategoryRequest {
+    #[validate(custom(function = "validate_name_category"))]
+    pub name: String,
+
+    #[validate(length(max = 500, message = "Deskripsi tidak boleh lebih dari 500 karakter."))]
+    pub description: Option<String>,
+
+    pub parent_id: Option<i32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeleteTicketCategoryResponse;
