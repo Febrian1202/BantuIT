@@ -44,15 +44,16 @@ impl AppState {
         let pg_department_repo = DepartmentRepository::new(pool.clone());
         let department_repo = Arc::new(pg_department_repo);
 
-        // Setup TicketPriorityRepo
-        let pg_priority_repo = TicketPriorityRepository::new(pool.clone());
-        let priority_repo = Arc::new(pg_priority_repo);
-        let ticket_priority_service = TicketPriorityService::new(priority_repo);
-
         // Setup AuditLogRepo
         let pg_audit_log_repo = AuditLogRepository::new(pool.clone());
         let audit_log_repo = Arc::new(pg_audit_log_repo);
         let audit_logger = AuditLogger::new(audit_log_repo);
+
+        // Setup TicketPriorityRepo
+        let pg_priority_repo = TicketPriorityRepository::new(pool.clone());
+        let priority_repo = Arc::new(pg_priority_repo);
+        let ticket_priority_service =
+            TicketPriorityService::new(pool.clone(), priority_repo, audit_logger.clone());
 
         // Setup AuthRepo dan AuthService
         let pg_auth_repo = AuthRepository::new(pool.clone());

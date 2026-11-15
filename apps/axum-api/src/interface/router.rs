@@ -7,7 +7,10 @@ use axum::{
 use crate::interface::{
     AppState,
     handlers::{
-        admin::{create_category, delete_category, get_categories, show_category, update_category},
+        admin::{
+            create_category, create_priority, delete_category, delete_priority, get_categories,
+            get_priorities, show_category, show_priority, update_category, update_priority,
+        },
         auth::{login, logout, show, update, update_password},
         health_check,
     },
@@ -27,6 +30,7 @@ pub fn create_router(state: AppState) -> Router {
     let protected_routes = Router::new()
         .route("/me", get(show).put(update))
         .merge(ticket_category_routes())
+        .merge(ticket_priority_routes())
         .layer(from_fn_with_state(state.clone(), ensure_password_checked));
 
     let api_routes = Router::new()
@@ -52,5 +56,19 @@ fn ticket_category_routes() -> Router<AppState> {
             get(show_category)
                 .put(update_category)
                 .delete(delete_category),
+        )
+}
+
+fn ticket_priority_routes() -> Router<AppState> {
+    Router::new()
+        .route(
+            "/ticket-priorities",
+            get(get_priorities).post(create_priority),
+        )
+        .route(
+            "/ticket-priorities/{id}",
+            get(show_priority)
+                .put(update_priority)
+                .delete(delete_priority),
         )
 }

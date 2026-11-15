@@ -1,6 +1,6 @@
 use bantuit::application::dtos::{
-    CreateTicketCategoryRequest, LoginRequest, UpdatePasswordRequest, UpdateProfileRequest,
-    UpdateTicketCategoryRequest,
+    CreateTicketCategoryRequest, CreateTicketPriorityRequest, LoginRequest, UpdatePasswordRequest,
+    UpdateProfileRequest, UpdateTicketCategoryRequest, UpdateTicketPriorityRequest,
 };
 use validator::Validate;
 
@@ -205,6 +205,116 @@ fn test_update_ticket_category_request_fails_on_empty_or_excessive_fields() {
         name: "Valid Name".to_string(),
         description: Some("X".repeat(501)),
         parent_id: None,
+    };
+    assert!(long_desc.validate().is_err());
+}
+
+#[test]
+fn test_create_ticket_priority_request_validation_success() {
+    let req = CreateTicketPriorityRequest {
+        name: "Critical".to_string(),
+        level: 4,
+        sla_minutes: 120,
+        description: Some("Masalah sistem padam total".to_string()),
+    };
+    assert!(req.validate().is_ok());
+}
+
+#[test]
+fn test_create_ticket_priority_request_fails_on_empty_name() {
+    let req = CreateTicketPriorityRequest {
+        name: "   ".to_string(),
+        level: 1,
+        sla_minutes: 60,
+        description: None,
+    };
+    let result = req.validate();
+    assert!(result.is_err());
+    let errors = result.unwrap_err();
+    assert!(errors.field_errors().contains_key("name"));
+}
+
+#[test]
+fn test_create_ticket_priority_request_fails_on_name_exceeding_50_chars() {
+    let req = CreateTicketPriorityRequest {
+        name: "P".repeat(51),
+        level: 1,
+        sla_minutes: 60,
+        description: None,
+    };
+    let result = req.validate();
+    assert!(result.is_err());
+    let errors = result.unwrap_err();
+    assert!(errors.field_errors().contains_key("name"));
+}
+
+#[test]
+fn test_create_ticket_priority_request_fails_on_invalid_level_and_sla() {
+    let req_zero_level = CreateTicketPriorityRequest {
+        name: "Normal".to_string(),
+        level: 0,
+        sla_minutes: 120,
+        description: None,
+    };
+    assert!(req_zero_level.validate().is_err());
+
+    let req_zero_sla = CreateTicketPriorityRequest {
+        name: "Normal".to_string(),
+        level: 1,
+        sla_minutes: 0,
+        description: None,
+    };
+    assert!(req_zero_sla.validate().is_err());
+}
+
+#[test]
+fn test_create_ticket_priority_request_fails_on_description_exceeding_500_chars() {
+    let req = CreateTicketPriorityRequest {
+        name: "High".to_string(),
+        level: 3,
+        sla_minutes: 240,
+        description: Some("D".repeat(501)),
+    };
+    let result = req.validate();
+    assert!(result.is_err());
+    let errors = result.unwrap_err();
+    assert!(errors.field_errors().contains_key("description"));
+}
+
+#[test]
+fn test_update_ticket_priority_request_validation_success() {
+    let req = UpdateTicketPriorityRequest {
+        name: "Urgent".to_string(),
+        level: 5,
+        sla_minutes: 30,
+        description: Some("Butuh tanggapan segera".to_string()),
+    };
+    assert!(req.validate().is_ok());
+}
+
+#[test]
+fn test_update_ticket_priority_request_fails_on_empty_or_excessive_fields() {
+    let empty_name = UpdateTicketPriorityRequest {
+        name: "".to_string(),
+        level: 1,
+        sla_minutes: 60,
+        description: None,
+    };
+    assert!(empty_name.validate().is_err());
+
+    let zero_sla = UpdateTicketPriorityRequest {
+        name: "Valid Priority".to_string(),
+        level: 1,
+        sla_minutes: 0,
+        description: None,
+    };
+    assert!(zero_sla.validate().is_err());
+
+    let long_desc = UpdateTicketPriorityRequest {
+        name: "Valid Priority".to_string(),
+        level: 1,
+        sla_minutes: 60,
+        description: Some("Z".repeat(501)),
     };
     assert!(long_desc.validate().is_err());
 }

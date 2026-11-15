@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use validator::{Validate, ValidationError};
 
-use crate::domain::models::TicketCategoryWithParent;
+use crate::domain::models::{TicketCategoryWithParent, TicketPriority};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ParentCategoryResponse {
@@ -61,15 +61,15 @@ pub struct CreateTicketCategoryRequest {
 }
 
 fn validate_name_category(name: &str) -> Result<(), ValidationError> {
-    let len = name.chars().count();
+    let trimmed = name.trim();
 
-    if name.trim().is_empty() {
+    if trimmed.is_empty() {
         let mut err = ValidationError::new("name");
         err.message = Some("Nama kategori wajib diisi.".into());
         return Err(err);
     }
 
-    if len > 100 {
+    if trimmed.chars().count() > 100 {
         let mut err = ValidationError::new("name");
         err.message = Some("Nama kategori tidak boleh lebih dari 100 karakter.".into());
         return Err(err);
@@ -91,3 +91,79 @@ pub struct UpdateTicketCategoryRequest {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeleteTicketCategoryResponse;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TicketPriorityResponse {
+    pub id: i32,
+    pub name: String,
+    pub level: Option<i32>,
+    pub sla_minutes: i32,
+    pub description: Option<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+impl From<TicketPriority> for TicketPriorityResponse {
+    fn from(v: TicketPriority) -> Self {
+        Self {
+            id: v.id,
+            name: v.name,
+            level: v.level,
+            sla_minutes: v.sla_minutes,
+            description: v.description,
+            created_at: v.created_at,
+            updated_at: v.updated_at,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Validate)]
+pub struct CreateTicketPriorityRequest {
+    #[validate(custom(function = "validate_name_priority"))]
+    pub name: String,
+
+    #[validate(range(min = 1, message = "Level prioritas wajib diisi."))]
+    pub level: i32,
+
+    #[validate(range(min = 1, message = "Durasi SLA (menit) wajib diisi."))]
+    pub sla_minutes: i32,
+
+    #[validate(length(max = 500, message = "Deskripsi tidak boleh lebih dari 500 karakter."))]
+    pub description: Option<String>,
+}
+
+fn validate_name_priority(name: &str) -> Result<(), ValidationError> {
+    let trimmed = name.trim();
+
+    if trimmed.is_empty() {
+        let mut err = ValidationError::new("name");
+        err.message = Some("Nama prioritas tiket wajib diisi.".into());
+        return Err(err);
+    }
+
+    if trimmed.chars().count() > 50 {
+        let mut err = ValidationError::new("name");
+        err.message = Some("Nama prioritas tidak boleh lebih dari 50 karakter.".into());
+        return Err(err);
+    }
+
+    Ok(())
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Validate)]
+pub struct UpdateTicketPriorityRequest {
+    #[validate(custom(function = "validate_name_priority"))]
+    pub name: String,
+
+    #[validate(range(min = 1, message = "Level prioritas wajib diisi."))]
+    pub level: i32,
+
+    #[validate(range(min = 1, message = "Durasi SLA minimmal 1 menit."))]
+    pub sla_minutes: i32,
+
+    #[validate(length(max = 500, message = "Deskripsi tidak boleh lebih dari 500 karakter."))]
+    pub description: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeleteTicketPriorityResponse;
