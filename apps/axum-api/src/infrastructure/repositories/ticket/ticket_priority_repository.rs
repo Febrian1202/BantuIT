@@ -136,7 +136,6 @@ impl TicketPriorityRepo for TicketPriorityRepository {
         )
         .fetch_one(&self.pool)
         .await?;
-
         Ok(refs)
     }
 

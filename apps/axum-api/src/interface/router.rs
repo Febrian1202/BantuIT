@@ -8,8 +8,10 @@ use crate::interface::{
     AppState,
     handlers::{
         admin::{
-            create_category, create_priority, delete_category, delete_priority, get_categories,
-            get_priorities, show_category, show_priority, update_category, update_priority,
+            create_category, create_department, create_priority, delete_category,
+            delete_department, delete_priority, get_categories, get_departments, get_priorities,
+            show_category, show_department, show_priority, update_category, update_department,
+            update_priority,
         },
         auth::{login, logout, show, update, update_password},
         health_check,
@@ -31,6 +33,7 @@ pub fn create_router(state: AppState) -> Router {
         .route("/me", get(show).put(update))
         .merge(ticket_category_routes())
         .merge(ticket_priority_routes())
+        .merge(department_routes())
         .layer(from_fn_with_state(state.clone(), ensure_password_checked));
 
     let api_routes = Router::new()
@@ -70,5 +73,16 @@ fn ticket_priority_routes() -> Router<AppState> {
             get(show_priority)
                 .put(update_priority)
                 .delete(delete_priority),
+        )
+}
+
+fn department_routes() -> Router<AppState> {
+    Router::new()
+        .route("/departments", get(get_departments).post(create_department))
+        .route(
+            "/departments/{id}",
+            get(show_department)
+                .put(update_department)
+                .delete(delete_department),
         )
 }

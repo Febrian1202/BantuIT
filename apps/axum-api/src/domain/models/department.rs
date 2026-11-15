@@ -10,3 +10,8 @@ pub struct Department {
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
 }
+
+pub struct DepartmentReferences {
+    pub user_count: i64,
+    pub ticket_count: i64,
+}

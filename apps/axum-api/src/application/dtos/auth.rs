@@ -2,7 +2,10 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use validator::Validate;
 
-use crate::domain::enums::{RoleName, UserStatus};
+use crate::domain::{
+    enums::{RoleName, UserStatus},
+    models::Department,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Validate)]
 pub struct LoginRequest {
@@ -43,6 +46,15 @@ pub struct RoleData {
 pub struct DepartmentData {
     pub id: i32,
     pub name: String,
+}
+
+impl From<Department> for DepartmentData {
+    fn from(value: Department) -> Self {
+        Self {
+            id: value.id,
+            name: value.name,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

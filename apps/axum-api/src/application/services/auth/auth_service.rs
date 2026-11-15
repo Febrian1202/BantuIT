@@ -2,7 +2,7 @@ use chrono::{Duration, Utc};
 use sha2::{Digest, Sha256};
 
 use crate::{
-    application::dtos::{DepartmentData, LoginRequest, LoginResponse, RoleData, UserData},
+    application::dtos::{LoginRequest, LoginResponse, RoleData, UserData},
     common::{AppError, Crypto},
     domain::{
         enums::UserStatus,
@@ -56,16 +56,14 @@ impl AuthService {
             .create_token_and_update_last_login(user.id, &hashed_token)
             .await?;
 
-        let department = match user.department_id {
-            Some(id) => self
-                .department_repo
-                .get_department_by_department_id(id)
-                .await?
-                .map(|d| DepartmentData {
-                    id: d.id,
-                    name: d.name,
-                }),
-            None => None,
+        let department = if let Some(id) = user.department_id {
+            self.department_repo
+                .get_department_by_id(id)
+                .await
+                .ok()
+                .map(Into::into)
+        } else {
+            None
         };
 
         let role = RoleData {

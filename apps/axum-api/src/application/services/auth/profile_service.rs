@@ -2,8 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     application::dtos::{
-        DepartmentData, MeResponse, ProfileData, RoleData, UpdatePasswordRequest,
-        UpdateProfileRequest,
+        MeResponse, ProfileData, RoleData, UpdatePasswordRequest, UpdateProfileRequest,
     },
     common::{AppError, Crypto},
     domain::{
@@ -66,16 +65,14 @@ impl ProfileService {
             name: user.role_name,
         };
 
-        let department = match user.department_id {
-            Some(id) => self
-                .department_repo
-                .get_department_by_department_id(id)
-                .await?
-                .map(|d| DepartmentData {
-                    id: d.id,
-                    name: d.name,
-                }),
-            None => None,
+        let department = if let Some(id) = user.department_id {
+            self.department_repo
+                .get_department_by_id(id)
+                .await
+                .ok()
+                .map(Into::into)
+        } else {
+            None
         };
 
         let profile = self
@@ -118,16 +115,14 @@ impl ProfileService {
             .update_profile(user.id, data.full_name, data.phone)
             .await?;
 
-        let department = match updated_user.department_id {
-            Some(id) => self
-                .department_repo
-                .get_department_by_department_id(id)
-                .await?
-                .map(|d| DepartmentData {
-                    id: d.id,
-                    name: d.name,
-                }),
-            None => None,
+        let department = if let Some(id) = updated_user.department_id {
+            self.department_repo
+                .get_department_by_id(id)
+                .await
+                .ok()
+                .map(Into::into)
+        } else {
+            None
         };
 
         let role = RoleData {

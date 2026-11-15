@@ -202,7 +202,7 @@ impl TicketPriorityService {
 
         let refs = self.priority_repo.get_reference_counts(id).await?;
 
-        ReferentialIntegrityGuard::assert_unreferenced(&[("Prioritas tiket", refs.ticket_counts)])?;
+        ReferentialIntegrityGuard::assert_unreferenced(&[("Prioritas tiket", refs.ticket_count)])?;
 
         let mut tx = self.pool.begin().await?;
 

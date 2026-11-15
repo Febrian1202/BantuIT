@@ -4,6 +4,7 @@ use sqlx::PgPool;
 
 use crate::{
     application::services::{
+        admin::DepartmentService,
         audit::AuditLogger,
         auth::{AuthService, ProfileService},
         ticket::{TicketCategoryService, TicketPriorityService, TicketService},
@@ -30,6 +31,7 @@ pub struct AppState {
     pub profile_service: ProfileService,
     pub ticket_category_service: TicketCategoryService,
     pub ticket_priority_service: TicketPriorityService,
+    pub department_service: DepartmentService,
     pub rate_limit: RateLimiterRegistry,
 }
 
@@ -40,14 +42,16 @@ impl AppState {
         let ticket_repo = Arc::new(pg_ticket_repo);
         let ticket_service = TicketService::new(ticket_repo);
 
-        // Setup DepartmentRepo
-        let pg_department_repo = DepartmentRepository::new(pool.clone());
-        let department_repo = Arc::new(pg_department_repo);
-
         // Setup AuditLogRepo
         let pg_audit_log_repo = AuditLogRepository::new(pool.clone());
         let audit_log_repo = Arc::new(pg_audit_log_repo);
         let audit_logger = AuditLogger::new(audit_log_repo);
+
+        // Setup DepartmentRepo
+        let pg_department_repo = DepartmentRepository::new(pool.clone());
+        let department_repo = Arc::new(pg_department_repo);
+        let department_service =
+            DepartmentService::new(pool.clone(), department_repo.clone(), audit_logger.clone());
 
         // Setup TicketPriorityRepo
         let pg_priority_repo = TicketPriorityRepository::new(pool.clone());
@@ -84,6 +88,7 @@ impl AppState {
             rate_limit,
             ticket_category_service,
             ticket_priority_service,
+            department_service,
         }
     }
 }

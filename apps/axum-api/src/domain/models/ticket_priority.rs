@@ -14,5 +14,5 @@ pub struct TicketPriority {
 }
 
 pub struct PriorityReference {
-    pub ticket_counts: i64,
+    pub ticket_count: i64,
 }

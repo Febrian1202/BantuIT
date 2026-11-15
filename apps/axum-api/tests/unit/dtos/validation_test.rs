@@ -1,6 +1,7 @@
 use bantuit::application::dtos::{
-    CreateTicketCategoryRequest, CreateTicketPriorityRequest, LoginRequest, UpdatePasswordRequest,
-    UpdateProfileRequest, UpdateTicketCategoryRequest, UpdateTicketPriorityRequest,
+    CreateDepartmentRequest, CreateTicketCategoryRequest, CreateTicketPriorityRequest,
+    LoginRequest, UpdateDepartmentRequest, UpdatePasswordRequest, UpdateProfileRequest,
+    UpdateTicketCategoryRequest, UpdateTicketPriorityRequest,
 };
 use validator::Validate;
 
@@ -315,6 +316,87 @@ fn test_update_ticket_priority_request_fails_on_empty_or_excessive_fields() {
         level: 1,
         sla_minutes: 60,
         description: Some("Z".repeat(501)),
+    };
+    assert!(long_desc.validate().is_err());
+}
+
+#[test]
+fn test_create_department_request_validation_success() {
+    let req = CreateDepartmentRequest {
+        name: "Human Resources".to_string(),
+        description: Some("Divisi Sumber Daya Manusia".to_string()),
+    };
+    assert!(req.validate().is_ok());
+
+    let req_minimal = CreateDepartmentRequest {
+        name: "Finance".to_string(),
+        description: None,
+    };
+    assert!(req_minimal.validate().is_ok());
+}
+
+#[test]
+fn test_create_department_request_fails_on_empty_name() {
+    let req = CreateDepartmentRequest {
+        name: "   ".to_string(),
+        description: None,
+    };
+    let result = req.validate();
+    assert!(result.is_err());
+    let errors = result.unwrap_err();
+    assert!(errors.field_errors().contains_key("name"));
+}
+
+#[test]
+fn test_create_department_request_fails_on_name_exceeding_100_chars() {
+    let req = CreateDepartmentRequest {
+        name: "D".repeat(101),
+        description: None,
+    };
+    let result = req.validate();
+    assert!(result.is_err());
+    let errors = result.unwrap_err();
+    assert!(errors.field_errors().contains_key("name"));
+}
+
+#[test]
+fn test_create_department_request_fails_on_description_exceeding_500_chars() {
+    let req = CreateDepartmentRequest {
+        name: "Operations".to_string(),
+        description: Some("O".repeat(501)),
+    };
+    let result = req.validate();
+    assert!(result.is_err());
+    let errors = result.unwrap_err();
+    assert!(errors.field_errors().contains_key("description"));
+}
+
+#[test]
+fn test_update_department_request_validation_success() {
+    let req = UpdateDepartmentRequest {
+        name: "Legal & Compliance".to_string(),
+        description: Some("Departemen Hukum dan Kepatuhan".to_string()),
+    };
+    assert!(req.validate().is_ok());
+}
+
+#[test]
+fn test_update_department_request_fails_on_empty_or_excessive_fields() {
+    let empty_name = UpdateDepartmentRequest {
+        name: "".to_string(),
+        description: None,
+    };
+    assert!(empty_name.validate().is_err());
+
+    let long_name = UpdateDepartmentRequest {
+        name: "L".repeat(101),
+        description: None,
+    };
+    assert!(long_name.validate().is_err());
+
+    let long_desc = UpdateDepartmentRequest {
+        name: "Valid Dept".to_string(),
+        description: Some("K".repeat(501)),
     };
     assert!(long_desc.validate().is_err());
 }

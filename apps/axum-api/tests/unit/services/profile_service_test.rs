@@ -78,11 +78,55 @@ struct MockDepartmentRepo {
 
 #[async_trait]
 impl DepartmentRepo for MockDepartmentRepo {
-    async fn get_department_by_department_id(
+    async fn get_departments(&self) -> Result<Vec<Department>, AppError> {
+        Ok(vec![])
+    }
+
+    async fn get_department_by_id(&self, _department_id: i32) -> Result<Department, AppError> {
+        self.department
+            .clone()
+            .ok_or(AppError::NotFound)
+    }
+
+    async fn is_name_exists(&self, _name: &str) -> Result<bool, AppError> {
+        Ok(false)
+    }
+
+    async fn is_name_exists_except(&self, _id: i32, _name: &str) -> Result<bool, AppError> {
+        Ok(false)
+    }
+
+    async fn create_department(
         &self,
-        _department_id: i32,
-    ) -> Result<Option<Department>, AppError> {
-        Ok(self.department.clone())
+        _conn: &mut sqlx::PgConnection,
+        _name: String,
+        _desc: Option<String>,
+    ) -> Result<Department, AppError> {
+        unimplemented!()
+    }
+
+    async fn update_department(
+        &self,
+        _conn: &mut sqlx::PgConnection,
+        _id: i32,
+        _name: String,
+        _desc: Option<String>,
+    ) -> Result<Department, AppError> {
+        unimplemented!()
+    }
+
+    async fn get_reference_counts(
+        &self,
+        _id: i32,
+    ) -> Result<bantuit::domain::models::department::DepartmentReferences, AppError> {
+        Ok(bantuit::domain::models::department::DepartmentReferences {
+            user_count: 0,
+            ticket_count: 0,
+        })
+    }
+
+    async fn soft_delete(&self, _conn: &mut sqlx::PgConnection, _id: i32) -> Result<(), AppError> {
+        Ok(())
     }
 }
 
