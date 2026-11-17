@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::{sync::LazyLock, time::Instant};
 
 use axum::{Router, response::Response};
 use bantuit::{
@@ -12,6 +12,7 @@ use bantuit::{
 };
 use chrono::Utc;
 use sqlx::{PgPool, postgres::PgPoolOptions};
+use tokio::sync::OnceCell;
 use uuid::Uuid;
 
 /// Helper untuk membuat mock user
@@ -79,7 +80,7 @@ pub async fn setup_test_app() -> (AppState, Router) {
             user: std::env::var("DB_USER").unwrap_or_else(|_| "postgres".to_string()),
             password: std::env::var("DB_PASSWORD").unwrap_or_else(|_| "root".to_string()),
             name: std::env::var("DB_NAME").unwrap_or_else(|_| "bantuit".to_string()),
-            db_max_connections: 5,
+            db_max_connections: 20,
             db_min_connections: 1,
         };
         AppConfig {
@@ -100,15 +101,25 @@ pub async fn setup_test_app() -> (AppState, Router) {
     let conn_str = std::env::var("DATABASE_URL").unwrap_or_else(|_| config.db.connection_string());
 
     let pool = PgPoolOptions::new()
-        .max_connections(5)
+        .max_connections(20)
         .connect(&conn_str)
         .await
         .expect("Koneksi PostgreSQL untuk testing gagal. Pastikan PostgreSQL sedang berjalan.");
+
+    // Reset database hanya sekali di awal eksekusi test suite
+    DB_RESET
+        .get_or_init(|| async {
+            reset_test_database(&pool).await;
+        })
+        .await;
 
     let state = AppState::new(config, pool, Instant::now());
     let router = create_router(state.clone());
     (state, router)
 }
+
+static DEFAULT_HASHED_PASSWORD: LazyLock<String> =
+    LazyLock::new(|| Crypto::hash_password("Password123!").expect("Hash password gagal"));
 
 /// Helper untuk menyisipkan test user ke dalam database
 pub async fn insert_test_user(
@@ -126,7 +137,7 @@ pub async fn insert_test_user(
     let user_id = Uuid::now_v7();
     let email = format!("test-{}@jarvisops.test", Uuid::new_v4());
     let raw_password = "Password123!".to_string();
-    let hashed_password = Crypto::hash_password(&raw_password).expect("Hash password gagal");
+    let hashed_password = &*DEFAULT_HASHED_PASSWORD;
     let full_name = format!("Test User {}", <&'static str>::from(role_name));
     let status_str: &'static str = status.into();
 
@@ -139,7 +150,7 @@ pub async fn insert_test_user(
     .bind(user_id)
     .bind(role_id)
     .bind(&email)
-    .bind(&hashed_password)
+    .bind(hashed_password)
     .bind(&full_name)
     .bind(status_str)
     .bind(must_change_password)
@@ -181,7 +192,7 @@ pub async fn insert_test_user(
         role_id,
         department_id: None,
         email,
-        password: hashed_password,
+        password: hashed_password.clone(),
         full_name,
         status,
         must_change_password,
@@ -201,4 +212,53 @@ pub async fn response_json(response: Response) -> serde_json::Value {
         .await
         .expect("Gagal membaca body response");
     serde_json::from_slice(&bytes).expect("Body response bukan format JSON valid")
+}
+
+static DB_RESET: OnceCell<()> = OnceCell::const_new();
+
+/// Membersihkan seluruh data test dummy dan mengembalikan database ke kondisi master seeder yang bersih
+pub async fn reset_test_database(pool: &PgPool) {
+    let reset_query = r#"
+        DELETE FROM ticket_attachments;
+        DELETE FROM ticket_comments;
+        DELETE FROM ticket_histories;
+        DELETE FROM tickets;
+        DELETE FROM asset_assignments;
+        DELETE FROM asset_histories;
+        DELETE FROM assets;
+        DELETE FROM notifications;
+        DELETE FROM knowledge_articles;
+        DELETE FROM audit_logs;
+        DELETE FROM personal_access_tokens;
+        DELETE FROM employee_profiles;
+        DELETE FROM users;
+
+        DELETE FROM ticket_categories WHERE id > 5;
+        UPDATE ticket_categories SET deleted_at = NULL WHERE id <= 5;
+        INSERT INTO ticket_categories (id, name, description) VALUES
+            (1, 'Hardware', 'Perangkat keras dan komputer'),
+            (2, 'Software', 'Sistem operasi dan aplikasi'),
+            (3, 'Network', 'Konektivitas jaringan dan internet'),
+            (4, 'Account', 'Identitas akun dan akses'),
+            (5, 'Other', 'Kategori lainnya')
+        ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, description = EXCLUDED.description, deleted_at = NULL;
+        SELECT setval('ticket_categories_id_seq', (SELECT COALESCE(MAX(id), 1) FROM ticket_categories));
+
+        DELETE FROM departments WHERE id > 5;
+        UPDATE departments SET deleted_at = NULL WHERE id <= 5;
+        SELECT setval('departments_id_seq', (SELECT COALESCE(MAX(id), 1) FROM departments));
+
+        DELETE FROM ticket_priorities WHERE id > 4;
+        UPDATE ticket_priorities SET deleted_at = NULL WHERE id <= 4;
+        SELECT setval('ticket_priorities_id_seq', (SELECT COALESCE(MAX(id), 1) FROM ticket_priorities));
+
+        DELETE FROM knowledge_categories WHERE id > 5;
+        UPDATE knowledge_categories SET deleted_at = NULL WHERE id <= 5;
+        SELECT setval('knowledge_categories_id_seq', (SELECT COALESCE(MAX(id), 1) FROM knowledge_categories));
+    "#;
+
+    sqlx::raw_sql(reset_query)
+        .execute(pool)
+        .await
+        .expect("Gagal mereset database pengujian ke kondisi bersih");
 }

@@ -3,7 +3,7 @@ use sqlx::PgPool;
 
 use crate::{
     application::{
-        dtos::{CreateTicketCategoryRequest, TicketCategoryResponse, UpdateTicketCategoryRequest},
+        dtos::{CreateTicketCategoryRequest, UpdateTicketCategoryRequest},
         services::{
             audit::{AuditLogger, audit_logger::AuditEntry},
             guard::ReferentialIntegrityGuard,
@@ -12,7 +12,7 @@ use crate::{
     common::AppError,
     domain::{
         enums::{AuditAction, AuditModule},
-        models::User,
+        models::{TicketCategoryWithParent, User},
         repositories::ticket::ticket_category_repo::DynTicketCategoryRepo,
     },
     interface::extractors::ClientInfo,
@@ -38,20 +38,15 @@ impl TicketCategoryService {
         }
     }
 
-    pub async fn get_categories(&self) -> Result<Vec<TicketCategoryResponse>, AppError> {
+    pub async fn get_categories(&self) -> Result<Vec<TicketCategoryWithParent>, AppError> {
         let categories = self.category_repo.get_all_categories().await?;
 
-        let response_dto = categories
-            .into_iter()
-            .map(TicketCategoryResponse::from)
-            .collect();
-        Ok(response_dto)
+        Ok(categories)
     }
 
-    pub async fn show_by_id(&self, id: i32) -> Result<TicketCategoryResponse, AppError> {
+    pub async fn show_by_id(&self, id: i32) -> Result<TicketCategoryWithParent, AppError> {
         let category = self.category_repo.get_category_by_id(id).await?;
-        let response_dto = TicketCategoryResponse::from(category);
-        Ok(response_dto)
+        Ok(category)
     }
 
     pub async fn create_category(
@@ -59,7 +54,7 @@ impl TicketCategoryService {
         data: CreateTicketCategoryRequest,
         actor: User,
         client: ClientInfo,
-    ) -> Result<TicketCategoryResponse, AppError> {
+    ) -> Result<TicketCategoryWithParent, AppError> {
         if self
             .category_repo
             .is_category_name_exists(&data.name)
@@ -110,7 +105,7 @@ impl TicketCategoryService {
         // Commit transaction
         tx.commit().await?;
 
-        Ok(TicketCategoryResponse::from(created_category))
+        Ok(created_category)
     }
 
     pub async fn update_category(
@@ -119,7 +114,7 @@ impl TicketCategoryService {
         data: UpdateTicketCategoryRequest,
         actor: User,
         client: ClientInfo,
-    ) -> Result<TicketCategoryResponse, AppError> {
+    ) -> Result<TicketCategoryWithParent, AppError> {
         let existing = self.category_repo.get_category_by_id(id).await?;
 
         if self
@@ -187,7 +182,7 @@ impl TicketCategoryService {
         // Commit transaction
         tx.commit().await?;
 
-        Ok(TicketCategoryResponse::from(updated_category))
+        Ok(updated_category)
     }
 
     pub async fn delete_category(

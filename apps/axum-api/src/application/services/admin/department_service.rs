@@ -3,7 +3,7 @@ use sqlx::PgPool;
 
 use crate::{
     application::{
-        dtos::{CreateDepartmentRequest, DepartmentResponse, UpdateDepartmentRequest},
+        dtos::{CreateDepartmentRequest, UpdateDepartmentRequest},
         services::{
             audit::{AuditEntry, AuditLogger},
             guard::ReferentialIntegrityGuard,
@@ -12,7 +12,7 @@ use crate::{
     common::AppError,
     domain::{
         enums::{AuditAction, AuditModule},
-        models::User,
+        models::{Department, User},
         repositories::department::DynDepartmentRepo,
     },
     interface::extractors::ClientInfo,
@@ -38,18 +38,14 @@ impl DepartmentService {
         }
     }
 
-    pub async fn get_departments(&self) -> Result<Vec<DepartmentResponse>, AppError> {
+    pub async fn get_departments(&self) -> Result<Vec<Department>, AppError> {
         let departments = self.department_repo.get_departments().await?;
-        let response_dtos = departments
-            .into_iter()
-            .map(DepartmentResponse::from)
-            .collect();
-        Ok(response_dtos)
+        Ok(departments)
     }
 
-    pub async fn show_department(&self, id: i32) -> Result<DepartmentResponse, AppError> {
+    pub async fn show_department(&self, id: i32) -> Result<Department, AppError> {
         let department = self.department_repo.get_department_by_id(id).await?;
-        Ok(DepartmentResponse::from(department))
+        Ok(department)
     }
 
     pub async fn create_department(
@@ -57,7 +53,7 @@ impl DepartmentService {
         data: CreateDepartmentRequest,
         actor: User,
         client: ClientInfo,
-    ) -> Result<DepartmentResponse, AppError> {
+    ) -> Result<Department, AppError> {
         if self.department_repo.is_name_exists(&data.name).await? {
             return Err(AppError::validation_error(
                 "name",
@@ -95,7 +91,7 @@ impl DepartmentService {
 
         tx.commit().await?;
 
-        Ok(DepartmentResponse::from(department))
+        Ok(department)
     }
 
     pub async fn update_department(
@@ -104,7 +100,7 @@ impl DepartmentService {
         data: UpdateDepartmentRequest,
         actor: User,
         client: ClientInfo,
-    ) -> Result<DepartmentResponse, AppError> {
+    ) -> Result<Department, AppError> {
         let exist = self.department_repo.get_department_by_id(id).await?;
 
         if self
@@ -153,7 +149,7 @@ impl DepartmentService {
             .await?;
 
         tx.commit().await?;
-        Ok(DepartmentResponse::from(updated_department))
+        Ok(updated_department)
     }
 
     pub async fn delete_department(

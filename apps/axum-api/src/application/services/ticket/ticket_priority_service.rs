@@ -3,7 +3,7 @@ use sqlx::PgPool;
 
 use crate::{
     application::{
-        dtos::{CreateTicketPriorityRequest, TicketPriorityResponse, UpdateTicketPriorityRequest},
+        dtos::{CreateTicketPriorityRequest, UpdateTicketPriorityRequest},
         services::{
             audit::{AuditEntry, AuditLogger},
             guard::ReferentialIntegrityGuard,
@@ -12,7 +12,7 @@ use crate::{
     common::AppError,
     domain::{
         enums::{AuditAction, AuditModule},
-        models::User,
+        models::{TicketPriority, User},
         repositories::ticket::DynTicketPriorityRepo,
     },
     interface::extractors::ClientInfo,
@@ -38,18 +38,14 @@ impl TicketPriorityService {
         }
     }
 
-    pub async fn get_priorities(&self) -> Result<Vec<TicketPriorityResponse>, AppError> {
+    pub async fn get_priorities(&self) -> Result<Vec<TicketPriority>, AppError> {
         let priorities = self.priority_repo.get_all_priorities().await?;
-        let response_dtos = priorities
-            .into_iter()
-            .map(TicketPriorityResponse::from)
-            .collect();
-        Ok(response_dtos)
+        Ok(priorities)
     }
 
-    pub async fn show_priority(&self, id: i32) -> Result<TicketPriorityResponse, AppError> {
+    pub async fn show_priority(&self, id: i32) -> Result<TicketPriority, AppError> {
         let priority = self.priority_repo.get_priority_by_id(id).await?;
-        Ok(TicketPriorityResponse::from(priority))
+        Ok(priority)
     }
 
     pub async fn create_priority(
@@ -57,7 +53,7 @@ impl TicketPriorityService {
         data: CreateTicketPriorityRequest,
         actor: User,
         client: ClientInfo,
-    ) -> Result<TicketPriorityResponse, AppError> {
+    ) -> Result<TicketPriority, AppError> {
         if self.priority_repo.is_name_exists(&data.name).await? {
             return Err(AppError::validation_error(
                 "name",
@@ -109,7 +105,7 @@ impl TicketPriorityService {
             .await?;
 
         tx.commit().await?;
-        Ok(TicketPriorityResponse::from(priority))
+        Ok(priority)
     }
 
     pub async fn update_priority(
@@ -118,7 +114,7 @@ impl TicketPriorityService {
         data: UpdateTicketPriorityRequest,
         actor: User,
         client: ClientInfo,
-    ) -> Result<TicketPriorityResponse, AppError> {
+    ) -> Result<TicketPriority, AppError> {
         let existing = self.priority_repo.get_priority_by_id(id).await?;
 
         if self
@@ -189,7 +185,7 @@ impl TicketPriorityService {
             .await?;
 
         tx.commit().await?;
-        Ok(TicketPriorityResponse::from(updated_priority))
+        Ok(updated_priority)
     }
 
     pub async fn delete_priority(

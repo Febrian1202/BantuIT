@@ -18,7 +18,11 @@ pub async fn get_departments(
     AuthUser(user, _): AuthUser,
 ) -> ApiResult<Vec<DepartmentResponse>> {
     Gate::check(&user, Ability::DepartmentViewAny)?;
-    let response = state.department_service.get_departments().await?;
+    let departments = state.department_service.get_departments().await?;
+    let response = departments
+        .into_iter()
+        .map(DepartmentResponse::from)
+        .collect();
     Ok(ApiResponse::success(response, "Departments retrieved."))
 }
 
@@ -28,7 +32,8 @@ pub async fn show_department(
     Path(id): Path<i32>,
 ) -> ApiResult<DepartmentResponse> {
     Gate::check(&user, Ability::DepartmentViewAny)?;
-    let response = state.department_service.show_department(id).await?;
+    let department = state.department_service.show_department(id).await?;
+    let response = DepartmentResponse::from(department);
     Ok(ApiResponse::success(response, "Department retrieved."))
 }
 
@@ -43,8 +48,9 @@ pub async fn create_department(
         .department_service
         .create_department(payload, user, client)
         .await?;
+    let response = DepartmentResponse::from(inserted);
     Ok(ApiResponse::created(
-        inserted,
+        response,
         "Department created successfully.",
     ))
 }
@@ -57,10 +63,12 @@ pub async fn update_department(
     ValidatedJson(payload): ValidatedJson<UpdateDepartmentRequest>,
 ) -> ApiResult<DepartmentResponse> {
     Gate::check(&user, Ability::DepartmentManage)?;
-    let response = state
+    let updated = state
         .department_service
         .update_department(id, payload, user, client)
         .await?;
+    let response = DepartmentResponse::from(updated);
+
     Ok(ApiResponse::success(
         response,
         "Department updated successfully.",

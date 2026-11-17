@@ -1,0 +1,5 @@
+[alias]
+c = "check"
+t = "test -- --nocapture"
+lint = "clippy --all-targets -- -D warnings"
+run-server = "run --bin bantuit-server"
